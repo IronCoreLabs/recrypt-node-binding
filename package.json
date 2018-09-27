@@ -1,0 +1,37 @@
+{
+    "name": "@ironcorelabs/recrypt-node-binding",
+    "version": "0.1.0",
+    "description": "Bindings to allow the recrypt-rust library to work via NodeJS.",
+    "repository": "https://github.com/IronCoreLabs/recrypt-node-bindings",
+    "homepage": "https://ironcorelabs.com",
+    "author": "IronCore Labs",
+    "license": "AGPL-3.0-only",
+    "main": "index.node",
+    "types": "index.d.ts",
+    "scripts": {
+        "compile": "neon build -r",
+        "clean": "neon clean",
+        "benchmark": "node lib/benchmark/index.js",
+        "test": "jest"
+    },
+    "devDependencies": {
+        "@types/node": "^10.11.0",
+        "benchmark": "^2.1.4",
+        "jest": "^23.6.0",
+        "jest-extended": "^0.10.0",
+        "neon-cli": "^0.2.0",
+        "shelljs": "^0.8.2"
+    },
+    "prettier": {
+        "printWidth": 160,
+        "tabWidth": 4,
+        "trailingComma": "es5",
+        "bracketSpacing": false,
+        "jsxBracketSameLine": true,
+        "arrowParens": "always"
+    },
+    "jest": {
+        "testEnvironment": "node",
+        "setupTestFrameworkScriptFile": "jest-extended"
+    }
+}

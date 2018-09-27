@@ -1,0 +1,16 @@
+[package]
+name = "recrypt-node-binding"
+version = "0.1.0"
+authors = ["IronCore Labs <code@ironcorelabs.com>"]
+
+[lib]
+name = "recrypt_node"
+crate-type = ["dylib"]
+
+[dependencies]
+rand = "0.5.5"
+recrypt = "0.1.0"
+neon = "0.2.0"
+
+[build-dependencies]
+neon-build = "0.2.0"

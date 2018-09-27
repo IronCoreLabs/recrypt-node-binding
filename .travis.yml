@@ -1,0 +1,23 @@
+sudo: false
+language: rust
+rust:
+    - 1.29.0
+branches:
+    only:
+        - master
+notifications:
+    email:
+        on_success: change
+        on_failure: always
+cache:
+    yarn: true
+    cargo: true
+    directories:
+        - node_modules
+before_script:
+    - rustup component add rustfmt-preview
+script:
+    - pushd native/ && cargo fmt -- --check && popd
+    - yarn
+    - yarn run compile
+    - yarn test

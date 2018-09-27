@@ -1,0 +1,11 @@
+**/node_modules
+**/.DS_Store
+.vscode
+.babelrc
+npm-debug.log
+yarn-error.log
+native/target
+native/artifacts.json
+native/index.node
+Cargo.lock
+dist/*
