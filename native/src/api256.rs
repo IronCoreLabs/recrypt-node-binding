@@ -81,10 +81,10 @@ declare_types! {
                 let guard = cx.lock();
                 let mut recrypt_api_256 = this.borrow_mut(&guard);
                 recrypt_api_256.api.generate_transform_key(
-                    util::buffer_to_private_key(&cx, from_private_key_buffer),
+                    &util::buffer_to_private_key(&cx, from_private_key_buffer),
                     to_public_key,
                     public_signing_key,
-                    private_signing_key
+                    &private_signing_key
                 ).unwrap()
             };
 
@@ -131,10 +131,10 @@ declare_types! {
                 let guard = cx.lock();
                 let mut recrypt_api_256 = this.borrow_mut(&guard);
                 recrypt_api_256.api.encrypt(
-                    util::buffer_to_plaintext(&cx, plaintext_buffer),
+                    &util::buffer_to_plaintext(&cx, plaintext_buffer),
                     public_key,
                     public_signing_key,
-                    private_signing_key
+                    &private_signing_key
                 ).unwrap()
             };
 
@@ -156,7 +156,7 @@ declare_types! {
                 let mut this = cx.this();
                 let guard = cx.lock();
                 let mut recrypt_api_256 = this.borrow_mut(&guard);
-                recrypt_api_256.api.transform(encrypted_value, transform_key, public_signing_key, private_signing_key).unwrap()
+                recrypt_api_256.api.transform(encrypted_value, transform_key, public_signing_key, &private_signing_key).unwrap()
             };
 
             Ok(util::encrypted_value_to_js_object(&mut cx, transformed_encrypted_value)?.upcast())
@@ -174,7 +174,7 @@ declare_types! {
                 let recrypt_api_256 = &this.borrow(&guard).api;
                 recrypt_api_256.decrypt(
                     encrypted_value,
-                    util::buffer_to_private_key(&cx, private_key_buffer)
+                    &util::buffer_to_private_key(&cx, private_key_buffer)
                 ).unwrap()
             };
 
