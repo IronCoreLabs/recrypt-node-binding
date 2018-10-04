@@ -2,7 +2,7 @@ use neon::prelude::*;
 use neon::types::JsBuffer;
 use recrypt::api::{
     AuthHash, EncryptedMessage, EncryptedTempKey, EncryptedValue, HashedValue, Plaintext,
-    PrivateKey, PublicKey, PublicSigningKey, Signature, TransformBlock, TransformKey,
+    PrivateKey, PublicKey, PublicSigningKey, Signature, TransformBlock, TransformKey, SchnorrSignature
 };
 use recrypt::nonemptyvec::NonEmptyVec;
 
@@ -14,7 +14,7 @@ macro_rules! buffer_to_fixed_bytes { ($($fn_name:ident, $n: expr); *) => {
     $(pub fn $fn_name<'a, T>(cx: &T, mut buffer: Handle<JsBuffer>, field_name: &str) -> [u8; $n]
         where T: Context<'a>{
         let guard = cx.lock();
-        let slice = buffer.borrow_mut(&guard).as_mut_slice::<u8>();
+        let slice = buffer.borrow_mut(&guard).as_slice::<u8>();
         if slice.len() != $n {
             panic!(format!("Provided Buffer for '{}' is not of expected size of {} bytes. Instead got {} bytes.", field_name, $n, slice.len()));
         }
@@ -28,6 +28,15 @@ macro_rules! buffer_to_fixed_bytes { ($($fn_name:ident, $n: expr); *) => {
 /// Create the various methods we need to convert buffers into fixed length bytes
 ///
 buffer_to_fixed_bytes!{buffer_to_fixed_32_bytes, 32; buffer_to_fixed_64_bytes, 64; buffer_to_fixed_128_bytes, 128; buffer_to_fixed_384_bytes, 384}
+
+///
+/// Convert a JsBuffer handle of variable size into a vector
+///
+pub fn buffer_to_variable_bytes<'a, T: Context<'a>>(cx: &T, mut buffer: Handle<JsBuffer>) -> Vec<u8> {
+    let guard = cx.lock();
+    let slice = buffer.borrow_mut(&guard).as_slice::<u8>();
+    slice.to_vec()
+}
 
 ///
 /// Copy the bytes from the provided u8 slice into the provided JS Buffer object
@@ -55,6 +64,13 @@ pub fn buffer_to_private_key<'a, T: Context<'a>>(cx: &T, buffer: Handle<JsBuffer
 ///
 pub fn buffer_to_plaintext<'a, T: Context<'a>>(cx: &T, buffer: Handle<JsBuffer>) -> Plaintext {
     Plaintext::new(buffer_to_fixed_384_bytes(cx, buffer, "plaintext"))
+}
+
+///
+/// Convert a JsBuffer handle to a SchnorrSignature object
+///
+pub fn buffer_to_schnorr_signature<'a, T: Context<'a>>(cx: &T, buffer: Handle<JsBuffer>) -> SchnorrSignature {
+    SchnorrSignature::new(buffer_to_fixed_64_bytes(cx, buffer, "signature"))
 }
 
 ///

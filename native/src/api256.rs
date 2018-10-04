@@ -3,7 +3,7 @@ use neon::types::JsBuffer;
 use rand;
 use recrypt::api::{
     Api, CryptoOps, Ed25519, Ed25519Ops, KeyGenOps, PrivateSigningKey, PublicSigningKey,
-    RandomBytes, Sha256,
+    RandomBytes, SchnorrOps, Sha256,
 };
 use util;
 
@@ -179,6 +179,64 @@ declare_types! {
             };
 
             Ok(util::bytes_to_buffer(&mut cx, decrypted_value.bytes())?.upcast())
+        }
+
+        method schnorrSign(mut cx){
+            let private_key_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(0)?;
+            let public_key_obj: Handle<JsObject> = cx.argument::<JsObject>(1)?;
+            let message_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(2)?;
+
+            let public_key = util::js_object_to_public_key(&mut cx, public_key_obj);
+
+            let signature = {
+                let mut this = cx.this();
+                let guard = cx.lock();
+                let mut recrypt_api_256 = this.borrow_mut(&guard);
+                recrypt_api_256.api.schnorr_sign(
+                    &util::buffer_to_private_key(&cx, private_key_buffer),
+                    public_key,
+                    &util::buffer_to_variable_bytes(&cx, message_buffer)
+                )
+            };
+
+            Ok(util::bytes_to_buffer(&mut cx, signature.bytes())?.upcast())
+        }
+
+        method schnorrVerify(mut cx) {
+            let public_key_obj: Handle<JsObject> = cx.argument::<JsObject>(0)?;
+            //The augmented private key is an optional argument to take in a generic JsValue
+            let augmented_private_key_buffer: Handle<JsValue> = cx.argument::<JsValue>(1)?;
+            let message_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(2)?;
+            let signature_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(3)?;
+
+            let public_key = util::js_object_to_public_key(&mut cx, public_key_obj);
+            let signature = util::buffer_to_schnorr_signature(&mut cx, signature_buffer);
+
+            let augmented_private_key = {
+                //Ignore both null or undefined as values are passed for augmented private key
+                if augmented_private_key_buffer.is_a::<JsUndefined>() {
+                    None
+                }
+                else if augmented_private_key_buffer.is_a::<JsNull>() {
+                    None
+                }
+                else {
+                    Some(util::buffer_to_private_key(&cx, augmented_private_key_buffer.downcast::<JsBuffer>().unwrap()))
+                }
+            };
+
+            let verified = {
+                let mut this = cx.this();
+                let guard = cx.lock();
+                let mut recrypt_api_256 = this.borrow_mut(&guard);
+                recrypt_api_256.api.schnorr_verify(
+                    public_key,
+                    augmented_private_key.as_ref(),
+                    &util::buffer_to_variable_bytes(&cx, message_buffer),
+                    signature
+                )
+            };
+            Ok(cx.boolean(verified).upcast())
         }
     }
 }

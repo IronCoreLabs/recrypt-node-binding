@@ -1,6 +1,7 @@
 export type PrivateKey = Buffer;
 export type PublicSigningKey = Buffer;
 export type PrivateSigningKey = Buffer;
+export type Signature = Buffer;
 export interface PublicKey {
     x: Buffer;
     y: Buffer;
@@ -61,4 +62,6 @@ export class Api256 {
         privateSigningKey: PrivateSigningKey
     ): EncryptedValue;
     decrypt(encryptedValue: EncryptedValue, privateKey: PrivateKey): Plaintext;
+    schnorrSign(privateKey: Buffer, publicKey: PublicKey, message: Buffer): Signature;
+    schnorrVerify(publicKey: PublicKey, augmentedPrivateKey?: Buffer, message: Buffer, signature: Signature): bool;
 }
