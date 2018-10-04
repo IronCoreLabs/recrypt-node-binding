@@ -1,5 +1,5 @@
 const Benchmark = require("benchmark");
-const recrypt = require("../../native/index.node");
+const recrypt = require("../native/index.node");
 //Randomly generated legit ED25519 keypair
 //prettier-ignore
 const publicSigningKey = Buffer.from([138, 136, 227, 221, 116, 9, 241, 149, 253, 82, 219, 45, 60, 186, 93, 114, 202, 103, 9, 191, 29, 148, 18, 27, 243, 116, 136, 1, 180, 15, 111, 92]);
