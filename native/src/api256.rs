@@ -304,8 +304,7 @@ pub fn augment_public_key_256(mut cx: FunctionContext) -> JsResult<JsObject> {
         .augment(&util::js_object_to_public_key(
             &mut cx,
             other_public_key_obj,
-        ))
-        .unwrap();
+        )).unwrap();
 
     Ok(util::public_key_to_js_object(&mut cx, &augmented_public_key)?.upcast())
 }

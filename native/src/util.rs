@@ -97,8 +97,7 @@ pub fn js_object_to_public_key<'a, T: Context<'a>>(
     PublicKey::new((
         buffer_to_fixed_32_bytes(cx, x, "publicKey.x"),
         buffer_to_fixed_32_bytes(cx, y, "publicKey.y"),
-    ))
-    .unwrap()
+    )).unwrap()
 }
 
 ///
@@ -168,8 +167,7 @@ pub fn js_object_to_transform_key<'a, T: Context<'a>>(
             cx,
             hashed_temp_key_buffer,
             "hashedTempKey",
-        ))
-        .unwrap(),
+        )).unwrap(),
         PublicSigningKey::new(buffer_to_fixed_32_bytes(
             cx,
             public_signing_key_buffer,
@@ -256,10 +254,8 @@ pub fn js_object_to_transform_blocks<'a, T: Context<'a>>(
                     random_transform_encrypted_temp_key,
                     "transformBlock.randomTransformEncryptedTempKey",
                 )),
-            )
-            .unwrap()
-        })
-        .collect();
+            ).unwrap()
+        }).collect();
 
     NonEmptyVec::try_from(&blocks).unwrap()
 }
