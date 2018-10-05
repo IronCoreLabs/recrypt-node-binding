@@ -1,8 +1,8 @@
 use neon::prelude::*;
 use neon::types::JsBuffer;
 use recrypt::api::{
-    AuthHash, EncryptedMessage, EncryptedTempKey, EncryptedValue, HashedValue, Plaintext,
-    PrivateKey, PublicKey, PublicSigningKey, SchnorrSignature, Signature, TransformBlock,
+    AuthHash, Ed25519Signature, EncryptedMessage, EncryptedTempKey, EncryptedValue, HashedValue,
+    Plaintext, PrivateKey, PublicKey, PublicSigningKey, SchnorrSignature, TransformBlock,
     TransformKey,
 };
 use recrypt::nonemptyvec::NonEmptyVec;
@@ -42,7 +42,7 @@ macro_rules! buffer_to_signature { ($($fn_name: ident, $sig_type: expr, $ret_typ
 ///
 /// Create two methods from the macro for Schnorr and ED25519 signatures
 ///
-buffer_to_signature!{buffer_to_schnorr_signature, SchnorrSignature::new, SchnorrSignature; buffer_to_ed25519_signature, Signature::new, Signature}
+buffer_to_signature!{buffer_to_schnorr_signature, SchnorrSignature::new, SchnorrSignature; buffer_to_ed25519_signature, Ed25519Signature::new, Ed25519Signature}
 
 ///
 /// Convert a JsBuffer handle of variable size into a vector
@@ -350,7 +350,7 @@ pub fn js_object_to_encrypted_value<'a, T: Context<'a>>(
                 public_signing_key_buffer,
                 "publicSigningKey",
             )),
-            signature: Signature::new(buffer_to_fixed_64_bytes(cx, signature_buffer, "signature")),
+            signature: buffer_to_ed25519_signature(cx, signature_buffer),
             transform_blocks: js_object_to_transform_blocks(cx, transform_blocks),
         }
     } else {
@@ -367,7 +367,7 @@ pub fn js_object_to_encrypted_value<'a, T: Context<'a>>(
                 public_signing_key_buffer,
                 "publicSigningKey",
             )),
-            signature: Signature::new(buffer_to_fixed_64_bytes(cx, signature_buffer, "signature")),
+            signature: buffer_to_ed25519_signature(cx, signature_buffer),
         }
     };
     encrypted_value
