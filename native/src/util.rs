@@ -175,7 +175,7 @@ pub fn js_object_to_transform_key<'a, T: Context<'a>>(
             public_signing_key_buffer,
             "publicSigningKey",
         )),
-        buffer_to_ed25519_signature(cx, signature_buffer)
+        buffer_to_ed25519_signature(cx, signature_buffer),
     )
 }
 
