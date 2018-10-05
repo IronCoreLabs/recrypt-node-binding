@@ -1,6 +1,6 @@
 {
     "name": "@ironcorelabs/recrypt-node-binding",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "Bindings to allow the recrypt-rust library to work via NodeJS.",
     "repository": "https://github.com/IronCoreLabs/recrypt-node-bindings",
     "homepage": "https://ironcorelabs.com",
