@@ -9,7 +9,7 @@ crate-type = ["dylib"]
 
 [dependencies]
 rand = "0.5.5"
-recrypt = "0.1.0"
+recrypt = "0.2.0"
 neon = "0.2.0"
 
 [build-dependencies]

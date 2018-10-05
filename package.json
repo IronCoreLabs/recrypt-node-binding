@@ -11,7 +11,7 @@
     "scripts": {
         "compile": "neon build -r",
         "clean": "neon clean",
-        "benchmark": "node lib/benchmark/index.js",
+        "benchmark": "node benchmark/index.js",
         "test": "jest"
     },
     "devDependencies": {

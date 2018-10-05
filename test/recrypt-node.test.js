@@ -1,4 +1,4 @@
-const recrypt = require("../../native/index.node");
+const recrypt = require("../native/index.node");
 //Randomly generated legit ED25519 keypair
 //prettier-ignore
 const publicSigningKey = Buffer.from([138, 136, 227, 221, 116, 9, 241, 149, 253, 82, 219, 45, 60, 186, 93, 114, 202, 103, 9, 191, 29, 148, 18, 27, 243, 116, 136, 1, 180, 15, 111, 92]);
@@ -11,30 +11,71 @@ describe("Recrypt-Node", () => {
 
         describe("generateKeyPair", () => {
             test("should generate keypairs of the expected length", () => {
-                const keypairs = api.generateKeyPair();
-                expect(keypairs).toBeObject();
-                expect(Object.keys(keypairs)).toHaveLength(2);
-                expect(keypairs.publicKey).toBeObject();
-                expect(keypairs.privateKey).toBeInstanceOf(Buffer);
-                expect(keypairs.privateKey).toHaveLength(32);
-                expect(Object.keys(keypairs.publicKey)).toHaveLength(2);
-                expect(keypairs.publicKey.x).toBeInstanceOf(Buffer);
-                expect(keypairs.publicKey.x).toHaveLength(32);
-                expect(keypairs.publicKey.y).toBeInstanceOf(Buffer);
-                expect(keypairs.publicKey.y).toHaveLength(32);
+                const keypair = api.generateKeyPair();
+                expect(keypair).toBeObject();
+                expect(Object.keys(keypair)).toHaveLength(2);
+                expect(keypair.publicKey).toBeObject();
+                expect(keypair.privateKey).toBeInstanceOf(Buffer);
+                expect(keypair.privateKey).toHaveLength(32);
+                expect(Object.keys(keypair.publicKey)).toHaveLength(2);
+                expect(keypair.publicKey.x).toBeInstanceOf(Buffer);
+                expect(keypair.publicKey.x).toHaveLength(32);
+                expect(keypair.publicKey.y).toBeInstanceOf(Buffer);
+                expect(keypair.publicKey.y).toHaveLength(32);
             });
         });
 
         describe("generateEd25519KeyPair", () => {
             test("should generate ed25519 keypairs of the expected length", () => {
-                const keypairs = api.generateEd25519KeyPair();
-                expect(keypairs).toBeObject();
-                expect(Object.keys(keypairs)).toHaveLength(2);
-                expect(keypairs.publicKey).toBeInstanceOf(Buffer);
-                expect(keypairs.privateKey).toBeInstanceOf(Buffer);
+                const keypair = api.generateEd25519KeyPair();
+                expect(keypair).toBeObject();
+                expect(Object.keys(keypair)).toHaveLength(2);
+                expect(keypair.publicKey).toBeInstanceOf(Buffer);
+                expect(keypair.privateKey).toBeInstanceOf(Buffer);
 
-                expect(keypairs.publicKey).toHaveLength(32);
-                expect(keypairs.privateKey).toHaveLength(64);
+                expect(keypair.publicKey).toHaveLength(32);
+                expect(keypair.privateKey).toHaveLength(64);
+            });
+        });
+
+        describe("ed25519Sign", () => {
+            test("should produce a valid signature", () => {
+                const keypair = api.generateEd25519KeyPair();
+
+                const signature = api.ed25519Sign(keypair.privateKey, Buffer.from("message to sign"));
+                expect(signature).toBeInstanceOf(Buffer);
+                expect(signature).toHaveLength(64);
+            });
+        });
+
+        describe("ed25519Verify", () => {
+            test("should roundtrip verify a signature", () => {
+                const keypair = api.generateEd25519KeyPair();
+                const signature = api.ed25519Sign(keypair.privateKey, Buffer.from("message to sign"));
+
+                expect(api.ed25519Verify(keypair.publicKey, Buffer.from("message to sign"), signature)).toBeTrue();
+            });
+
+            test("should fail if message is not the same", () => {
+                const keypair = api.generateEd25519KeyPair();
+                const signature = api.ed25519Sign(keypair.privateKey, Buffer.from("message to sign"));
+
+                expect(api.ed25519Verify(keypair.publicKey, Buffer.from("message to sign2"), signature)).toBeFalse();
+            });
+
+            test("should fail if key is wrong", () => {
+                const keypair = api.generateEd25519KeyPair();
+                const failedKeyPair = api.generateEd25519KeyPair();
+                const signature = api.ed25519Sign(keypair.privateKey, Buffer.from("message to sign"));
+
+                expect(api.ed25519Verify(failedKeyPair.publicKey, Buffer.from("message to sign2"), signature)).toBeFalse();
+            });
+        });
+
+        describe("computeEd25519PublicKey", () => {
+            it("should result in expected public key", () => {
+                const keypair = api.generateEd25519KeyPair();
+                expect(api.computeEd25519PublicKey(keypair.privateKey)).toEqual(keypair.publicKey);
             });
         });
 
@@ -319,6 +360,45 @@ describe("Recrypt-Node", () => {
                 const decryptedPlaintext = api.decrypt(lvl2EncryptedValue, deviceKeys.privateKey);
 
                 expect(decryptedPlaintext).toEqual(plaintext);
+            });
+        });
+
+        describe("Schnorr sign", () => {
+            it("should sign the provided bytes and return the expected signature", () => {
+                const keys = api.generateKeyPair();
+                const message = Buffer.from("message to sign");
+
+                const signature = api.schnorrSign(keys.privateKey, keys.publicKey, message);
+                expect(signature).toBeInstanceOf(Buffer);
+                expect(signature).toHaveLength(64);
+            });
+        });
+
+        describe("Schnorr verify", () => {
+            it("should verify the provided signed signature", () => {
+                const keys = api.generateKeyPair();
+                const falseKeys = api.generateKeyPair();
+
+                const message = Buffer.from("message to sign");
+
+                const signature = api.schnorrSign(keys.privateKey, keys.publicKey, message);
+
+                expect(api.schnorrVerify(keys.publicKey, undefined, message, signature)).toBeTrue();
+                expect(api.schnorrVerify(keys.publicKey, null, message, signature)).toBeTrue();
+
+                expect(api.schnorrVerify(falseKeys.publicKey, undefined, message, signature)).toBeFalse();
+            });
+
+            it("should verify that passing in augmented private key works", () => {
+                const userKeys = api.generateKeyPair();
+                const serverKeys = api.generateKeyPair();
+                const message = Buffer.from("message to sign");
+
+                const augmentedPublicKey = recrypt.augmentPublicKey256(userKeys.publicKey, serverKeys.publicKey);
+
+                const signature = api.schnorrSign(userKeys.privateKey, augmentedPublicKey, message);
+
+                expect(api.schnorrVerify(augmentedPublicKey, serverKeys.privateKey, message, signature)).toBeTrue();
             });
         });
     });

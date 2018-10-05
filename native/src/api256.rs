@@ -3,7 +3,7 @@ use neon::types::JsBuffer;
 use rand;
 use recrypt::api::{
     Api, CryptoOps, Ed25519, Ed25519Ops, KeyGenOps, PrivateSigningKey, PublicSigningKey,
-    RandomBytes, Sha256,
+    RandomBytes, SchnorrOps, Sha256,
 };
 use util;
 
@@ -54,6 +54,41 @@ declare_types! {
             Ok(signing_key_pair.upcast())
         }
 
+        method ed25519Sign(mut cx) {
+            let private_signing_key_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(0)?;
+            let message_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(1)?;
+
+            let private_signing_key = PrivateSigningKey::new(util::buffer_to_fixed_64_bytes(&mut cx, private_signing_key_buffer, "privateSigningKey"));
+
+            let signature = private_signing_key.sign(&util::buffer_to_variable_bytes(&cx, message_buffer));
+
+            Ok(util::bytes_to_buffer(&mut cx, signature.bytes())?.upcast())
+        }
+
+        method ed25519Verify(mut cx){
+            let public_signing_key_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(0)?;
+            let message_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(1)?;
+            let signature_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(2)?;
+
+            let public_signing_key = PublicSigningKey::new(util::buffer_to_fixed_32_bytes(&mut cx, public_signing_key_buffer, "publicSigningKey"));
+
+            let verified = public_signing_key.verify(
+                &util::buffer_to_variable_bytes(&cx, message_buffer),
+                &util::buffer_to_ed25519_signature(&cx, signature_buffer)
+            );
+
+            Ok(cx.boolean(verified).upcast())
+        }
+
+        method computeEd25519PublicKey(mut cx){
+            let private_signing_key_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(0)?;
+
+            let private_signing_key = PrivateSigningKey::new(util::buffer_to_fixed_64_bytes(&mut cx, private_signing_key_buffer, "privateSigningKey"));
+
+            let public_signing_key = private_signing_key.compute_public_key();
+            Ok(util::bytes_to_buffer(&mut cx, public_signing_key.bytes())?.upcast())
+        }
+
         method generatePlaintext(mut cx) {
             let plaintext = {
                 let mut this = cx.this();
@@ -81,10 +116,10 @@ declare_types! {
                 let guard = cx.lock();
                 let mut recrypt_api_256 = this.borrow_mut(&guard);
                 recrypt_api_256.api.generate_transform_key(
-                    util::buffer_to_private_key(&cx, from_private_key_buffer),
+                    &util::buffer_to_private_key(&cx, from_private_key_buffer),
                     to_public_key,
                     public_signing_key,
-                    private_signing_key
+                    &private_signing_key
                 ).unwrap()
             };
 
@@ -131,10 +166,10 @@ declare_types! {
                 let guard = cx.lock();
                 let mut recrypt_api_256 = this.borrow_mut(&guard);
                 recrypt_api_256.api.encrypt(
-                    util::buffer_to_plaintext(&cx, plaintext_buffer),
+                    &util::buffer_to_plaintext(&cx, plaintext_buffer),
                     public_key,
                     public_signing_key,
-                    private_signing_key
+                    &private_signing_key
                 ).unwrap()
             };
 
@@ -156,7 +191,7 @@ declare_types! {
                 let mut this = cx.this();
                 let guard = cx.lock();
                 let mut recrypt_api_256 = this.borrow_mut(&guard);
-                recrypt_api_256.api.transform(encrypted_value, transform_key, public_signing_key, private_signing_key).unwrap()
+                recrypt_api_256.api.transform(encrypted_value, transform_key, public_signing_key, &private_signing_key).unwrap()
             };
 
             Ok(util::encrypted_value_to_js_object(&mut cx, transformed_encrypted_value)?.upcast())
@@ -174,11 +209,69 @@ declare_types! {
                 let recrypt_api_256 = &this.borrow(&guard).api;
                 recrypt_api_256.decrypt(
                     encrypted_value,
-                    util::buffer_to_private_key(&cx, private_key_buffer)
+                    &util::buffer_to_private_key(&cx, private_key_buffer)
                 ).unwrap()
             };
 
             Ok(util::bytes_to_buffer(&mut cx, decrypted_value.bytes())?.upcast())
+        }
+
+        method schnorrSign(mut cx){
+            let private_key_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(0)?;
+            let public_key_obj: Handle<JsObject> = cx.argument::<JsObject>(1)?;
+            let message_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(2)?;
+
+            let public_key = util::js_object_to_public_key(&mut cx, public_key_obj);
+
+            let signature = {
+                let mut this = cx.this();
+                let guard = cx.lock();
+                let mut recrypt_api_256 = this.borrow_mut(&guard);
+                recrypt_api_256.api.schnorr_sign(
+                    &util::buffer_to_private_key(&cx, private_key_buffer),
+                    public_key,
+                    &util::buffer_to_variable_bytes(&cx, message_buffer)
+                )
+            };
+
+            Ok(util::bytes_to_buffer(&mut cx, signature.bytes())?.upcast())
+        }
+
+        method schnorrVerify(mut cx) {
+            let public_key_obj: Handle<JsObject> = cx.argument::<JsObject>(0)?;
+            //The augmented private key is an optional argument to take in a generic JsValue
+            let augmented_private_key_buffer: Handle<JsValue> = cx.argument::<JsValue>(1)?;
+            let message_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(2)?;
+            let signature_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(3)?;
+
+            let public_key = util::js_object_to_public_key(&mut cx, public_key_obj);
+            let signature = util::buffer_to_schnorr_signature(&mut cx, signature_buffer);
+
+            let augmented_private_key = {
+                //Ignore both null or undefined as values are passed for augmented private key
+                if augmented_private_key_buffer.is_a::<JsUndefined>() {
+                    None
+                }
+                else if augmented_private_key_buffer.is_a::<JsNull>() {
+                    None
+                }
+                else {
+                    Some(util::buffer_to_private_key(&cx, augmented_private_key_buffer.downcast::<JsBuffer>().unwrap()))
+                }
+            };
+
+            let verified = {
+                let mut this = cx.this();
+                let guard = cx.lock();
+                let mut recrypt_api_256 = this.borrow_mut(&guard);
+                recrypt_api_256.api.schnorr_verify(
+                    public_key,
+                    augmented_private_key.as_ref(),
+                    &util::buffer_to_variable_bytes(&cx, message_buffer),
+                    signature
+                )
+            };
+            Ok(cx.boolean(verified).upcast())
         }
     }
 }

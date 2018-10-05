@@ -1,17 +1,17 @@
 const Benchmark = require("benchmark");
-const recrypt = require("../../native/index.node");
+const recrypt = require("../native/index.node");
 
 const api = new recrypt.Api256();
 
-let keypair;
+let plaintext;
 
 function onCycle() {
-    keypair = api.generateKeyPair();
+    plaintext = api.generatePlaintext();
 }
 onCycle();
-module.exports = new Benchmark("computePublicKey", {
+module.exports = new Benchmark("deriveSymmetricKey", {
     fn: () => {
-        api.computePublicKey(keypair.privateKey);
+        api.deriveSymmetricKey(plaintext);
     },
     onError: (err) => {
         console.log(err);

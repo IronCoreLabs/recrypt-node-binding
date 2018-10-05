@@ -1,6 +1,7 @@
 export type PrivateKey = Buffer;
 export type PublicSigningKey = Buffer;
 export type PrivateSigningKey = Buffer;
+export type Signature = Buffer;
 export interface PublicKey {
     x: Buffer;
     y: Buffer;
@@ -44,6 +45,9 @@ export class Api256 {
     constructor();
     generateKeyPair(): KeyPair;
     generateEd25519KeyPair(): SigningKeyPair;
+    ed25519Sign(privateKey: PrivateSigningKey, message: Buffer): Signature;
+    ed25519Verify(publicKey: PublicSigningKey, message: Buffer, signature: Signature): boolean;
+    computeEd25519PublicKey(privateKey: PrivateSigningKey): PublicSigningKey;
     generatePlaintext(): Plaintext;
     generateTransformKey(
         fromPrivateKey: PrivateKey,
@@ -61,4 +65,6 @@ export class Api256 {
         privateSigningKey: PrivateSigningKey
     ): EncryptedValue;
     decrypt(encryptedValue: EncryptedValue, privateKey: PrivateKey): Plaintext;
+    schnorrSign(privateKey: Buffer, publicKey: PublicKey, message: Buffer): Signature;
+    schnorrVerify(publicKey: PublicKey, augmentedPrivateKey: Buffer | undefined, message: Buffer, signature: Signature): boolean;
 }

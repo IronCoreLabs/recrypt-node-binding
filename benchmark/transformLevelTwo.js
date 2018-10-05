@@ -1,6 +1,6 @@
 const crypto = require("crypto");
 const Benchmark = require("benchmark");
-const recrypt = require("../../native/index.node");
+const recrypt = require("../native/index.node");
 //Randomly generated legit ED25519 keypair
 //prettier-ignore
 const publicSigningKey = Buffer.from([138, 136, 227, 221, 116, 9, 241, 149, 253, 82, 219, 45, 60, 186, 93, 114, 202, 103, 9, 191, 29, 148, 18, 27, 243, 116, 136, 1, 180, 15, 111, 92]);
@@ -9,18 +9,21 @@ const privateSigningKey = Buffer.from([88, 232, 110, 251, 117, 250, 78, 44, 65, 
 
 const api = new recrypt.Api256();
 
-let lvl0EncryptedValue, userToDeviceTransform;
+let groupToUserTransform, userToDeviceTransform, lvl0EncryptedValue;
 
 function onCycle() {
+    const groupKeys = api.generateKeyPair();
     const userKeys = api.generateKeyPair();
     const deviceKeys = api.generateKeyPair();
     lvl0EncryptedValue = api.encrypt(api.generatePlaintext(), userKeys.publicKey, publicSigningKey, privateSigningKey);
+    groupToUserTransform = api.generateTransformKey(groupKeys.privateKey, userKeys.publicKey, publicSigningKey, privateSigningKey);
     userToDeviceTransform = api.generateTransformKey(userKeys.privateKey, deviceKeys.publicKey, publicSigningKey, privateSigningKey);
 }
 onCycle();
-module.exports = new Benchmark("transformLevelOne", {
+module.exports = new Benchmark("transformLevelTwo", {
     fn: () => {
-        api.transform(lvl0EncryptedValue, userToDeviceTransform, Buffer.alloc(32), Buffer.alloc(64));
+        const lvl1EncryptedValue = api.transform(lvl0EncryptedValue, groupToUserTransform, publicSigningKey, privateSigningKey);
+        api.transform(lvl1EncryptedValue, userToDeviceTransform, publicSigningKey, privateSigningKey);
     },
     onError: (err) => {
         console.log(err);
