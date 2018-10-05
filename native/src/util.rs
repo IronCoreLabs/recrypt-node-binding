@@ -2,7 +2,8 @@ use neon::prelude::*;
 use neon::types::JsBuffer;
 use recrypt::api::{
     AuthHash, EncryptedMessage, EncryptedTempKey, EncryptedValue, HashedValue, Plaintext,
-    PrivateKey, PublicKey, PublicSigningKey, Signature, TransformBlock, TransformKey, SchnorrSignature
+    PrivateKey, PublicKey, PublicSigningKey, SchnorrSignature, Signature, TransformBlock,
+    TransformKey,
 };
 use recrypt::nonemptyvec::NonEmptyVec;
 
@@ -10,7 +11,7 @@ use recrypt::nonemptyvec::NonEmptyVec;
 /// Create an `$n` byte fixed u8 array given the provided JsBuffer handle. Throws an error if the provided Buffer
 /// is not of the required length.
 ///
-macro_rules! buffer_to_fixed_bytes { ($($fn_name:ident, $n: expr); *) => {
+macro_rules! buffer_to_fixed_bytes { ($($fn_name: ident, $n: expr); *) => {
     $(pub fn $fn_name<'a, T>(cx: &T, mut buffer: Handle<JsBuffer>, field_name: &str) -> [u8; $n]
         where T: Context<'a>{
         let guard = cx.lock();
@@ -30,9 +31,26 @@ macro_rules! buffer_to_fixed_bytes { ($($fn_name:ident, $n: expr); *) => {
 buffer_to_fixed_bytes!{buffer_to_fixed_32_bytes, 32; buffer_to_fixed_64_bytes, 64; buffer_to_fixed_128_bytes, 128; buffer_to_fixed_384_bytes, 384}
 
 ///
+/// Create a macro for converting JsBuffers to different types of signature objects which all have the same size
+///
+macro_rules! buffer_to_signature { ($($fn_name: ident, $sig_type: expr, $ret_type: ty); *) => {
+    $(pub fn $fn_name<'a, T: Context<'a>>(cx: &T, buffer: Handle<JsBuffer>) -> $ret_type {
+        $sig_type(buffer_to_fixed_64_bytes(cx, buffer, "signature"))
+    })+
+}}
+
+///
+/// Create two methods from the macro for Schnorr and ED25519 signatures
+///
+buffer_to_signature!{buffer_to_schnorr_signature, SchnorrSignature::new, SchnorrSignature; buffer_to_ed25519_signature, Signature::new, Signature}
+
+///
 /// Convert a JsBuffer handle of variable size into a vector
 ///
-pub fn buffer_to_variable_bytes<'a, T: Context<'a>>(cx: &T, mut buffer: Handle<JsBuffer>) -> Vec<u8> {
+pub fn buffer_to_variable_bytes<'a, T: Context<'a>>(
+    cx: &T,
+    mut buffer: Handle<JsBuffer>,
+) -> Vec<u8> {
     let guard = cx.lock();
     let slice = buffer.borrow_mut(&guard).as_slice::<u8>();
     slice.to_vec()
@@ -67,13 +85,6 @@ pub fn buffer_to_plaintext<'a, T: Context<'a>>(cx: &T, buffer: Handle<JsBuffer>)
 }
 
 ///
-/// Convert a JsBuffer handle to a SchnorrSignature object
-///
-pub fn buffer_to_schnorr_signature<'a, T: Context<'a>>(cx: &T, buffer: Handle<JsBuffer>) -> SchnorrSignature {
-    SchnorrSignature::new(buffer_to_fixed_64_bytes(cx, buffer, "signature"))
-}
-
-///
 /// Convert a JsObject with x/y Buffers into a PublicKey
 ///
 pub fn js_object_to_public_key<'a, T: Context<'a>>(
@@ -86,7 +97,8 @@ pub fn js_object_to_public_key<'a, T: Context<'a>>(
     PublicKey::new((
         buffer_to_fixed_32_bytes(cx, x, "publicKey.x"),
         buffer_to_fixed_32_bytes(cx, y, "publicKey.y"),
-    )).unwrap()
+    ))
+    .unwrap()
 }
 
 ///
@@ -156,13 +168,14 @@ pub fn js_object_to_transform_key<'a, T: Context<'a>>(
             cx,
             hashed_temp_key_buffer,
             "hashedTempKey",
-        )).unwrap(),
+        ))
+        .unwrap(),
         PublicSigningKey::new(buffer_to_fixed_32_bytes(
             cx,
             public_signing_key_buffer,
             "publicSigningKey",
         )),
-        Signature::new(buffer_to_fixed_64_bytes(cx, signature_buffer, "signature")),
+        buffer_to_ed25519_signature(cx, signature_buffer)
     )
 }
 
@@ -243,8 +256,10 @@ pub fn js_object_to_transform_blocks<'a, T: Context<'a>>(
                     random_transform_encrypted_temp_key,
                     "transformBlock.randomTransformEncryptedTempKey",
                 )),
-            ).unwrap()
-        }).collect();
+            )
+            .unwrap()
+        })
+        .collect();
 
     NonEmptyVec::try_from(&blocks).unwrap()
 }

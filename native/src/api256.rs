@@ -54,6 +54,41 @@ declare_types! {
             Ok(signing_key_pair.upcast())
         }
 
+        method ed25519Sign(mut cx) {
+            let private_signing_key_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(0)?;
+            let message_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(1)?;
+
+            let private_signing_key = PrivateSigningKey::new(util::buffer_to_fixed_64_bytes(&mut cx, private_signing_key_buffer, "privateSigningKey"));
+
+            let signature = private_signing_key.sign(&util::buffer_to_variable_bytes(&cx, message_buffer));
+
+            Ok(util::bytes_to_buffer(&mut cx, signature.bytes())?.upcast())
+        }
+
+        method ed25519Verify(mut cx){
+            let public_signing_key_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(0)?;
+            let message_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(1)?;
+            let signature_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(2)?;
+
+            let public_signing_key = PublicSigningKey::new(util::buffer_to_fixed_32_bytes(&mut cx, public_signing_key_buffer, "publicSigningKey"));
+
+            let verified = public_signing_key.verify(
+                &util::buffer_to_variable_bytes(&cx, message_buffer),
+                &util::buffer_to_ed25519_signature(&cx, signature_buffer)
+            );
+
+            Ok(cx.boolean(verified).upcast())
+        }
+
+        method computeEd25519PublicKey(mut cx){
+            let private_signing_key_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(0)?;
+
+            let private_signing_key = PrivateSigningKey::new(util::buffer_to_fixed_64_bytes(&mut cx, private_signing_key_buffer, "privateSigningKey"));
+
+            let public_signing_key = private_signing_key.compute_public_key();
+            Ok(util::bytes_to_buffer(&mut cx, public_signing_key.bytes())?.upcast())
+        }
+
         method generatePlaintext(mut cx) {
             let plaintext = {
                 let mut this = cx.this();
@@ -269,7 +304,8 @@ pub fn augment_public_key_256(mut cx: FunctionContext) -> JsResult<JsObject> {
         .augment(&util::js_object_to_public_key(
             &mut cx,
             other_public_key_obj,
-        )).unwrap();
+        ))
+        .unwrap();
 
     Ok(util::public_key_to_js_object(&mut cx, &augmented_public_key)?.upcast())
 }

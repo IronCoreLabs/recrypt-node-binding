@@ -11,30 +11,71 @@ describe("Recrypt-Node", () => {
 
         describe("generateKeyPair", () => {
             test("should generate keypairs of the expected length", () => {
-                const keypairs = api.generateKeyPair();
-                expect(keypairs).toBeObject();
-                expect(Object.keys(keypairs)).toHaveLength(2);
-                expect(keypairs.publicKey).toBeObject();
-                expect(keypairs.privateKey).toBeInstanceOf(Buffer);
-                expect(keypairs.privateKey).toHaveLength(32);
-                expect(Object.keys(keypairs.publicKey)).toHaveLength(2);
-                expect(keypairs.publicKey.x).toBeInstanceOf(Buffer);
-                expect(keypairs.publicKey.x).toHaveLength(32);
-                expect(keypairs.publicKey.y).toBeInstanceOf(Buffer);
-                expect(keypairs.publicKey.y).toHaveLength(32);
+                const keypair = api.generateKeyPair();
+                expect(keypair).toBeObject();
+                expect(Object.keys(keypair)).toHaveLength(2);
+                expect(keypair.publicKey).toBeObject();
+                expect(keypair.privateKey).toBeInstanceOf(Buffer);
+                expect(keypair.privateKey).toHaveLength(32);
+                expect(Object.keys(keypair.publicKey)).toHaveLength(2);
+                expect(keypair.publicKey.x).toBeInstanceOf(Buffer);
+                expect(keypair.publicKey.x).toHaveLength(32);
+                expect(keypair.publicKey.y).toBeInstanceOf(Buffer);
+                expect(keypair.publicKey.y).toHaveLength(32);
             });
         });
 
         describe("generateEd25519KeyPair", () => {
             test("should generate ed25519 keypairs of the expected length", () => {
-                const keypairs = api.generateEd25519KeyPair();
-                expect(keypairs).toBeObject();
-                expect(Object.keys(keypairs)).toHaveLength(2);
-                expect(keypairs.publicKey).toBeInstanceOf(Buffer);
-                expect(keypairs.privateKey).toBeInstanceOf(Buffer);
+                const keypair = api.generateEd25519KeyPair();
+                expect(keypair).toBeObject();
+                expect(Object.keys(keypair)).toHaveLength(2);
+                expect(keypair.publicKey).toBeInstanceOf(Buffer);
+                expect(keypair.privateKey).toBeInstanceOf(Buffer);
 
-                expect(keypairs.publicKey).toHaveLength(32);
-                expect(keypairs.privateKey).toHaveLength(64);
+                expect(keypair.publicKey).toHaveLength(32);
+                expect(keypair.privateKey).toHaveLength(64);
+            });
+        });
+
+        describe("ed25519Sign", () => {
+            test("should produce a valid signature", () => {
+                const keypair = api.generateEd25519KeyPair();
+
+                const signature = api.ed25519Sign(keypair.privateKey, Buffer.from("message to sign"));
+                expect(signature).toBeInstanceOf(Buffer);
+                expect(signature).toHaveLength(64);
+            });
+        });
+
+        describe("ed25519Verify", () => {
+            test("should roundtrip verify a signature", () => {
+                const keypair = api.generateEd25519KeyPair();
+                const signature = api.ed25519Sign(keypair.privateKey, Buffer.from("message to sign"));
+
+                expect(api.ed25519Verify(keypair.publicKey, Buffer.from("message to sign"), signature)).toBeTrue();
+            });
+
+            test("should fail if message is not the same", () => {
+                const keypair = api.generateEd25519KeyPair();
+                const signature = api.ed25519Sign(keypair.privateKey, Buffer.from("message to sign"));
+
+                expect(api.ed25519Verify(keypair.publicKey, Buffer.from("message to sign2"), signature)).toBeFalse();
+            });
+
+            test("should fail if key is wrong", () => {
+                const keypair = api.generateEd25519KeyPair();
+                const failedKeyPair = api.generateEd25519KeyPair();
+                const signature = api.ed25519Sign(keypair.privateKey, Buffer.from("message to sign"));
+
+                expect(api.ed25519Verify(failedKeyPair.publicKey, Buffer.from("message to sign2"), signature)).toBeFalse();
+            });
+        });
+
+        describe("computeEd25519PublicKey", () => {
+            it("should result in expected public key", () => {
+                const keypair = api.generateEd25519KeyPair();
+                expect(api.computeEd25519PublicKey(keypair.privateKey)).toEqual(keypair.publicKey);
             });
         });
 
