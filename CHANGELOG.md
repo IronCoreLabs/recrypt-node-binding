@@ -1,5 +1,9 @@
 ## 0.2.0
 
+### Breaking Changes
+
+None
+
 ### Added
 
 * Added methods for [Schnorr signing](https://en.wikipedia.org/wiki/Schnorr_signature).
@@ -11,7 +15,7 @@
     + `Api256::computeEd25519PublicKey(privateKey: PrivateSigningKey): PublicSigningKey;`
 
 ### Changed
-* Consumed changes from [`recrypt-rs`](https://github.com/IronCoreLabs/recrypt-rs)[(#1)](https://github.com/IronCoreLabs/recrypt-rs/issues/1) to zero secret bytes after use
+* Consumed changes from [`recrypt-rs`](https://github.com/IronCoreLabs/recrypt-rs)([#1](https://github.com/IronCoreLabs/recrypt-rs/issues/1)) to zero secret bytes after use
 * Moved `benchmark` and `test` repos to the root of the repo
 
 
