@@ -9,8 +9,7 @@ crate-type = ["dylib"]
 
 [dependencies]
 rand = "0.5.5"
-#recrypt = "0.1.0"
-recrypt = { git = "https://github.com/IronCoreLabs/recrypt-rs.git", branch = "expose_ed25519_sign_verify" }
+recrypt = "0.2.0"
 neon = "0.2.0"
 
 [build-dependencies]
