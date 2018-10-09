@@ -1,8 +1,11 @@
 {
     "name": "@ironcorelabs/recrypt-node-binding",
     "version": "0.2.0",
-    "description": "Bindings to allow the recrypt-rust library to work via NodeJS.",
-    "repository": "https://github.com/IronCoreLabs/recrypt-node-bindings",
+    "description": "Bindings to allow the recrypt-rs library to work via NodeJS.",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/IronCoreLabs/recrypt-node-binding.git"
+    },
     "homepage": "https://ironcorelabs.com",
     "author": "IronCore Labs",
     "license": "AGPL-3.0-only",
@@ -12,7 +15,8 @@
         "compile": "neon build -r",
         "clean": "neon clean",
         "benchmark": "node benchmark/index.js",
-        "test": "jest"
+        "test": "jest",
+        "install": "node-pre-gyp install"
     },
     "devDependencies": {
         "@types/node": "^10.11.0",
@@ -33,5 +37,15 @@
     "jest": {
         "testEnvironment": "node",
         "setupTestFrameworkScriptFile": "jest-extended"
+    },
+    "dependencies": {
+        "node-pre-gyp": "^0.11.0",
+        "node-pre-gyp-github": "^1.4.2"
+    },
+    "binary": {
+        "module_name": "index",
+        "module_path": "./dist",
+        "host": "https://github.com/IronCoreLabs/recrypt-node-binding/releases/download/",
+        "remote_path": "{version}"
     }
 }
