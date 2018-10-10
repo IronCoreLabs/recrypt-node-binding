@@ -14,3 +14,7 @@ neon = "0.2.0"
 
 [build-dependencies]
 neon-build = "0.2.0"
+
+[profile.release]
+lto = true
+debug = false
