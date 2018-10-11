@@ -8,19 +8,19 @@ matrix:
   - name: "Linux - Node 8"
     os: linux
     node_js:
-      - "8"
+      - 8
   - name: "OSX - Node 8"
     os: osx
     node_js:
-      - "8"
+      - 8
   - name: "Linux - Node 10"
     os: linux
     node_js:
-    - "10"
+    - 10
   - name: "OSX - Node 10"
     os: osx
     node_js:
-    - "10"
+    - 10
 before_install:
 - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.10.1
 - export PATH=$HOME/.yarn/bin:$PATH
