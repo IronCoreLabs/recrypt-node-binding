@@ -1,19 +1,19 @@
-dist: trusty
+sudo: false
 language: rust
-node_js:
-  - "8"
-services: docker
-sudo: required
-
+rust:
+- 1.29.1
 
 matrix:
   include:
-  - env: TARGET=x86_64-unknown-linux-gnu
-  - env: TARGET=x86_64-apple-darwin
+  - name: "Linux"
+    os: linux
+    node_js:
+      - "8"
+  - name: "OSX"
     os: osx
+    node_js:
+      - "10"
 
-#rust:
-#- 1.29.1
 branches:
   only:
   - master
@@ -23,32 +23,14 @@ notifications:
     on_success: change
 #    on_failure: always
 cache:
-  yarn: true
-  cargo: true
-  directories:
-  - node_modules
-
-
-before_install:
-- set -e
-- rustup self update
-
-install:
-- sh ci/install.sh
-- source ~/.cargo/env || true
-
+    yarn: true
+    cargo: true
+    directories:
+        - node_modules
+before_script:
+    - rustup component add rustfmt-preview
 script:
-- bash ci/script.sh
-- yarn
-- yarn run compile
-- yarn test
-
-after_script: set +e
-
-#before_script:
-#- rustup component add rustfmt-preview
-#script:
-#- pushd native/ && cargo fmt -- --check && popd
-#- yarn
-#- yarn run compile
-#- yarn test
+    - pushd native/ && cargo fmt -- --check && popd
+    - yarn
+    - yarn run compile
+    - yarn test
