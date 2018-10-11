@@ -36,7 +36,7 @@ install:
 - source ~/.cargo/env || true
 
 script:
-- pushd native/ && bash ci/script.sh && popd
+- pushd native/ && bash ../ci/script.sh && popd
 - yarn
 - yarn run compile
 - yarn test
