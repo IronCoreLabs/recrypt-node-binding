@@ -47,7 +47,6 @@ shell.cp("./native/index.node", "./bin-package");
 shell.exec("./node_modules/.bin/node-pre-gyp package");
 var tgz = shell.exec("find ./build -name *.tar.gz");
 shell.cp(tgz, "./bin-package/");
-shell.echo("bin-package: " + ls('-l', "./bin-package"));
 shell.pushd("./dist");
 
 // shell.exec(shouldPublish ? "npm publish --access private" : "irish-pub");
