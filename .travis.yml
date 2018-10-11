@@ -47,3 +47,12 @@ script:
     - yarn || true
     - yarn run compile
     - yarn test
+deploy:
+    provider: releases
+    api_key:
+        secure: bqeFXHY/NMLwbyIY4ch/KFhTyEpZFeO8MeHKTKEPdqk7OPh77aShiixUNNi1oBv8Nw4sjqM1nhx+j5UlPcbyPD4IWlosgPkYpNzZgcSUM61UEaSJ7oa3QYi6fT/qawTeGX7g7iVV72Sz9NMk+dSTZMSZM02iBcFczGgsfyq+cyV5HJiyP7DcSASARsXXt72D4B9GKVmqa6n5Dk8FSwE024h/duLtzPAEWAxK3eJsaDN0OdJKXq7/nTtEf0Hblbl0hkO4ce3RVZQg3nm0k1IDabglEMto9t6BavZobEm9YZoeePhAdH/WybSGBvJKwN29D9fNvNBf8UDBxa8gL3pIdLM8yucBWL888ku/zs6cAlg2BcY7e8gOiVuYUh8pznXPpYbo65N1w+EzuwQk/MgHPr/Fnh7Uois+1ymtQhxXbFqvqDXFDCHh7P3n4H6uN15iTpqdvHkC1HCnebL47bW657AD1spB6pNefWOUVpa66abWXmEoRakpGHaIdbhlKoaPo1tkImlSRbW/3Yt4zRSn3Dv1Va7vrRLtoJ4mD/ilD7QhmJK/ksqncS02hCQjiTExplS+2VjV4kZA4+lNmkTo3EyhS+DKZrPcXa/AMu/n7yFXpRNX6gUtDbbp8+QlODbOauooaL82RNb8Xw46jiqtUapKpo+dYOFwWFQgmSi5PKQ=
+    file_glob: true
+    file: bin-package/*
+    skip_cleanup: true
+    on:
+        tags: true
