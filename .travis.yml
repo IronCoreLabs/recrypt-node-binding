@@ -9,10 +9,12 @@ matrix:
     os: linux
     node_js:
       - "8"
+      - "10"
   - name: "OSX"
     os: osx
     node_js:
       - "8"
+      - "10"
 
 before_install:
 - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.10.1
