@@ -44,6 +44,4 @@ before_script:
     - rustup component add rustfmt-preview
 script:
     - pushd native/ && cargo fmt -- --check && popd
-    - yarn || true
-    - yarn run compile
-    - yarn test
+    - ./publish.js
