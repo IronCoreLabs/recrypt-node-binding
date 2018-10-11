@@ -1,23 +1,52 @@
-sudo: false
+dist: trusty
 language: rust
-rust:
-    - 1.29.1
+services: docker
+sudo: required
+
+
+matrix:
+  include:
+  - env: TARGET=x86_64-unknown-linux-gnu
+  - env: TARGET=i686-apple-darwin
+    os: osx
+
+#rust:
+#- 1.29.1
 branches:
-    only:
-        - master
+  only:
+  - master
+  - node-pre-gyp #TODO remove
 notifications:
-    email:
-        on_success: change
-        on_failure: always
+  email:
+    on_success: change
+#    on_failure: always
 cache:
-    yarn: true
-    cargo: true
-    directories:
-        - node_modules
-before_script:
-    - rustup component add rustfmt-preview
+  yarn: true
+  cargo: true
+  directories:
+  - node_modules
+
+
+before_install:
+- set -e
+- rustup self update
+
+install:
+- sh ci/install.sh
+- source ~/.cargo/env || true
+
 script:
-    - pushd native/ && cargo fmt -- --check && popd
-    - yarn
-    - yarn run compile
-    - yarn test
+- bash ci/script.sh
+- yarn
+- yarn run compile
+- yarn test
+
+after_script: set +e
+
+#before_script:
+#- rustup component add rustfmt-preview
+#script:
+#- pushd native/ && cargo fmt -- --check && popd
+#- yarn
+#- yarn run compile
+#- yarn test
