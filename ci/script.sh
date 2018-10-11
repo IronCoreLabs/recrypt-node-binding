@@ -4,6 +4,7 @@ set -ex
 
 # TODO This is the "test phase", tweak it as you see fit
 main() {
+    pushd native/
     cross build --target $TARGET
     cross build --target $TARGET --release
 
@@ -16,6 +17,7 @@ main() {
 
     cross run --target $TARGET
     cross run --target $TARGET --release
+    popd
 }
 
 # we don't run the "test phase" when doing deploys
