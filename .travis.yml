@@ -7,16 +7,17 @@ matrix:
   include:
   - name: "Linux - Node 8"
     os: linux
-    TRAVIS_NODE_VERSION="8"
+    env: TRAVIS_NODE_VERSION="8"
   - name: "OSX - Node 8"
     os: osx
-    TRAVIS_NODE_VERSION="8"
+    env: TRAVIS_NODE_VERSION="8"
   - name: "Linux - Node 10"
     os: linux
-    TRAVIS_NODE_VERSION="10"
+    env: TRAVIS_NODE_VERSION="10"
   - name: "OSX - Node 10"
     os: osx
-    TRAVIS_NODE_VERSION="10"
+    env: TRAVIS_NODE_VERSION="10"
+
 before_install:
 - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.10.1
 - export PATH=$HOME/.yarn/bin:$PATH
