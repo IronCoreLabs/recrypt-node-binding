@@ -31,9 +31,9 @@ branches:
   only:
   - master
   - node-pre-gyp #TODO remove
-notifications:
-  email:
-    on_success: change
+# notifications:
+#   email:
+    # on_success: change
 #    on_failure: always
 cache:
     yarn: true
@@ -45,3 +45,8 @@ before_script:
 script:
     - pushd native/ && cargo fmt -- --check && popd
     - node publish.js
+
+jobs:
+  include:
+    - stage: "NPM publish"
+      script: echo "Deploying to npm..."
