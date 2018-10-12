@@ -3,20 +3,46 @@ language: rust
 rust:
 - 1.29.1
 
-matrix:
+stages:
+  - compile
+  - test
+  - npm publish
+
+jobs:
   include:
+  - name: "compile and test"
+    stage: "compile"
+    os: linux
+    env: TRAVIS_NODE_VERSION="8"
+    if: branch = node-pre-gyp
+    script:
+      - yarn install --ignore-scripts
+      - yarn run compile
+      - yarn test
+
   - name: "Linux - Node 8"
     os: linux
     env: TRAVIS_NODE_VERSION="8"
+    if: (branch = master AND tag = /^v\d+\.\d+\.\d+.*$/ ) OR type = pull_request
   - name: "OSX - Node 8"
     os: osx
     env: TRAVIS_NODE_VERSION="8"
+    if: (branch = master AND tag = /^v\d+\.\d+\.\d+.*$/ ) OR type = pull_request
   - name: "Linux - Node 10"
     os: linux
     env: TRAVIS_NODE_VERSION="10"
+    if: (branch = master AND tag = /^v\d+\.\d+\.\d+.*$/ ) OR type = pull_request
   - name: "OSX - Node 10"
     os: osx
     env: TRAVIS_NODE_VERSION="10"
+    if: (branch = master AND tag = /^v\d+\.\d+\.\d+.*$/ ) OR type = pull_request
+
+  - stage: "NPM publish"
+    os: linux
+    env: TRAVIS_NODE_VERSION="8"
+    if: branch = master AND tag = /^v\d+\.\d+\.\d+.*$/
+    script: echo "Deploying to NPM..."
+
 
 before_install:
   # install our own yarn to make things work on osx
@@ -32,9 +58,9 @@ install:
   #   - master
   #   - node-pre-gyp #TODO remove
   #   - travis-github-upload #TODO remove
-notifications:
-  email:
-    on_success: change
+# notifications:
+#   email:
+    # on_success: change
 #    on_failure: always
 cache:
     yarn: true
