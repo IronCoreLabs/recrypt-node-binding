@@ -77,5 +77,6 @@ before_script:
     - rustup component add rustfmt-preview
 script:
     - pushd native/ && cargo fmt -- --check && popd
+    - yarn install --ignore-scripts
     - node publish.js
 
