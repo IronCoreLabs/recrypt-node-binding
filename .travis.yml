@@ -3,7 +3,7 @@ language: rust
 rust:
 - 1.29.1
 
-matrix:
+jobs:
   include:
   - name: "Linux - Node 8"
     os: linux
@@ -17,6 +17,10 @@ matrix:
   - name: "OSX - Node 10"
     os: osx
     env: TRAVIS_NODE_VERSION="10"
+  - stage: "NPM publish"
+    os: linux
+    env: TRAVIS_NODE_VERSION="8"
+    script: echo "Deploying to NPM..."
 
 before_install:
   # install our own yarn to make things work on osx
@@ -46,7 +50,3 @@ script:
     - pushd native/ && cargo fmt -- --check && popd
     - node publish.js
 
-jobs:
-  include:
-    - stage: "NPM publish"
-      script: echo "Deploying to npm..."
