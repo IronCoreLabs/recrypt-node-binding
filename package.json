@@ -9,7 +9,7 @@
     "homepage": "https://ironcorelabs.com",
     "author": "IronCore Labs",
     "license": "AGPL-3.0-only",
-    "main": "index.node",
+    "main": "bin-package/index.node",
     "types": "index.d.ts",
     "scripts": {
         "compile": "neon build -r",
