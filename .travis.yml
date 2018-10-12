@@ -27,11 +27,11 @@ install:
 # install our own nodejs to get a reasonable version
 - rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm install $TRAVIS_NODE_VERSION
 
-branches:
-  only:
-  - master
-  - node-pre-gyp #TODO remove
-  - travis-github-upload #TODO remove
+  # branches:
+  #   only:
+  #   - master
+  #   - node-pre-gyp #TODO remove
+  #   - travis-github-upload #TODO remove
 notifications:
   email:
     on_success: change
