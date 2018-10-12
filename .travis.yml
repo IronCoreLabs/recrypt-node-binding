@@ -3,8 +3,23 @@ language: rust
 rust:
 - 1.29.1
 
+stages:
+  - compile
+  - test
+  - npm publish
+
 jobs:
   include:
+  - name: "compile and test"
+    stage: "compile"
+    os: linux
+    env: TRAVIS_NODE_VERSION="8"
+    if: branch = node_pre_gpy
+    script:
+      - yarn install --ignore-scripts
+      - yarn run compile
+      - yarn test
+
   - name: "Linux - Node 8"
     os: linux
     env: TRAVIS_NODE_VERSION="8"
@@ -21,6 +36,7 @@ jobs:
     os: osx
     env: TRAVIS_NODE_VERSION="10"
     if: (branch = master AND tag = /^v\d+\.\d+\.\d+.*$/ ) OR type = pull_request
+
   - stage: "NPM publish"
     os: linux
     env: TRAVIS_NODE_VERSION="8"
