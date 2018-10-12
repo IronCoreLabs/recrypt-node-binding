@@ -14,7 +14,7 @@ jobs:
     stage: "compile"
     os: linux
     env: TRAVIS_NODE_VERSION="8"
-    if: branch = node_pre_gyp
+    if: branch = node-pre-gyp
     script:
       - yarn install --ignore-scripts
       - yarn run compile
