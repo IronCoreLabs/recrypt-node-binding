@@ -8,19 +8,25 @@ jobs:
   - name: "Linux - Node 8"
     os: linux
     env: TRAVIS_NODE_VERSION="8"
+    if: (branch = master AND tag = /^v\d+\.\d+\.\d+.*$/ ) OR type = pull_request
   - name: "OSX - Node 8"
     os: osx
     env: TRAVIS_NODE_VERSION="8"
+    if: (branch = master AND tag = /^v\d+\.\d+\.\d+.*$/ ) OR type = pull_request
   - name: "Linux - Node 10"
     os: linux
     env: TRAVIS_NODE_VERSION="10"
+    if: (branch = master AND tag = /^v\d+\.\d+\.\d+.*$/ ) OR type = pull_request
   - name: "OSX - Node 10"
     os: osx
     env: TRAVIS_NODE_VERSION="10"
+    if: (branch = master AND tag = /^v\d+\.\d+\.\d+.*$/ ) OR type = pull_request
   - stage: "NPM publish"
     os: linux
     env: TRAVIS_NODE_VERSION="8"
+    if: branch = master AND tag = /^v\d+\.\d+\.\d+.*$/
     script: echo "Deploying to NPM..."
+
 
 before_install:
   # install our own yarn to make things work on osx
@@ -31,10 +37,6 @@ install:
 # install our own nodejs to get a reasonable version
 - rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm install $TRAVIS_NODE_VERSION
 
-branches:
-  only:
-  - master
-  - node-pre-gyp #TODO remove
 # notifications:
 #   email:
     # on_success: change
