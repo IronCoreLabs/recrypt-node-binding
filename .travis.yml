@@ -10,11 +10,12 @@ stages:
 
 jobs:
   include:
+    # 
   - name: "compile and test"
     stage: "compile"
     os: linux
     env: TRAVIS_NODE_VERSION="8"
-    if: branch = node-pre-gyp
+    if: commit_message =~ [build]
     script:
       - yarn install --ignore-scripts
       - yarn run compile
