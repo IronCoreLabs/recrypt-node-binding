@@ -11,6 +11,7 @@
  * + Compile rust code into index.node file.
  * + Run unit tests to ensure the library is in good shape for publishing.
  * + Move all expected content into a `dist` directory.
+ * + Generate a binary distrubtion in `bin-package`.
  * + Do a dry run of npm publishing via irish-pub or perform an actual publish step if `--publish` option is provided.
  */
 
@@ -49,6 +50,6 @@ var tgz = shell.exec("find ./build -name *.tar.gz");
 shell.cp(tgz, "./bin-package/");
 shell.pushd("./dist");
 
-// shell.exec(shouldPublish ? "npm publish --access private" : "irish-pub");
+shell.exec(shouldPublish ? "npm publish --access private" : "irish-pub");
 
 shell.popd();
