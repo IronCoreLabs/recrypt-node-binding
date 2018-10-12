@@ -39,7 +39,7 @@
         "setupTestFrameworkScriptFile": "jest-extended"
     },
     "dependencies": {
-        "node-pre-gyp": "^0.11.0",
+        "node-pre-gyp": "^0.11.0"
     },
     "binary": {
         "module_name": "index",
