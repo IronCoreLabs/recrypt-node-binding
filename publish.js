@@ -50,6 +50,6 @@ var tgz = shell.exec("find ./build -name *.tar.gz");
 shell.cp(tgz, "./bin-package/");
 shell.pushd("./dist");
 
-shell.exec(shouldPublish ? "npm publish --access private" : "irish-pub");
+shell.exec(shouldPublish ? "npm publish --access private" : "echo 'Skipping publishing to npm...'");
 
 shell.popd();
