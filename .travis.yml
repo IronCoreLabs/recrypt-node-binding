@@ -4,23 +4,12 @@ rust:
 - 1.29.1
 
 stages:
-  - compile
   - test
-  - npm publish
+  - publish
 
 jobs:
   include:
-    # commits with [build] in them get built on a single arch
-  - name: "compile and test"
-    stage: "compile"
-    os: linux
-    env: TRAVIS_NODE_VERSION="8"
-    if: commit_message =~ /[build]/
-    script:
-      - yarn install --ignore-scripts
-      - yarn run compile
-      - yarn test
-  
+
   # PRs and commits to master build on all target arches
   # if this also has a release tag, the resultant binary will be uploaded to github
   - name: "Linux - Node 8"
@@ -41,7 +30,7 @@ jobs:
     if: tag =~ /^v\d+\.\d+\.\d+.*$/ OR type = pull_request
 
   # Publish to npm only on release tag
-  - stage: "npm publish"
+  - stage: publish
     os: linux
     env: 
       - TRAVIS_NODE_VERSION="8"
@@ -53,7 +42,7 @@ jobs:
     script: 
       - echo "Deploying to NPM..."
       - node publish.js --publish
-    deploy: echo "Skipping upload of binary artifacts"
+#    deploy: skip
 
 
 install:
@@ -75,9 +64,9 @@ cache:
         - node_modules
 before_script:
     - rustup component add rustfmt-preview
+    - yarn install --ignore-scripts
 script:
     - pushd native/ && cargo fmt -- --check && popd
-    - yarn install --ignore-scripts
     - node publish.js
 deploy:
     provider: releases
