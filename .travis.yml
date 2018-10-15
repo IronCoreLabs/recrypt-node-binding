@@ -64,8 +64,8 @@ cache:
         - node_modules
 before_script:
     - rustup component add rustfmt-preview
+    - yarn install --ignore-scripts
 script:
     - pushd native/ && cargo fmt -- --check && popd
-    - yarn install --ignore-scripts
     - node publish.js
 
