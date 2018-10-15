@@ -42,7 +42,7 @@ jobs:
     script: 
       - echo "Deploying to NPM..."
       - node publish.js --publish
-    deploy: echo "Skipping upload of binary artifacts"
+    deploy: skip
 
 
 install:
