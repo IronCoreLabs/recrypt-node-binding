@@ -26,19 +26,19 @@ jobs:
   - name: "Linux - Node 8"
     os: linux
     env: TRAVIS_NODE_VERSION="8"
-    if: branch = master OR type = pull_request
+    if: branch = travis-github-upload OR type = pull_request
   - name: "OSX - Node 8"
     os: osx
     env: TRAVIS_NODE_VERSION="8"
-    if: branch = master OR type = pull_request
+    if: branch = travis-github-upload OR type = pull_request
   - name: "Linux - Node 10"
     os: linux
     env: TRAVIS_NODE_VERSION="10"
-    if: branch = master OR type = pull_request
+    if: branch = travis-github-upload OR type = pull_request
   - name: "OSX - Node 10"
     os: osx
     env: TRAVIS_NODE_VERSION="10"
-    if: branch = master OR type = pull_request
+    if: branch = travis-github-upload OR type = pull_request
 
   # Publish to npm only on release tag
   - stage: "npm publish"
@@ -64,11 +64,6 @@ install:
   # install our own nodejs to get a reasonable version
   - rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm install $TRAVIS_NODE_VERSION
 
-  # branches:
-  #   only:
-  #   - master
-  #   - node-pre-gyp #TODO remove
-  #   - travis-github-upload #TODO remove
 # notifications:
 #   email:
     # on_success: change
