@@ -29,6 +29,7 @@ const shouldPublish = process.argv.slice(2).indexOf("--publish") !== -1;
 //Cleanup the previous build, if it exists
 shell.rm("-rf", "./dist");
 shell.rm("-rf", "./bin-package");
+shell.rm("-rf", "./build");
 
 // Cleanup any previous Rust builds, update deps, and compile
 shell.exec("yarn install --ignore-scripts");
