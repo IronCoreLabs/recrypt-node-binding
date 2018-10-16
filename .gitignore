@@ -9,3 +9,6 @@ native/artifacts.json
 native/index.node
 Cargo.lock
 dist/*
+bin-package/*
+build/*
+.idea/*
