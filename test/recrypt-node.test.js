@@ -467,7 +467,7 @@ describe("Recrypt-Node", () => {
 
             const transformKeyBytes = recrypt.transformKeyToBytes(transformKey);
             expect(transformKeyBytes).toBeInstanceOf(Buffer);
-            expect(transformKeyBytes).toHaveLength(512);
+            expect(transformKeyBytes).toHaveLength(672);
         });
     });
 });
