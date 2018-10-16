@@ -10,8 +10,8 @@ stages:
 jobs:
   include:
 
-  # PRs and commits to master build on all target arches
-  # if this also has a release tag, the resultant binary will be uploaded to github
+  # PRs and tags build on all target arches
+  # if this is release tag, the resultant binary will be uploaded to github
   - name: "Linux - Node 8"
     os: linux
     env:
@@ -60,10 +60,10 @@ install:
   # install our own nodejs to get a reasonable version
   - rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm install $TRAVIS_NODE_VERSION
 
-# notifications:
-#   email:
-    # on_success: change
-#    on_failure: always
+notifications:
+  email:
+      on_success: change
+      on_failure: always
 cache:
     yarn: true
     cargo: true
@@ -85,3 +85,4 @@ deploy:
     on:
         tags: true
         condition: $SKIP_DEPLOY = 0
+    name: $TRAVIS_TAG
