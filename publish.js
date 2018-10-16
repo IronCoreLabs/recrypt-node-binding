@@ -21,7 +21,6 @@ const shell = require("shelljs");
 
 //Fail this script if any of these commands fail
 shell.set("-e");
-
 //Ensure that our directory is set to the root of the repo
 const rootDirectory = path.dirname(process.argv[1]);
 const shouldPublish = process.argv.slice(2).indexOf("--publish") !== -1;
@@ -52,5 +51,6 @@ shell.cp(tgz, "./bin-package/");
 shell.pushd("./dist");
 
 shell.exec(shouldPublish ? "npm publish --access restricted" : "echo 'Skipping publishing to npm...'");
-
 shell.popd();
+
+shell.exec("echo publish.js COMPLETE");
