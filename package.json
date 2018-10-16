@@ -15,8 +15,7 @@
         "compile": "neon build -r",
         "clean": "neon clean",
         "benchmark": "node benchmark/index.js",
-        "test": "jest",
-        "install": "node-pre-gyp install"
+        "test": "jest"
     },
     "devDependencies": {
         "@types/node": "^10.11.0",

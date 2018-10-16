@@ -23,6 +23,7 @@ const shell = require("shelljs");
 shell.set("-e");
 //Ensure that our directory is set to the root of the repo
 const rootDirectory = path.dirname(process.argv[1]);
+shell.cd(rootDirectory);
 const shouldPublish = process.argv.slice(2).indexOf("--publish") !== -1;
 
 //Cleanup the previous build, if it exists
@@ -42,6 +43,12 @@ shell.exec("yarn test");
 shell.mkdir("./dist");
 
 shell.cp(["README.md", "package.json", "index.d.ts", "LICENSE"], "./dist");
+
+//Add a NPM install script to the package.json that we push to NPM so that when consumers pull it down it
+//runs the expected node-pre-gyp step.
+const npmPackageJson = require("./dist/package.json");
+npmPackageJson.scripts.install = "node-pre-gyp install";
+fs.writeFileSync("./dist/package.json", JSON.stringify(npmPackageJson, null, 2));
 
 shell.mkdir("./bin-package");
 shell.cp("./native/index.node", "./bin-package");
