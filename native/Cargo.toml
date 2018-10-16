@@ -9,7 +9,8 @@ crate-type = ["dylib"]
 
 [dependencies]
 rand = "0.5.5"
-recrypt = "0.2.0"
+#recrypt = "0.2.0"
+recrypt = { git = "ssh://git@github.com/IronCoreLabs/recrypt-rs", branch = "transform_key_hashable" }
 neon = "0.2.0"
 
 [build-dependencies]

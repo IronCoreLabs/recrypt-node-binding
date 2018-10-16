@@ -1,9 +1,10 @@
 use neon::prelude::*;
 use neon::types::JsBuffer;
 use rand;
+use recrypt::api::Hashable;
 use recrypt::api::{
-    Api, CryptoOps, Ed25519, Ed25519Ops, KeyGenOps, PrivateSigningKey, PublicSigningKey,
-    RandomBytes, SchnorrOps, Sha256,
+    Api, CryptoOps, Ed25519, Ed25519Ops, KeyGenOps, PublicSigningKey, RandomBytes, SchnorrOps,
+    Sha256, SigningKeypair,
 };
 use util;
 
@@ -37,30 +38,30 @@ declare_types! {
         }
 
         method generateEd25519KeyPair(mut cx) {
-            let (priv_key, pub_key) = {
+            let signing_key_pair = {
                 let mut this = cx.this();
                 let guard = cx.lock();
                 let mut recrypt_api_256 = this.borrow_mut(&guard);
                 recrypt_api_256.api.generate_ed25519_key_pair()
             };
 
-            let signing_key_pair: Handle<JsObject> = cx.empty_object();
-            let priv_key_buffer = util::bytes_to_buffer(&mut cx, priv_key.bytes())?;
-            let pub_key_buffer = util::bytes_to_buffer(&mut cx, pub_key.bytes())?;
+            let signing_key_pair_obj: Handle<JsObject> = cx.empty_object();
+            let priv_key_buffer = util::bytes_to_buffer(&mut cx, &signing_key_pair.bytes())?;
+            let pub_key_buffer = util::bytes_to_buffer(&mut cx, signing_key_pair.public_key().bytes())?;
 
-            signing_key_pair.set(&mut cx, "privateKey", priv_key_buffer)?;
-            signing_key_pair.set(&mut cx, "publicKey", pub_key_buffer)?;
+            signing_key_pair_obj.set(&mut cx, "privateKey", priv_key_buffer)?;
+            signing_key_pair_obj.set(&mut cx, "publicKey", pub_key_buffer)?;
 
-            Ok(signing_key_pair.upcast())
+            Ok(signing_key_pair_obj.upcast())
         }
 
         method ed25519Sign(mut cx) {
             let private_signing_key_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(0)?;
             let message_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(1)?;
 
-            let private_signing_key = PrivateSigningKey::new(util::buffer_to_fixed_64_bytes(&mut cx, private_signing_key_buffer, "privateSigningKey"));
+            let signing_key_pair = SigningKeypair::from_bytes(&util::buffer_to_fixed_64_bytes(&mut cx, private_signing_key_buffer, "privateSigningKey")).unwrap();
 
-            let signature = private_signing_key.sign(&util::buffer_to_variable_bytes(&cx, message_buffer));
+            let signature = signing_key_pair.sign(&util::buffer_to_variable_bytes(&cx, message_buffer));
 
             Ok(util::bytes_to_buffer(&mut cx, signature.bytes())?.upcast())
         }
@@ -83,9 +84,9 @@ declare_types! {
         method computeEd25519PublicKey(mut cx){
             let private_signing_key_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(0)?;
 
-            let private_signing_key = PrivateSigningKey::new(util::buffer_to_fixed_64_bytes(&mut cx, private_signing_key_buffer, "privateSigningKey"));
+            let signing_key_pair = SigningKeypair::from_bytes(&util::buffer_to_fixed_64_bytes(&mut cx, private_signing_key_buffer, "privateSigningKey")).unwrap();
 
-            let public_signing_key = private_signing_key.compute_public_key();
+            let public_signing_key = signing_key_pair.public_key();
             Ok(util::bytes_to_buffer(&mut cx, public_signing_key.bytes())?.upcast())
         }
 
@@ -104,12 +105,10 @@ declare_types! {
         method generateTransformKey(mut cx) {
             let from_private_key_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(0)?;
             let to_public_key_obj: Handle<JsObject> = cx.argument::<JsObject>(1)?;
-            let public_signing_key_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(2)?;
-            let private_signing_key_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(3)?;
+            let private_signing_key_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(2)?;
 
             let to_public_key = util::js_object_to_public_key(&mut cx, to_public_key_obj);
-            let public_signing_key = PublicSigningKey::new(util::buffer_to_fixed_32_bytes(&mut cx, public_signing_key_buffer, "publicSigningKey"));
-            let private_signing_key = PrivateSigningKey::new(util::buffer_to_fixed_64_bytes(&mut cx, private_signing_key_buffer, "privateSigningKey"));
+            let signing_key_pair = SigningKeypair::from_bytes(&util::buffer_to_fixed_64_bytes(&mut cx, private_signing_key_buffer, "privateSigningKey")).unwrap();
 
             let transform_key = {
                 let mut this = cx.this();
@@ -118,8 +117,7 @@ declare_types! {
                 recrypt_api_256.api.generate_transform_key(
                     &util::buffer_to_private_key(&cx, from_private_key_buffer),
                     to_public_key,
-                    public_signing_key,
-                    &private_signing_key
+                    &signing_key_pair
                 ).unwrap()
             };
 
@@ -154,12 +152,10 @@ declare_types! {
         method encrypt(mut cx) {
             let plaintext_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(0)?;
             let to_public_key_obj: Handle<JsObject> = cx.argument::<JsObject>(1)?;
-            let public_signing_key_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(2)?;
-            let private_signing_key_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(3)?;
+            let private_signing_key_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(2)?;
 
             let public_key = util::js_object_to_public_key(&mut cx, to_public_key_obj);
-            let public_signing_key = PublicSigningKey::new(util::buffer_to_fixed_32_bytes(&mut cx, public_signing_key_buffer, "publicSigningKey"));
-            let private_signing_key = PrivateSigningKey::new(util::buffer_to_fixed_64_bytes(&mut cx, private_signing_key_buffer, "privateSigningKey"));
+            let signing_key_pair = SigningKeypair::from_bytes(&util::buffer_to_fixed_64_bytes(&mut cx, private_signing_key_buffer, "privateSigningKey")).unwrap();
 
             let encrypted_value = {
                 let mut this = cx.this();
@@ -168,8 +164,7 @@ declare_types! {
                 recrypt_api_256.api.encrypt(
                     &util::buffer_to_plaintext(&cx, plaintext_buffer),
                     public_key,
-                    public_signing_key,
-                    &private_signing_key
+                    &signing_key_pair
                 ).unwrap()
             };
 
@@ -179,19 +174,17 @@ declare_types! {
         method transform(mut cx) {
             let encrypted_value_obj: Handle<JsObject> = cx.argument::<JsObject>(0)?;
             let transform_key_obj: Handle<JsObject> = cx.argument::<JsObject>(1)?;
-            let public_signing_key_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(2)?;
-            let private_signing_key_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(3)?;
+            let private_signing_key_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(2)?;
 
             let encrypted_value = util::js_object_to_encrypted_value(&mut cx, encrypted_value_obj);
             let transform_key = util::js_object_to_transform_key(&mut cx, transform_key_obj);
-            let public_signing_key = PublicSigningKey::new(util::buffer_to_fixed_32_bytes(&mut cx, public_signing_key_buffer, "publicSigningKey"));
-            let private_signing_key = PrivateSigningKey::new(util::buffer_to_fixed_64_bytes(&mut cx, private_signing_key_buffer, "privateSigningKey"));
+            let signing_key_pair = SigningKeypair::from_bytes(&util::buffer_to_fixed_64_bytes(&mut cx, private_signing_key_buffer, "privateSigningKey")).unwrap();
 
             let transformed_encrypted_value = {
                 let mut this = cx.this();
                 let guard = cx.lock();
                 let mut recrypt_api_256 = this.borrow_mut(&guard);
-                recrypt_api_256.api.transform(encrypted_value, transform_key, public_signing_key, &private_signing_key).unwrap()
+                recrypt_api_256.api.transform(encrypted_value, transform_key, &signing_key_pair).unwrap()
             };
 
             Ok(util::encrypted_value_to_js_object(&mut cx, transformed_encrypted_value)?.upcast())
@@ -307,4 +300,17 @@ pub fn augment_public_key_256(mut cx: FunctionContext) -> JsResult<JsObject> {
         )).unwrap();
 
     Ok(util::public_key_to_js_object(&mut cx, &augmented_public_key)?.upcast())
+}
+
+///
+/// Hash the provided transform key into a buffer of bytes. The various transform key object fields are concatenated
+/// in a specific order in order for transform keys to be signed over.
+///
+pub fn transform_key_to_bytes(mut cx: FunctionContext) -> JsResult<JsBuffer> {
+    let transform_key_obj: Handle<JsObject> = cx.argument::<JsObject>(0)?;
+    let transform_key = util::js_object_to_transform_key(&mut cx, transform_key_obj);
+
+    let transform_key_bytes = util::bytes_to_buffer(&mut cx, &transform_key.to_bytes())?;
+
+    Ok(transform_key_bytes)
 }

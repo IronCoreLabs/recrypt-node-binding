@@ -1,14 +1,15 @@
-const crypto = require("crypto");
 const Benchmark = require("benchmark");
 const recrypt = require("../native/index.node");
 
 const api = new recrypt.Api256();
 
+const privateSigningKey = Buffer.from("O7f2FYsabKOFj3enK+HQ+cBmTMbAG6aCesd1nLcFM1wtA9XHg0+rFIVA7+nomADjEbJ1R/Gd+xHBO79UnLqxDQ==", "base64");
+
 let fromPrivateKey = api.generateKeyPair().privateKey;
 let toPublicKey = api.generateKeyPair().publicKey;
 module.exports = new Benchmark("generateTransformKey", {
     fn: () => {
-        api.generateTransformKey(fromPrivateKey, toPublicKey, crypto.randomBytes(32), crypto.randomBytes(64));
+        api.generateTransformKey(fromPrivateKey, toPublicKey, privateSigningKey);
     },
     onError: (err) => {
         console.log(err);
