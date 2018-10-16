@@ -21,7 +21,6 @@ const shell = require("shelljs");
 
 //Fail this script if any of these commands fail
 shell.set("-e");
-shell.exec("echo publish.js ENTERING");
 //Ensure that our directory is set to the root of the repo
 const rootDirectory = path.dirname(process.argv[1]);
 const shouldPublish = process.argv.slice(2).indexOf("--publish") !== -1;
@@ -51,9 +50,7 @@ var tgz = shell.exec("find ./build -name *.tar.gz");
 shell.cp(tgz, "./bin-package/");
 shell.pushd("./dist");
 
-shell.exec("echo STARTING npm publish");
 shell.exec(shouldPublish ? "npm publish --access restricted" : "echo 'Skipping publishing to npm...'");
-shell.exec("echo ENDING npm publish");
 shell.popd();
 
-shell.exec("echo publish.js EXITING");
+shell.exec("echo publish.js COMPLETE");
