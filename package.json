@@ -1,5 +1,5 @@
 {
-    "name": "@ironcorelabs/recrypt-node-binding-test",
+    "name": "@ironcorelabs/recrypt-node-binding",
     "version": "0.2.18",
     "description": "Bindings to allow the recrypt-rs library to work via NodeJS.",
     "repository": {
