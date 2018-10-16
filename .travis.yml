@@ -39,6 +39,7 @@ jobs:
 
   # Publish to npm only on release tag
   - stage: publish
+    name: "Publish to npm"
     os: linux
     env: 
       - TRAVIS_NODE_VERSION="8"
