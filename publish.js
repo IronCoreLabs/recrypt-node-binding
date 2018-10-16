@@ -53,4 +53,4 @@ shell.pushd("./dist");
 shell.exec(shouldPublish ? "npm publish --access restricted" : "echo 'Skipping publishing to npm...'");
 shell.popd();
 
-shell.exec("echo publish.js COMPLETE");
+shell.echo("publish.js COMPLETE");
