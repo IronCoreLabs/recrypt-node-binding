@@ -1,9 +1,7 @@
 const recrypt = require("../native/index.node");
 //Randomly generated legit ED25519 keypair
-//prettier-ignore
-const publicSigningKey = Buffer.from([138, 136, 227, 221, 116, 9, 241, 149, 253, 82, 219, 45, 60, 186, 93, 114, 202, 103, 9, 191, 29, 148, 18, 27, 243, 116, 136, 1, 180, 15, 111, 92]);
-//prettier-ignore
-const privateSigningKey = Buffer.from([88, 232, 110, 251, 117, 250, 78, 44, 65, 15, 70, 225, 109, 233, 246, 172, 174, 26, 23, 3, 82, 134, 81, 182, 155, 193, 118, 192, 136, 190, 243, 110, 177, 122, 42, 44, 243, 212, 164, 26, 142, 78, 24, 204, 69, 200, 101, 109, 85, 142, 206, 221, 176, 173, 180, 107, 250, 8, 138, 95, 83, 190, 210, 82]);
+const publicSigningKey = Buffer.from("LQPVx4NPqxSFQO/p6JgA4xGydUfxnfsRwTu/VJy6sQ0=", "base64");
+const privateSigningKey = Buffer.from("O7f2FYsabKOFj3enK+HQ+cBmTMbAG6aCesd1nLcFM1wtA9XHg0+rFIVA7+nomADjEbJ1R/Gd+xHBO79UnLqxDQ==", "base64");
 
 describe("Recrypt-Node", () => {
     describe("Api256", () => {
@@ -92,7 +90,7 @@ describe("Recrypt-Node", () => {
                 const fromPrivateKey = api.generateKeyPair().privateKey;
                 const toPublicKey = api.generateKeyPair().publicKey;
 
-                const transformKey = api.generateTransformKey(fromPrivateKey, toPublicKey, publicSigningKey, privateSigningKey);
+                const transformKey = api.generateTransformKey(fromPrivateKey, toPublicKey, privateSigningKey);
                 expect(transformKey).toBeObject();
                 expect(Object.keys(transformKey)).toHaveLength(7);
 
@@ -140,7 +138,7 @@ describe("Recrypt-Node", () => {
                 const plaintext = api.generatePlaintext();
                 const toPublicKey = api.generateKeyPair().publicKey;
 
-                const encryptedVal = api.encrypt(plaintext, toPublicKey, publicSigningKey, privateSigningKey);
+                const encryptedVal = api.encrypt(plaintext, toPublicKey, privateSigningKey);
 
                 expect(encryptedVal).toBeObject();
                 expect(Object.keys(encryptedVal)).toHaveLength(6);
@@ -172,10 +170,10 @@ describe("Recrypt-Node", () => {
                 const keys = api.generateKeyPair();
                 const publicKey = keys.publicKey;
                 const privateKey = keys.privateKey;
-                const lvl0EncryptedValue = api.encrypt(api.generatePlaintext(), publicKey, publicSigningKey, privateSigningKey);
+                const lvl0EncryptedValue = api.encrypt(api.generatePlaintext(), publicKey, privateSigningKey);
                 const secondaryKeys = api.generateKeyPair();
-                const transformKey = api.generateTransformKey(privateKey, secondaryKeys.publicKey, publicSigningKey, privateSigningKey);
-                const lvl1EncryptedValue = api.transform(lvl0EncryptedValue, transformKey, publicSigningKey, privateSigningKey);
+                const transformKey = api.generateTransformKey(privateKey, secondaryKeys.publicKey, privateSigningKey);
+                const lvl1EncryptedValue = api.transform(lvl0EncryptedValue, transformKey, privateSigningKey);
 
                 expect(lvl1EncryptedValue).toBeObject();
                 expect(Object.keys(lvl1EncryptedValue)).toHaveLength(6);
@@ -227,12 +225,12 @@ describe("Recrypt-Node", () => {
                 const userKeys = api.generateKeyPair();
                 const deviceKeys = api.generateKeyPair();
 
-                const groupToUserTransform = api.generateTransformKey(groupKeys.privateKey, userKeys.publicKey, publicSigningKey, privateSigningKey);
-                const userToDeviceTransform = api.generateTransformKey(userKeys.privateKey, deviceKeys.publicKey, publicSigningKey, privateSigningKey);
+                const groupToUserTransform = api.generateTransformKey(groupKeys.privateKey, userKeys.publicKey, privateSigningKey);
+                const userToDeviceTransform = api.generateTransformKey(userKeys.privateKey, deviceKeys.publicKey, privateSigningKey);
 
-                const lvl0EncryptedValue = api.encrypt(api.generatePlaintext(), groupKeys.publicKey, publicSigningKey, privateSigningKey);
-                const lvl1EncryptedValue = api.transform(lvl0EncryptedValue, groupToUserTransform, publicSigningKey, privateSigningKey);
-                const lvl2EncryptedValue = api.transform(lvl1EncryptedValue, userToDeviceTransform, publicSigningKey, privateSigningKey);
+                const lvl0EncryptedValue = api.encrypt(api.generatePlaintext(), groupKeys.publicKey, privateSigningKey);
+                const lvl1EncryptedValue = api.transform(lvl0EncryptedValue, groupToUserTransform, privateSigningKey);
+                const lvl2EncryptedValue = api.transform(lvl1EncryptedValue, userToDeviceTransform, privateSigningKey);
 
                 expect(lvl2EncryptedValue).toBeObject();
                 expect(Object.keys(lvl2EncryptedValue)).toHaveLength(6);
@@ -306,7 +304,7 @@ describe("Recrypt-Node", () => {
                 const keys = api.generateKeyPair();
                 const publicKey = keys.publicKey;
                 const privateKey = keys.privateKey;
-                const lvl1EncryptedValue = api.encrypt(plaintext, publicKey, publicSigningKey, privateSigningKey);
+                const lvl1EncryptedValue = api.encrypt(plaintext, publicKey, privateSigningKey);
 
                 const decryptedPlaintext = api.decrypt(lvl1EncryptedValue, privateKey);
 
@@ -317,10 +315,10 @@ describe("Recrypt-Node", () => {
                 const plaintext = api.generatePlaintext();
                 const userKeys = api.generateKeyPair();
                 const deviceKeys = api.generateKeyPair();
-                const transformKey = api.generateTransformKey(userKeys.privateKey, deviceKeys.publicKey, publicSigningKey, privateSigningKey);
-                const lvl0EncryptedValue = api.encrypt(plaintext, userKeys.publicKey, publicSigningKey, privateSigningKey);
+                const transformKey = api.generateTransformKey(userKeys.privateKey, deviceKeys.publicKey, privateSigningKey);
+                const lvl0EncryptedValue = api.encrypt(plaintext, userKeys.publicKey, privateSigningKey);
 
-                const lvl1EncryptedValue = api.transform(lvl0EncryptedValue, transformKey, publicSigningKey, privateSigningKey);
+                const lvl1EncryptedValue = api.transform(lvl0EncryptedValue, transformKey, privateSigningKey);
 
                 const decryptedPlaintext = api.decrypt(lvl1EncryptedValue, deviceKeys.privateKey);
 
@@ -332,13 +330,13 @@ describe("Recrypt-Node", () => {
                 const userKeys = api.generateKeyPair();
                 const deviceKeys = api.generateKeyPair();
                 const serverKeys = api.generateKeyPair();
-                const transformKey = api.generateTransformKey(userKeys.privateKey, deviceKeys.publicKey, publicSigningKey, privateSigningKey);
+                const transformKey = api.generateTransformKey(userKeys.privateKey, deviceKeys.publicKey, privateSigningKey);
                 const augmentedPublicKey = recrypt.augmentPublicKey256(userKeys.publicKey, serverKeys.publicKey);
                 const augmentedTransformKey = recrypt.augmentTransformKey256(transformKey, serverKeys.privateKey);
 
-                const lvl0EncryptedValue = api.encrypt(plaintext, augmentedPublicKey, publicSigningKey, privateSigningKey);
+                const lvl0EncryptedValue = api.encrypt(plaintext, augmentedPublicKey, privateSigningKey);
 
-                const lvl1EncryptedValue = api.transform(lvl0EncryptedValue, augmentedTransformKey, publicSigningKey, privateSigningKey);
+                const lvl1EncryptedValue = api.transform(lvl0EncryptedValue, augmentedTransformKey, privateSigningKey);
 
                 const decryptedPlaintext = api.decrypt(lvl1EncryptedValue, deviceKeys.privateKey);
 
@@ -350,12 +348,12 @@ describe("Recrypt-Node", () => {
                 const groupKeys = api.generateKeyPair();
                 const userKeys = api.generateKeyPair();
                 const deviceKeys = api.generateKeyPair();
-                const groupToUserTransform = api.generateTransformKey(groupKeys.privateKey, userKeys.publicKey, publicSigningKey, privateSigningKey);
-                const userToDeviceTransform = api.generateTransformKey(userKeys.privateKey, deviceKeys.publicKey, publicSigningKey, privateSigningKey);
+                const groupToUserTransform = api.generateTransformKey(groupKeys.privateKey, userKeys.publicKey, privateSigningKey);
+                const userToDeviceTransform = api.generateTransformKey(userKeys.privateKey, deviceKeys.publicKey, privateSigningKey);
 
-                const lvl0EncryptedValue = api.encrypt(plaintext, groupKeys.publicKey, publicSigningKey, privateSigningKey);
-                const lvl1EncryptedValue = api.transform(lvl0EncryptedValue, groupToUserTransform, publicSigningKey, privateSigningKey);
-                const lvl2EncryptedValue = api.transform(lvl1EncryptedValue, userToDeviceTransform, publicSigningKey, privateSigningKey);
+                const lvl0EncryptedValue = api.encrypt(plaintext, groupKeys.publicKey, privateSigningKey);
+                const lvl1EncryptedValue = api.transform(lvl0EncryptedValue, groupToUserTransform, privateSigningKey);
+                const lvl2EncryptedValue = api.transform(lvl1EncryptedValue, userToDeviceTransform, privateSigningKey);
 
                 const decryptedPlaintext = api.decrypt(lvl2EncryptedValue, deviceKeys.privateKey);
 
@@ -410,7 +408,7 @@ describe("Recrypt-Node", () => {
             const toPublicKey = api.generateKeyPair().publicKey;
             const augPrivateKey = api.generateKeyPair().privateKey;
 
-            const transformKey = api.generateTransformKey(fromPrivateKey, toPublicKey, publicSigningKey, privateSigningKey);
+            const transformKey = api.generateTransformKey(fromPrivateKey, toPublicKey, privateSigningKey);
 
             const augTransformKey = recrypt.augmentTransformKey256(transformKey, augPrivateKey);
 
@@ -456,6 +454,20 @@ describe("Recrypt-Node", () => {
             expect(augPublicKey.y).toHaveLength(32);
 
             expect(augPublicKey).not.toEqual(pub1);
+        });
+    });
+
+    describe("transformKeyToBytes", () => {
+        it("returns expected number of bytes", () => {
+            const api = new recrypt.Api256();
+            const fromPrivateKey = api.generateKeyPair().privateKey;
+            const toPublicKey = api.generateKeyPair().publicKey;
+
+            const transformKey = api.generateTransformKey(fromPrivateKey, toPublicKey, privateSigningKey);
+
+            const transformKeyBytes = recrypt.transformKeyToBytes(transformKey);
+            expect(transformKeyBytes).toBeInstanceOf(Buffer);
+            expect(transformKeyBytes).toHaveLength(672);
         });
     });
 });

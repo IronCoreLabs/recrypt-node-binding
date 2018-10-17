@@ -1,6 +1,6 @@
 {
     "name": "@ironcorelabs/recrypt-node-binding",
-    "version": "0.2.18",
+    "version": "0.3.0",
     "description": "Bindings to allow the recrypt-rs library to work via NodeJS.",
     "repository": {
         "type": "git",
@@ -21,7 +21,7 @@
         "@types/node": "^10.11.0",
         "benchmark": "^2.1.4",
         "jest": "^23.6.0",
-        "jest-extended": "^0.10.0",
+        "jest-extended": "^0.11.0",
         "neon-cli": "^0.2.0",
         "shelljs": "^0.8.2"
     },

@@ -1,6 +1,7 @@
-const crypto = require("crypto");
 const Benchmark = require("benchmark");
 const recrypt = require("../native/index.node");
+
+const privateSigningKey = Buffer.from("O7f2FYsabKOFj3enK+HQ+cBmTMbAG6aCesd1nLcFM1wtA9XHg0+rFIVA7+nomADjEbJ1R/Gd+xHBO79UnLqxDQ==", "base64");
 
 const api = new recrypt.Api256();
 
@@ -13,7 +14,7 @@ function onCycle() {
 onCycle();
 module.exports = new Benchmark("encrypt", {
     fn: () => {
-        api.encrypt(plaintext, toPublicKey, crypto.randomBytes(32), crypto.randomBytes(64));
+        api.encrypt(plaintext, toPublicKey, privateSigningKey);
     },
     onError: (err) => {
         console.log(err);

@@ -8,13 +8,10 @@ This library uses the [Neon Bindings](https://www.neon-bindings.com) toolchain t
 
 ## Supported Platforms
 
-| Node 8 | Node 10 |
-| ------ | ------- |
-|   ✓    |    ✓    |
-
-| Linux 64-bit |   OSX 64-bit  |
-| ------------ | ------------- |
-|       ✓      |       ✓       |
+|           | Node 8 | Node 10 |
+| --------- | ------ | ------- |
+| Linux x64 |    ✓   |    ✓    |
+| OSX x64   |    ✓   |    ✓    |
 
 ## Install
 

@@ -41,6 +41,7 @@ export interface TransformKey {
 
 export function augmentPublicKey256(publicKey: PublicKey, otherPublicKey: PublicKey): PublicKey;
 export function augmentTransformKey(transformKey: TransformKey, privateKey: PrivateKey): TransformKey;
+export function transformKeyToBytes(transformKey: TransformKey): Buffer;
 export class Api256 {
     constructor();
     generateKeyPair(): KeyPair;
@@ -49,21 +50,11 @@ export class Api256 {
     ed25519Verify(publicKey: PublicSigningKey, message: Buffer, signature: Signature): boolean;
     computeEd25519PublicKey(privateKey: PrivateSigningKey): PublicSigningKey;
     generatePlaintext(): Plaintext;
-    generateTransformKey(
-        fromPrivateKey: PrivateKey,
-        toPublicKey: PublicKey,
-        publicSigningKey: PublicSigningKey,
-        privateSigningKey: PrivateSigningKey
-    ): TransformKey;
+    generateTransformKey(fromPrivateKey: PrivateKey, toPublicKey: PublicKey, privateSigningKey: PrivateSigningKey): TransformKey;
     computePublicKey(privateKey: PrivateKey): PublicKey;
     deriveSymmetricKey(plaintext: Plaintext): Buffer;
-    encrypt(plaintext: Plaintext, toPublicKey: PublicKey, publicSigningKey: PublicSigningKey, privateSigningKey: PrivateSigningKey): EncryptedValue;
-    transform(
-        encryptedValue: EncryptedValue,
-        transformKey: TransformKey,
-        publicSigningKey: PublicSigningKey,
-        privateSigningKey: PrivateSigningKey
-    ): EncryptedValue;
+    encrypt(plaintext: Plaintext, toPublicKey: PublicKey, privateSigningKey: PrivateSigningKey): EncryptedValue;
+    transform(encryptedValue: EncryptedValue, transformKey: TransformKey, privateSigningKey: PrivateSigningKey): EncryptedValue;
     decrypt(encryptedValue: EncryptedValue, privateKey: PrivateKey): Plaintext;
     schnorrSign(privateKey: Buffer, publicKey: PublicKey, message: Buffer): Signature;
     schnorrVerify(publicKey: PublicKey, augmentedPrivateKey: Buffer | undefined, message: Buffer, signature: Signature): boolean;
