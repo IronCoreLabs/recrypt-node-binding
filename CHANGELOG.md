@@ -1,3 +1,17 @@
+## 0.3.0
+
+### Breaking Changes
+
++ The `Api256.encrypt`, `Api256.generateTransformKey`, `Api256.transform` functions now only take a private signing key and no longer need to provide a public signing key.
+
+### Added
+
++ Added new `transformKeyToBytes` top level method to convert a `TransformKey` object into a Buffer in a consistent order. Useful for being able to sign over the bytes of a `TransformKey`.
+
+### Changed
+
++ Updated to `rerypt-rs` 0.3.0.
+
 ## 0.2.0
 
 ### Breaking Changes
