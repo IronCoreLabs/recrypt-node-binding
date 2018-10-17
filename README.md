@@ -1,6 +1,7 @@
 # Recrypt Node Binding
 
 [![Build Status](https://travis-ci.org/IronCoreLabs/recrypt-node-binding.svg?branch=master)](https://travis-ci.org/IronCoreLabs/recrypt-node-binding)
+[![NPM Version](https://badge.fury.io/js/%40ironcorelabs%2Frecrypt-node-binding.svg)](https://www.npmjs.com/package/@ironcorelabs/recrypt-node-binding)
 
 Bindings to be able to use [Recrypt Rust](https://github.com/IronCoreLabs/recrypt-rs) from NodeJS code. Improves the performance of Recrypt operations by using native code.
 
