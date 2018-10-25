@@ -306,7 +306,7 @@ pub fn augment_public_key_256(mut cx: FunctionContext) -> JsResult<JsObject> {
 /// Hash the provided transform key into a buffer of bytes. The various transform key object fields are concatenated
 /// in a specific order in order for transform keys to be signed over.
 ///
-pub fn transform_key_to_bytes(mut cx: FunctionContext) -> JsResult<JsBuffer> {
+pub fn transform_key_to_bytes_256(mut cx: FunctionContext) -> JsResult<JsBuffer> {
     let transform_key_obj: Handle<JsObject> = cx.argument::<JsObject>(0)?;
     let transform_key = util::js_object_to_transform_key(&mut cx, transform_key_obj);
 

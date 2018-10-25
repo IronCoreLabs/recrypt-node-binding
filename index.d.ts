@@ -40,8 +40,8 @@ export interface TransformKey {
 }
 
 export function augmentPublicKey256(publicKey: PublicKey, otherPublicKey: PublicKey): PublicKey;
-export function augmentTransformKey(transformKey: TransformKey, privateKey: PrivateKey): TransformKey;
-export function transformKeyToBytes(transformKey: TransformKey): Buffer;
+export function augmentTransformKey256(transformKey: TransformKey, privateKey: PrivateKey): TransformKey;
+export function transformKeyToBytes256(transformKey: TransformKey): Buffer;
 export class Api256 {
     constructor();
     generateKeyPair(): KeyPair;

@@ -92,7 +92,7 @@ describe("Recrypt-Node", () => {
 
                 const transformKey = api.generateTransformKey(fromPrivateKey, toPublicKey, privateSigningKey);
                 expect(transformKey).toBeObject();
-                expect(Object.keys(transformKey)).toHaveLength(7);
+                expect(Object.keys(transformKey)).toHaveLength(6);
 
                 expect(transformKey.toPublicKey).toEqual(toPublicKey);
                 expect(transformKey.publicSigningKey).toEqual(publicSigningKey);
@@ -112,8 +112,6 @@ describe("Recrypt-Node", () => {
 
                 expect(transformKey.signature).toBeInstanceOf(Buffer);
                 expect(transformKey.signature).toHaveLength(64);
-
-                expect(transformKey.transformBlocks).toBeArrayOfSize(0);
             });
         });
 
@@ -413,7 +411,7 @@ describe("Recrypt-Node", () => {
             const augTransformKey = recrypt.augmentTransformKey256(transformKey, augPrivateKey);
 
             expect(augTransformKey).toBeObject();
-            expect(Object.keys(augTransformKey)).toHaveLength(7);
+            expect(Object.keys(augTransformKey)).toHaveLength(6);
 
             expect(augTransformKey.toPublicKey).toEqual(toPublicKey);
             expect(augTransformKey.publicSigningKey).toEqual(publicSigningKey);
@@ -433,8 +431,6 @@ describe("Recrypt-Node", () => {
 
             expect(augTransformKey.signature).toBeInstanceOf(Buffer);
             expect(augTransformKey.signature).toHaveLength(64);
-
-            expect(augTransformKey.transformBlocks).toBeArrayOfSize(0);
         });
     });
 
@@ -457,7 +453,7 @@ describe("Recrypt-Node", () => {
         });
     });
 
-    describe("transformKeyToBytes", () => {
+    describe("transformKeyToBytes256", () => {
         it("returns expected number of bytes", () => {
             const api = new recrypt.Api256();
             const fromPrivateKey = api.generateKeyPair().privateKey;
@@ -465,7 +461,7 @@ describe("Recrypt-Node", () => {
 
             const transformKey = api.generateTransformKey(fromPrivateKey, toPublicKey, privateSigningKey);
 
-            const transformKeyBytes = recrypt.transformKeyToBytes(transformKey);
+            const transformKeyBytes = recrypt.transformKeyToBytes256(transformKey);
             expect(transformKeyBytes).toBeInstanceOf(Buffer);
             expect(transformKeyBytes).toHaveLength(672);
         });
