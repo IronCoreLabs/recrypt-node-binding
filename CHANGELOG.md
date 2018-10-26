@@ -1,3 +1,18 @@
+## 0.4.0
+
+### Breaking Changes
+
++ Renamed the `transformKeyToBytes` method to `transformKeyToBytes256` to specify that it only works with 256 bit TransformKeys.
++ Removed incorrect empty array from TransformKey objects.
+
+### Added
+
+None
+
+### Changed
+
++ Added `engines`, `os`, and `cpu` keys to `package.json` to specify which Node version and architectures this library will work on.
+
 ## 0.3.0
 
 ### Breaking Changes

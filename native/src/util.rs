@@ -200,9 +200,6 @@ pub fn transform_key_to_js_object<'a, T: Context<'a>>(
     transform_key_obj.set(cx, "encryptedTempKey", encrypted_temp_key_buffer)?;
     transform_key_obj.set(cx, "hashedTempKey", hashed_temp_key_buffer)?;
     transform_key_obj.set(cx, "publicSigningKey", public_signing_key_buffer)?;
-    //Leaving this empty for now until we need to support multi-level transform blocks
-    let empty_transform_blocks = cx.empty_array();
-    transform_key_obj.set(cx, "transformBlocks", empty_transform_blocks)?;
     transform_key_obj.set(cx, "signature", signature_buffer)?;
     Ok(transform_key_obj)
 }

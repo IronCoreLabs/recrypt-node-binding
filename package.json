@@ -1,6 +1,6 @@
 {
     "name": "@ironcorelabs/recrypt-node-binding",
-    "version": "0.3.0",
+    "version": "0.4.0",
     "description": "Bindings to allow the recrypt-rs library to work via NodeJS.",
     "repository": {
         "type": "git",
@@ -11,6 +11,16 @@
     "license": "AGPL-3.0-only",
     "main": "bin-package/index.node",
     "types": "index.d.ts",
+    "engines": {
+        "node": ">=8.0.0"
+    },
+    "os": [
+        "darwin",
+        "linux"
+    ],
+    "cpu": [
+        "x64"
+    ],
     "scripts": {
         "compile": "neon build -r",
         "clean": "neon clean",
