@@ -1,7 +1,7 @@
 sudo: false
 language: rust
 rust:
-- 1.29.1
+- 1.30.0
 
 # all unlabeled jobs run at test. Only if all "test" jobs finish, will the publish job run
 stages:
