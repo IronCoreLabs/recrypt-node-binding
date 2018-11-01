@@ -1,3 +1,8 @@
+## 0.4.1
+
+### Added
++ `Api256.hash256(hashable_buffer: Buffer): Buffer;`
+
 ## 0.4.0
 
 ### Breaking Changes
@@ -25,7 +30,7 @@ None
 
 ### Changed
 
-+ Updated to `rerypt-rs` 0.3.0.
++ Updated to `recrypt-rs` 0.3.0.
 
 ## 0.2.0
 
