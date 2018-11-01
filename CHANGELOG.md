@@ -1,7 +1,7 @@
 ## 0.4.1
 
 ### Added
-+ `Api256.hash256(hashable_buffer: Buffer): Buffer;`
++ `Api256.hash256(hashable_buffer: Buffer): Buffer;` Note that the returned `Buffer` will always be _exactly_ 32 bytes.
 
 ## 0.4.0
 
