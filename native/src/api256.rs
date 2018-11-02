@@ -136,6 +136,19 @@ declare_types! {
             Ok(util::public_key_to_js_object(&mut cx, &derived_public_key)?.upcast())
         }
 
+        method hash256(mut cx) {
+            let hashable_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(0)?;
+
+            let hashed_bytes = {
+                let mut this = cx.this();
+                let guard = cx.lock();
+                let mut recrypt_api_256 = this.borrow_mut(&guard);
+                recrypt_api_256.api.hash_256(&util::buffer_to_variable_bytes(&cx, hashable_buffer))
+            };
+
+            Ok(util::bytes_to_buffer(&mut cx, &hashed_bytes)?.upcast())
+        }
+
         method deriveSymmetricKey(mut cx){
             let plaintext_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(0)?;
 

@@ -1,6 +1,6 @@
 [package]
 name = "recrypt-node-binding"
-version = "0.4.0"
+version = "0.4.1"
 authors = ["IronCore Labs <code@ironcorelabs.com>"]
 
 [lib]
@@ -9,7 +9,8 @@ crate-type = ["dylib"]
 
 [dependencies]
 rand = "0.5.5"
-recrypt = "0.3.0"
+#recrypt = "0.3.0"
+recrypt = { git = "https://github.com/IronCoreLabs/recrypt-rs"}
 neon = "0.2.0"
 
 [build-dependencies]
