@@ -1,3 +1,17 @@
+## 0.4.2
+
+### Added
+
+None
+
+### Breaking Changes
+
+None
+
+### Changed
+
++ Added support to build artifacts for Node 9 and Node 11.
+
 ## 0.4.1
 
 ### Added
