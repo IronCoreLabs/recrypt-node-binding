@@ -28,7 +28,7 @@ macro_rules! buffer_to_fixed_bytes { ($($fn_name: ident, $n: expr); *) => {
 ///
 /// Create the various methods we need to convert buffers into fixed length bytes
 ///
-buffer_to_fixed_bytes!{buffer_to_fixed_32_bytes, 32; buffer_to_fixed_64_bytes, 64; buffer_to_fixed_128_bytes, 128; buffer_to_fixed_384_bytes, 384}
+buffer_to_fixed_bytes! {buffer_to_fixed_32_bytes, 32; buffer_to_fixed_64_bytes, 64; buffer_to_fixed_128_bytes, 128; buffer_to_fixed_384_bytes, 384}
 
 ///
 /// Create a macro for converting JsBuffers to different types of signature objects which all have the same size
@@ -42,7 +42,7 @@ macro_rules! buffer_to_signature { ($($fn_name: ident, $sig_type: expr, $ret_typ
 ///
 /// Create two methods from the macro for Schnorr and ED25519 signatures
 ///
-buffer_to_signature!{buffer_to_schnorr_signature, SchnorrSignature::new, SchnorrSignature; buffer_to_ed25519_signature, Ed25519Signature::new, Ed25519Signature}
+buffer_to_signature! {buffer_to_schnorr_signature, SchnorrSignature::new, SchnorrSignature; buffer_to_ed25519_signature, Ed25519Signature::new, Ed25519Signature}
 
 ///
 /// Convert a JsBuffer handle of variable size into a vector
@@ -97,7 +97,8 @@ pub fn js_object_to_public_key<'a, T: Context<'a>>(
     PublicKey::new((
         buffer_to_fixed_32_bytes(cx, x, "publicKey.x"),
         buffer_to_fixed_32_bytes(cx, y, "publicKey.y"),
-    )).unwrap()
+    ))
+    .unwrap()
 }
 
 ///
@@ -167,7 +168,8 @@ pub fn js_object_to_transform_key<'a, T: Context<'a>>(
             cx,
             hashed_temp_key_buffer,
             "hashedTempKey",
-        )).unwrap(),
+        ))
+        .unwrap(),
         PublicSigningKey::new(buffer_to_fixed_32_bytes(
             cx,
             public_signing_key_buffer,
@@ -251,8 +253,10 @@ pub fn js_object_to_transform_blocks<'a, T: Context<'a>>(
                     random_transform_encrypted_temp_key,
                     "transformBlock.randomTransformEncryptedTempKey",
                 )),
-            ).unwrap()
-        }).collect();
+            )
+            .unwrap()
+        })
+        .collect();
 
     NonEmptyVec::try_from(&blocks).unwrap()
 }
