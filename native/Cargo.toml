@@ -8,10 +8,9 @@ name = "recrypt_node"
 crate-type = ["dylib"]
 
 [dependencies]
-rand = "0.5.5"
-#recrypt = "0.3.0"
-recrypt = { git = "https://github.com/IronCoreLabs/recrypt-rs"}
-neon = "0.2.0"
+rand = "~0.6.1"
+recrypt = { git = "https://github.com/IronCoreLabs/recrypt-rs", tag = "0.5.1"}
+neon = "~0.2.0"
 
 [build-dependencies]
 neon-build = "0.2.0"

@@ -9,7 +9,7 @@ use recrypt::api::{
 use util;
 
 pub struct RecryptApi256 {
-    api: Api<Sha256, Ed25519, RandomBytes<rand::ThreadRng>>,
+    api: Api<Sha256, Ed25519, RandomBytes<rand::rngs::ThreadRng>>,
 }
 
 declare_types! {
@@ -310,7 +310,8 @@ pub fn augment_public_key_256(mut cx: FunctionContext) -> JsResult<JsObject> {
         .augment(&util::js_object_to_public_key(
             &mut cx,
             other_public_key_obj,
-        )).unwrap();
+        ))
+        .unwrap();
 
     Ok(util::public_key_to_js_object(&mut cx, &augmented_public_key)?.upcast())
 }
