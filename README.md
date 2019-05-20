@@ -121,3 +121,6 @@ const recrypt = require('index.node');
 + From this repos root, run `npm i` or `yarn`.
 + Run `npm/yarn run compile` to compile the Rust source into a `native/index.node` module.
 + Run `npm/yarn run test`.
+
+Copyright (c)  2018-present  IronCore Labs, Inc.
+All rights reserved.
