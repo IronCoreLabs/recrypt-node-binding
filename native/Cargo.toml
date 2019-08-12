@@ -8,8 +8,7 @@ name = "recrypt_node"
 crate-type = ["dylib"]
 
 [dependencies]
-rand = "~0.6.1"
-recrypt = "~0.6"
+recrypt = "~0.8"
 neon = "~0.2.0"
 
 [patch.crates-io]

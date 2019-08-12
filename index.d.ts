@@ -52,7 +52,6 @@ export class Api256 {
     generatePlaintext(): Plaintext;
     generateTransformKey(fromPrivateKey: PrivateKey, toPublicKey: PublicKey, privateSigningKey: PrivateSigningKey): TransformKey;
     computePublicKey(privateKey: PrivateKey): PublicKey;
-    hash256(hashable_buffer: Buffer): Buffer;
     deriveSymmetricKey(plaintext: Plaintext): Buffer;
     encrypt(plaintext: Plaintext, toPublicKey: PublicKey, privateSigningKey: PrivateSigningKey): EncryptedValue;
     transform(encryptedValue: EncryptedValue, transformKey: TransformKey, privateSigningKey: PrivateSigningKey): EncryptedValue;
