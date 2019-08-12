@@ -1,6 +1,6 @@
 language: rust
 rust:
-    - 1.34.0
+    - 1.36.0
 
 # all unlabeled jobs run at test. Only if all "test" jobs finish, will the publish job run
 stages:
@@ -23,18 +23,6 @@ jobs:
               - TRAVIS_NODE_VERSION="8"
               - SKIP_DEPLOY=0
           if: tag =~ /^\d+\.\d+\.\d+/ OR branch = master OR type = pull_request
-        - name: "Linux - Node 9"
-          os: linux
-          env:
-              - TRAVIS_NODE_VERSION="9"
-              - SKIP_DEPLOY=0
-          if: tag =~ /^\d+\.\d+\.\d+/ OR branch = master OR type = pull_request
-        - name: "OSX - Node 9"
-          os: osx
-          env:
-              - TRAVIS_NODE_VERSION="9"
-              - SKIP_DEPLOY=0
-          if: tag =~ /^\d+\.\d+\.\d+/ OR branch = master OR type = pull_request
         - name: "Linux - Node 10"
           os: linux
           env:
@@ -47,16 +35,16 @@ jobs:
               - TRAVIS_NODE_VERSION="10"
               - SKIP_DEPLOY=0
           if: tag =~ /^\d+\.\d+\.\d+/ OR branch = master OR type = pull_request
-        - name: "Linux - Node 11"
+        - name: "Linux - Node 12"
           os: linux
           env:
-              - TRAVIS_NODE_VERSION="11"
+              - TRAVIS_NODE_VERSION="12"
               - SKIP_DEPLOY=0
           if: tag =~ /^\d+\.\d+\.\d+/ OR branch = master OR type = pull_request
-        - name: "OSX - Node 11"
+        - name: "OSX - Node 12"
           os: osx
           env:
-              - TRAVIS_NODE_VERSION="11"
+              - TRAVIS_NODE_VERSION="12"
               - SKIP_DEPLOY=0
           if: tag =~ /^\d+\.\d+\.\d+/ OR branch = master OR type = pull_request
 

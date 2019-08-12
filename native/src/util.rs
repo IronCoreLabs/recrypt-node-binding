@@ -25,23 +25,21 @@ macro_rules! buffer_to_fixed_bytes { ($($fn_name: ident, $n: expr); *) => {
     })+
 }}
 
-///
-/// Create the various methods we need to convert buffers into fixed length bytes
-///
+// Create the various methods we need to convert buffers into fixed length bytes
 buffer_to_fixed_bytes! {buffer_to_fixed_32_bytes, 32; buffer_to_fixed_64_bytes, 64; buffer_to_fixed_128_bytes, 128; buffer_to_fixed_384_bytes, 384}
 
 ///
-/// Create a macro for converting JsBuffers to different types of signature objects which all have the same size
+/// Create a macro for converting JsBuffers to different types of signature objects which all have the same size. Marked as dead code because usage
+/// of this function in the wrapped macro in `api256.rs` can't be parsed by Rust.
 ///
 macro_rules! buffer_to_signature { ($($fn_name: ident, $sig_type: expr, $ret_type: ty); *) => {
+    #[allow(dead_code)]
     $(pub fn $fn_name<'a, T: Context<'a>>(cx: &T, buffer: Handle<JsBuffer>) -> $ret_type {
         $sig_type(buffer_to_fixed_64_bytes(cx, buffer, "signature"))
     })+
 }}
 
-///
-/// Create two methods from the macro for Schnorr and ED25519 signatures
-///
+// Create two methods from the macro for Schnorr and ED25519 signatures
 buffer_to_signature! {buffer_to_schnorr_signature, SchnorrSignature::new, SchnorrSignature; buffer_to_ed25519_signature, Ed25519Signature::new, Ed25519Signature}
 
 ///
@@ -78,8 +76,10 @@ pub fn buffer_to_private_key<'a, T: Context<'a>>(cx: &T, buffer: Handle<JsBuffer
 }
 
 ///
-/// Convert a JsBuffer handle to a Plaintext object
+/// Convert a JsBuffer handle to a Plaintext object. Marked as dead code because usage
+/// of this function in the wrapped macro in `api256.rs` can't be parsed by Rust
 ///
+#[allow(dead_code)]
 pub fn buffer_to_plaintext<'a, T: Context<'a>>(cx: &T, buffer: Handle<JsBuffer>) -> Plaintext {
     Plaintext::new(buffer_to_fixed_384_bytes(cx, buffer, "plaintext"))
 }
@@ -207,8 +207,10 @@ pub fn transform_key_to_js_object<'a, T: Context<'a>>(
 }
 
 ///
-/// Convert an array of transform blocks into a non-empty vector of internal recrypt TransformBlock structs
+/// Convert an array of transform blocks into a non-empty vector of internal recrypt TransformBlock structs. Marked as dead code because usage
+/// of this function in the wrapped macro in `api256.rs` can't be parsed by Rust
 ///
+#[allow(dead_code)]
 pub fn js_object_to_transform_blocks<'a, T: Context<'a>>(
     cx: &mut T,
     js_array: Handle<JsArray>,
@@ -262,8 +264,10 @@ pub fn js_object_to_transform_blocks<'a, T: Context<'a>>(
 }
 
 ///
-/// Iterate through the provided internal TransformBlocks and convert each block to an external array of transform block objects.
+/// Iterate through the provided internal TransformBlocks and convert each block to an external array of transform block objects. Marked as dead code because usage
+/// of this function in the wrapped macro in `api256.rs` can't be parsed by Rust
 ///
+#[allow(dead_code)]
 pub fn transform_blocks_to_js_object<'a, T: Context<'a>>(
     cx: &mut T,
     transform_blocks: Vec<TransformBlock>,
@@ -300,8 +304,10 @@ pub fn transform_blocks_to_js_object<'a, T: Context<'a>>(
 }
 
 ///
-/// Convert a JsObject with various encrypted value keys into a EncryptedOnce or TransformedValue value
+/// Convert a JsObject with various encrypted value keys into a EncryptedOnce or TransformedValue value. Marked as dead code because usage
+/// of this function in the wrapped macro in `api256.rs` can't be parsed by Rust
 ///
+#[allow(dead_code)]
 pub fn js_object_to_encrypted_value<'a, T: Context<'a>>(
     cx: &mut T,
     object: Handle<JsObject>,
@@ -375,8 +381,10 @@ pub fn js_object_to_encrypted_value<'a, T: Context<'a>>(
 }
 
 ///
-/// Convert a Recrypt EncryptedValue into a JsObbject with expeted properties and bytes converted to Buffers
+/// Convert a Recrypt EncryptedValue into a JsObbject with expeted properties and bytes converted to Buffers. Marked as dead code because usage
+/// of this function in the wrapped macro in `api256.rs` can't be parsed by Rust
 ///
+#[allow(dead_code)]
 pub fn encrypted_value_to_js_object<'a, T: Context<'a>>(
     cx: &mut T,
     encrypted_value: EncryptedValue,

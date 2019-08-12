@@ -1,6 +1,6 @@
 {
     "name": "@ironcorelabs/recrypt-node-binding",
-    "version": "0.4.2",
+    "version": "0.5.0",
     "description": "Bindings to allow the recrypt-rs library to work via NodeJS.",
     "repository": {
         "type": "git",
@@ -27,13 +27,16 @@
         "benchmark": "node benchmark/index.js",
         "test": "jest"
     },
+    "dependencies": {
+        "node-pre-gyp": "^0.13.0"
+    },
     "devDependencies": {
-        "@types/node": "^10.11.0",
+        "@types/node": "^12.7.1",
         "benchmark": "^2.1.4",
-        "jest": "^23.6.0",
-        "jest-extended": "^0.11.0",
+        "jest": "^24.8.0",
+        "jest-extended": "^0.11.2",
         "neon-cli": "^0.2.0",
-        "shelljs": "^0.8.2"
+        "shelljs": "^0.8.3"
     },
     "prettier": {
         "printWidth": 160,
@@ -45,10 +48,9 @@
     },
     "jest": {
         "testEnvironment": "node",
-        "setupTestFrameworkScriptFile": "jest-extended"
-    },
-    "dependencies": {
-        "node-pre-gyp": "^0.11.0"
+        "setupFilesAfterEnv": [
+            "jest-extended"
+        ]
     },
     "binary": {
         "module_name": "index",

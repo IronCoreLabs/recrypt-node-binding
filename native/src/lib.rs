@@ -1,6 +1,5 @@
 #[macro_use]
 extern crate neon;
-extern crate rand;
 extern crate recrypt;
 
 mod api256;

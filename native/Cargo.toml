@@ -8,9 +8,12 @@ name = "recrypt_node"
 crate-type = ["dylib"]
 
 [dependencies]
-rand = "~0.6.1"
-recrypt = "~0.6"
+recrypt = "~0.8"
 neon = "~0.2.0"
+
+[patch.crates-io]
+neon = { git = 'https://github.com/kjvalencik/neon', rev = '5d877ac0' }
+neon-runtime = { git = 'https://github.com/kjvalencik/neon', rev = '5d877ac0' }
 
 [build-dependencies]
 neon-build = "0.2.0"

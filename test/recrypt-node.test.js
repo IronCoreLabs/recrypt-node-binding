@@ -122,15 +122,6 @@ describe("Recrypt-Node", () => {
             });
         });
 
-        describe("hash256", () => {
-            test("should return 32 bytes for plaintext", () => {
-                const pt = api.generatePlaintext();
-                const symmetricKey = api.hash256(pt);
-                expect(symmetricKey).toBeInstanceOf(Buffer);
-                expect(symmetricKey).toHaveLength(32);
-            });
-        });
-
         describe("deriveSymmetricKey", () => {
             test("should return symmetric key from plaintext", () => {
                 const pt = api.generatePlaintext();

@@ -1,28 +1,27 @@
 use neon::prelude::*;
 use neon::types::JsBuffer;
-use rand;
 use recrypt::api::Hashable;
 use recrypt::api::{
-    Api, CryptoOps, Ed25519, Ed25519Ops, KeyGenOps, PublicSigningKey, RandomBytes, SchnorrOps,
-    Sha256, SigningKeypair,
+    CryptoOps, DefaultRng, Ed25519, Ed25519Ops, KeyGenOps, PublicSigningKey, RandomBytes, Recrypt,
+    SchnorrOps, Sha256, SigningKeypair,
 };
 use util;
 
 pub struct RecryptApi256 {
-    api: Api<Sha256, Ed25519, RandomBytes<rand::rngs::ThreadRng>>,
+    api: Recrypt<Sha256, Ed25519, RandomBytes<DefaultRng>>,
 }
 
 declare_types! {
     pub class Api256 for RecryptApi256 {
         init(_cx) {
-            Ok(RecryptApi256 {api: Api::new()})
+            Ok(RecryptApi256 {api: Recrypt::new()})
         }
 
         method generateKeyPair(mut cx) {
             let (priv_key, pub_key) = {
                 let mut this = cx.this();
                 let guard = cx.lock();
-                let mut recrypt_api_256 = this.borrow_mut(&guard);
+                let recrypt_api_256 = this.borrow_mut(&guard);
                 recrypt_api_256.api.generate_key_pair().unwrap()
             };
 
@@ -41,12 +40,12 @@ declare_types! {
             let signing_key_pair = {
                 let mut this = cx.this();
                 let guard = cx.lock();
-                let mut recrypt_api_256 = this.borrow_mut(&guard);
+                let recrypt_api_256 = this.borrow_mut(&guard);
                 recrypt_api_256.api.generate_ed25519_key_pair()
             };
 
             let signing_key_pair_obj: Handle<JsObject> = cx.empty_object();
-            let priv_key_buffer = util::bytes_to_buffer(&mut cx, &signing_key_pair.bytes())?;
+            let priv_key_buffer = util::bytes_to_buffer(&mut cx, signing_key_pair.bytes())?;
             let pub_key_buffer = util::bytes_to_buffer(&mut cx, signing_key_pair.public_key().bytes())?;
 
             signing_key_pair_obj.set(&mut cx, "privateKey", priv_key_buffer)?;
@@ -94,7 +93,7 @@ declare_types! {
             let plaintext = {
                 let mut this = cx.this();
                 let guard = cx.lock();
-                let mut recrypt_api_256 = this.borrow_mut(&guard);
+                let recrypt_api_256 = this.borrow_mut(&guard);
                 recrypt_api_256.api.gen_plaintext()
             };
 
@@ -113,10 +112,10 @@ declare_types! {
             let transform_key = {
                 let mut this = cx.this();
                 let guard = cx.lock();
-                let mut recrypt_api_256 = this.borrow_mut(&guard);
+                let recrypt_api_256 = this.borrow_mut(&guard);
                 recrypt_api_256.api.generate_transform_key(
                     &util::buffer_to_private_key(&cx, from_private_key_buffer),
-                    to_public_key,
+                    &to_public_key,
                     &signing_key_pair
                 ).unwrap()
             };
@@ -136,26 +135,13 @@ declare_types! {
             Ok(util::public_key_to_js_object(&mut cx, &derived_public_key)?.upcast())
         }
 
-        method hash256(mut cx) {
-            let hashable_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(0)?;
-
-            let hashed_bytes = {
-                let mut this = cx.this();
-                let guard = cx.lock();
-                let mut recrypt_api_256 = this.borrow_mut(&guard);
-                recrypt_api_256.api.hash_256(&util::buffer_to_variable_bytes(&cx, hashable_buffer))
-            };
-
-            Ok(util::bytes_to_buffer(&mut cx, &hashed_bytes)?.upcast())
-        }
-
         method deriveSymmetricKey(mut cx){
             let plaintext_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(0)?;
 
             let decrypted_symmetric_key = {
                 let mut this = cx.this();
                 let guard = cx.lock();
-                let mut recrypt_api_256 = this.borrow_mut(&guard);
+                let recrypt_api_256 = this.borrow_mut(&guard);
                 recrypt_api_256.api.derive_symmetric_key(&util::buffer_to_plaintext(&cx, plaintext_buffer))
             };
 
@@ -173,10 +159,10 @@ declare_types! {
             let encrypted_value = {
                 let mut this = cx.this();
                 let guard = cx.lock();
-                let mut recrypt_api_256 = this.borrow_mut(&guard);
+                let recrypt_api_256 = this.borrow_mut(&guard);
                 recrypt_api_256.api.encrypt(
                     &util::buffer_to_plaintext(&cx, plaintext_buffer),
-                    public_key,
+                    &public_key,
                     &signing_key_pair
                 ).unwrap()
             };
@@ -196,7 +182,7 @@ declare_types! {
             let transformed_encrypted_value = {
                 let mut this = cx.this();
                 let guard = cx.lock();
-                let mut recrypt_api_256 = this.borrow_mut(&guard);
+                let recrypt_api_256 = this.borrow_mut(&guard);
                 recrypt_api_256.api.transform(encrypted_value, transform_key, &signing_key_pair).unwrap()
             };
 
@@ -232,10 +218,10 @@ declare_types! {
             let signature = {
                 let mut this = cx.this();
                 let guard = cx.lock();
-                let mut recrypt_api_256 = this.borrow_mut(&guard);
+                let recrypt_api_256 = this.borrow_mut(&guard);
                 recrypt_api_256.api.schnorr_sign(
                     &util::buffer_to_private_key(&cx, private_key_buffer),
-                    public_key,
+                    &public_key,
                     &util::buffer_to_variable_bytes(&cx, message_buffer)
                 )
             };
@@ -269,9 +255,9 @@ declare_types! {
             let verified = {
                 let mut this = cx.this();
                 let guard = cx.lock();
-                let mut recrypt_api_256 = this.borrow_mut(&guard);
+                let recrypt_api_256 = this.borrow_mut(&guard);
                 recrypt_api_256.api.schnorr_verify(
-                    public_key,
+                    &public_key,
                     augmented_private_key.as_ref(),
                     &util::buffer_to_variable_bytes(&cx, message_buffer),
                     signature
