@@ -1,3 +1,15 @@
+## 0.5.0
+
+### Breaking Changes
+
++ Added support for Node 12
++ Removed support for Node 9 and 11
++ Removed the `hash256` method from the API. Use the `deriveSymmetricKey` method instead.
+
+### Changed
+
++ Updated all dependencies to their latest versions, including Recrypt to 0.8.
+
 ## 0.4.2
 
 ### Added
