@@ -9,14 +9,10 @@ crate-type = ["dylib"]
 
 [dependencies]
 recrypt = "~0.8"
-neon = "~0.2.0"
-
-[patch.crates-io]
-neon = { git = 'https://github.com/kjvalencik/neon', rev = '5d877ac0' }
-neon-runtime = { git = 'https://github.com/kjvalencik/neon', rev = '5d877ac0' }
+neon = "~0.3"
 
 [build-dependencies]
-neon-build = "0.2.0"
+neon-build = "~0.3"
 
 [profile.release]
 lto = true

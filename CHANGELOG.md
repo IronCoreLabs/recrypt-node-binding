@@ -1,3 +1,7 @@
+## 0.5.2
+
++ Depend on official release of Neon 0.3.
+
 ## 0.5.1
 
 ### Breaking Changes
