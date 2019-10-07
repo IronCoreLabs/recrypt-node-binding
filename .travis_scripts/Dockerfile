@@ -1,4 +1,5 @@
-FROM node:8-alpine
+ARG IMAGE
+FROM node:${IMAGE}
 
 RUN wget https://sh.rustup.rs -O - | sh -s -- -y
 RUN ln -s "${HOME}"/.cargo/bin/* /usr/local/bin

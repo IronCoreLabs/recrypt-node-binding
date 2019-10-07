@@ -84,10 +84,10 @@ jobs:
               - secure: Jm9ax8QP+t8DhuDfU7ek4bH85XSAei8Ex5MmETr1A0+5ELQ6RnGcR9Z6PE4BZN4hTZkytmHePdJ4MvB5MfB0EBoZf2DHUbk/E0/stAFzQlsqu4WSDeHD1+LcoN9k4vg+3eVL8I7T7IMtt3mLiwrdaqbDO220UrQewiU+6DzsDIeAOAFCjYGurxdUbjfKv4P/5Fik2jmDQeu/+C70ZCkWq0jtisXke07Kj43+VGZCUfCxObg/9t3u6g7MyllF7CGLmxHXEgdDMSP56/PProqch5MlljSie/D1ze1LH5wpBcaex9fiGKnfOW23r8i8CG7EYSHaePcmBes6fwW1gcvQ5NmGSGFg0r0UZa82ux4X5SEEHfuU+F0ylU3COJGVGiZVD4vx6m+Gm2SffXsJ6ATU0MCU2ZFpwiEdVQxdCYDDXNqTk7WMiQP+UNiuHLZCKvs+caiRXTZlEVR33TzMooJY8BgU8jv3sHT3fI3O19Pii0hS3ymvM7M7LxPt6wKNk49chn4ouoTUbJZ4HEfomETgFc5/wp7Ozyoemx2Rf1pNQjx3KUFMCbzSuFVPyaIHjc2UViw/7svFzaHQlNTOkFBf9AxCyrrSmHP7VnXke/ujofHpdn9KSAFR2fs5VwLNuxKLcSf44ig9SNt37yO6c2JDA+heSE7aZ88E11NPRfyfyA0=
           if: tag =~ /^\d+\.\d+\.\d+/
           before_install:
-              - ${INDOCKER} npm config set //registry.npmjs.org/:_authToken=$NPM_TOKEN
+              - npm config set //registry.npmjs.org/:_authToken=$NPM_TOKEN
           script:
-              - ${INDOCKER} echo "Deploying to NPM..."
-              - ${INDOCKER} node publish.js --publish
+              - echo "Deploying to NPM..."
+              - node publish.js --publish
 
 before_install:
     - ./.travis_scripts/maybe-start-docker.sh
@@ -108,7 +108,7 @@ before_script:
     - ${INDOCKER} rustup component add rustfmt-preview
     - ${INDOCKER} yarn --ignore-scripts
 script:
-    - ${INDOCKER} /bin/sh -c "cd native/; cargo fmt -- --check; cd -;"
+    - ${INDOCKER} /bin/sh -c "cd native/ && cargo fmt -- --check"
     - ${INDOCKER} node publish.js
 
 # deploy the node-pre-gyp binary to github releases so it's there when the npm package is installed
