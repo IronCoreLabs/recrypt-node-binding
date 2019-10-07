@@ -93,7 +93,7 @@ before_install:
     - ./.travis_scripts/maybe-start-docker.sh
 
 install:
-    - ./.travis_scripts/maybe-install-node.sh
+    - source .travis_scripts/maybe-install-node.sh
 
 notifications:
     email:
