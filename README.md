@@ -9,10 +9,11 @@ This library uses the [Neon Bindings](https://www.neon-bindings.com) toolchain t
 
 ## Supported Platforms
 
-|           | Node 8 | Node 10 | Node 12 |
-| --------- | ------ | ------- | ------  |
-| Linux x64 |    ✓   |    ✓    |    ✓    |
-| OSX x64   |    ✓   |    ✓    |    ✓    |
+|                       | Node 8 | Node 10 | Node 12 |
+| --------------------- | ------ | ------- | ------- |
+| Linux x64 - glibc     | ✓      | ✓       | ✓       |
+| Linux x64 - musl-libc | ✓      | ✓       | ✓       |
+| OSX x64               | ✓      | ✓       | ✓       |
 
 ## Install
 
@@ -35,6 +36,7 @@ This library contains a [TypeScript definitions](index.d.ts) file which shows th
 The following examples show how to use this library from a NodeJS application
 
 #### Basic Encrypt/Decrypt Example
+
 ```js
 const assert = require("assert");
 const Recrypt = require("@ironcorelabs/recrypt-node-binding");
@@ -57,6 +59,7 @@ assert.equal(decryptedValue, plaintext);
 ```
 
 #### Single-hop Transform Encryption Example
+
 ```js
 const assert = require("assert");
 const Recrypt = require("@ironcorelabs/recrypt-node-binding");
@@ -99,7 +102,9 @@ Once all of those dependencies are installed, the following can be run.
 ```
 npm run compile
 ```
+
 or
+
 ```
 yarn run compile
 ```
@@ -112,15 +117,15 @@ const recrypt = require('index.node');
 
 ### Benchmarks
 
-+ From this repos root, run `npm i` or `yarn`.
-+ Run `npm/yarn run compile` to compile the Rust source into a `native/index.node` module.
-+ Run `npm/yarn run benchmark`.
+-   From this repos root, run `npm i` or `yarn`.
+-   Run `npm/yarn run compile` to compile the Rust source into a `native/index.node` module.
+-   Run `npm/yarn run benchmark`.
 
 ### Unit Tests
 
-+ From this repos root, run `npm i` or `yarn`.
-+ Run `npm/yarn run compile` to compile the Rust source into a `native/index.node` module.
-+ Run `npm/yarn run test`.
+-   From this repos root, run `npm i` or `yarn`.
+-   Run `npm/yarn run compile` to compile the Rust source into a `native/index.node` module.
+-   Run `npm/yarn run test`.
 
-Copyright (c)  2018-present  IronCore Labs, Inc.
+Copyright (c) 2018-present IronCore Labs, Inc.
 All rights reserved.
