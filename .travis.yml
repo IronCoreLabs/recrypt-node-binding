@@ -2,6 +2,9 @@ language: rust
 rust:
     - 1.36.0
 
+services:
+    - docker
+
 # all unlabeled jobs run at test. Only if all "test" jobs finish, will the publish job run
 stages:
     - test
@@ -83,7 +86,7 @@ jobs:
           before_install:
               - ${INDOCKER} npm config set //registry.npmjs.org/:_authToken=$NPM_TOKEN
           script:
-              - echo "Deploying to NPM..."
+              - ${INDOCKER} echo "Deploying to NPM..."
               - ${INDOCKER} node publish.js --publish
 
 before_install:
@@ -105,9 +108,7 @@ before_script:
     - ${INDOCKER} rustup component add rustfmt-preview
     - ${INDOCKER} yarn --ignore-scripts
 script:
-    - ${INDOCKER} cd native/
-    - ${INDOCKER} cargo fmt -- --check
-    - ${INDOCKER} cd -
+    - ${INDOCKER} /bin/sh -c "cd native/; cargo fmt -- --check; cd -;"
     - ${INDOCKER} node publish.js
 
 # deploy the node-pre-gyp binary to github releases so it's there when the npm package is installed
