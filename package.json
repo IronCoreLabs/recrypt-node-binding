@@ -1,6 +1,6 @@
 {
     "name": "@ironcorelabs/recrypt-node-binding",
-    "version": "0.5.2",
+    "version": "0.6.0",
     "description": "Bindings to allow the recrypt-rs library to work via NodeJS.",
     "repository": {
         "type": "git",
@@ -56,6 +56,7 @@
         "module_name": "index",
         "module_path": "./bin-package",
         "host": "https://github.com/IronCoreLabs/recrypt-node-binding/releases/download/",
+        "package_name": "{module_name}-v{version}-{node_abi}-{platform}-{arch}-{libc}.tar.gz",
         "remote_path": "{version}"
     }
 }
