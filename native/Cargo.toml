@@ -2,17 +2,18 @@
 name = "recrypt-node-binding"
 version = "0.4.1"
 authors = ["IronCore Labs <code@ironcorelabs.com>"]
+build = "build.rs"
 
 [lib]
 name = "recrypt_node"
-crate-type = ["dylib"]
+crate-type = ["cdylib"]
 
 [dependencies]
 recrypt = "~0.8"
-neon = "~0.3"
+neon = "0.3"
 
 [build-dependencies]
-neon-build = "~0.3"
+neon-build = "0.3"
 
 [profile.release]
 lto = true
