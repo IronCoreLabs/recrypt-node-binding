@@ -5,15 +5,14 @@ authors = ["IronCore Labs <code@ironcorelabs.com>"]
 
 [lib]
 name = "recrypt_node"
-crate-type = ["dylib"]
+crate-type = ["cdylib"]
 
 [dependencies]
 recrypt = "~0.8"
-#Pin this version and neon-build below because of https://github.com/neon-bindings/neon/issues/455
-neon = "=0.3.1"
+neon = "0.3"
 
 [build-dependencies]
-neon-build = "=0.3.1"
+neon-build = "0.3"
 
 [profile.release]
 lto = true
