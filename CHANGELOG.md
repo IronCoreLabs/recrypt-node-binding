@@ -1,3 +1,13 @@
+## 0.6.1
+
+### Breaking Changes
+
+None
+
+### Changed
+
+Updated to latest version of `recrypt-rs`.
+
 ## 0.6.0
 
 ### Added
