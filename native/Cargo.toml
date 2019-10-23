@@ -9,10 +9,11 @@ crate-type = ["dylib"]
 
 [dependencies]
 recrypt = "~0.8"
-neon = "~0.3"
+#Pin this version and neon-build below because of https://github.com/neon-bindings/neon/issues/455
+neon = "=0.3.1"
 
 [build-dependencies]
-neon-build = "~0.3"
+neon-build = "=0.3.1"
 
 [profile.release]
 lto = true
