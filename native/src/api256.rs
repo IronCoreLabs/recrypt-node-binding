@@ -1,9 +1,7 @@
-use neon::prelude::*;
-use neon::types::JsBuffer;
-use recrypt::api::Hashable;
+use neon::{prelude::*, types::JsBuffer};
 use recrypt::api::{
-    CryptoOps, DefaultRng, Ed25519, Ed25519Ops, KeyGenOps, PublicSigningKey, RandomBytes, Recrypt,
-    SchnorrOps, Sha256, SigningKeypair,
+    CryptoOps, DefaultRng, Ed25519, Ed25519Ops, Hashable, KeyGenOps, PublicSigningKey, RandomBytes,
+    Recrypt, SchnorrOps, Sha256, SigningKeypair,
 };
 use util;
 
@@ -268,9 +266,7 @@ declare_types! {
     }
 }
 
-///
 /// Augment the provided transform key with the provided private key. Returns an augmented TransformKey object.
-///
 pub fn augment_transform_key_256(mut cx: FunctionContext) -> JsResult<JsObject> {
     let transform_key_obj: Handle<JsObject> = cx.argument::<JsObject>(0)?;
     let private_key_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(1)?;
@@ -283,9 +279,7 @@ pub fn augment_transform_key_256(mut cx: FunctionContext) -> JsResult<JsObject> 
     Ok(util::transform_key_to_js_object(&mut cx, augmented_transform_key)?.upcast())
 }
 
-///
 /// Augment the provided public key with the other provided public key. Returns a new augmented PublicKey object.
-///
 pub fn augment_public_key_256(mut cx: FunctionContext) -> JsResult<JsObject> {
     let current_public_key_obj: Handle<JsObject> = cx.argument::<JsObject>(0)?;
     let other_public_key_obj: Handle<JsObject> = cx.argument::<JsObject>(1)?;
@@ -302,10 +296,8 @@ pub fn augment_public_key_256(mut cx: FunctionContext) -> JsResult<JsObject> {
     Ok(util::public_key_to_js_object(&mut cx, &augmented_public_key)?.upcast())
 }
 
-///
 /// Hash the provided transform key into a buffer of bytes. The various transform key object fields are concatenated
 /// in a specific order in order for transform keys to be signed over.
-///
 pub fn transform_key_to_bytes_256(mut cx: FunctionContext) -> JsResult<JsBuffer> {
     let transform_key_obj: Handle<JsObject> = cx.argument::<JsObject>(0)?;
     let transform_key = util::js_object_to_transform_key(&mut cx, transform_key_obj);
@@ -313,4 +305,24 @@ pub fn transform_key_to_bytes_256(mut cx: FunctionContext) -> JsResult<JsBuffer>
     let transform_key_bytes = util::bytes_to_buffer(&mut cx, &transform_key.to_bytes())?;
 
     Ok(transform_key_bytes)
+}
+
+/// Add the two provided private keys together. Used when performing key rotation.
+pub fn add_private_keys(mut cx: FunctionContext) -> JsResult<JsBuffer> {
+    let pub_key_a: Handle<JsBuffer> = cx.argument::<JsBuffer>(0)?;
+    let pub_key_b: Handle<JsBuffer> = cx.argument::<JsBuffer>(1)?;
+    let augmented = util::buffer_to_private_key(&cx, pub_key_a)
+        .augment_plus(&util::buffer_to_private_key(&cx, pub_key_b));
+
+    Ok(util::bytes_to_buffer(&mut cx, &augmented.to_bytes())?)
+}
+
+/// Subtract the second provided private key from the first provided private key. Used when performing key rotation
+pub fn subtract_private_keys(mut cx: FunctionContext) -> JsResult<JsBuffer> {
+    let pub_key_a: Handle<JsBuffer> = cx.argument::<JsBuffer>(0)?;
+    let pub_key_b: Handle<JsBuffer> = cx.argument::<JsBuffer>(1)?;
+    let augmented = util::buffer_to_private_key(&cx, pub_key_a)
+        .augment_minus(&util::buffer_to_private_key(&cx, pub_key_b));
+
+    Ok(util::bytes_to_buffer(&mut cx, &augmented.to_bytes())?)
 }

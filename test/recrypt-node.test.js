@@ -466,4 +466,30 @@ describe("Recrypt-Node", () => {
             expect(transformKeyBytes).toHaveLength(672);
         });
     });
+
+    describe("addPrivateKeys", () => {
+        it("should add together the provided keys", () => {
+            //prettier-ignore
+            const key1 = Buffer.from([1, 2, 0, 221, 116, 9, 241, 149, 253, 82, 219, 45, 60, 186, 93, 114, 202, 103, 9, 191, 29, 148, 18, 27, 243, 116, 136, 1, 180, 1, 1, 0]);
+            //prettier-ignore
+            const key2 = Buffer.from([1, 1, 1, 104, 32, 121, 170, 221, 21, 229, 188, 159, 140, 164, 44, 173, 30, 151, 210, 60, 34, 10, 160, 186, 168, 36, 102, 174, 64, 0, 0, 1]);
+            expect(recrypt.addPrivateKeys(key1, key2)).toEqual(
+                //prettier-ignore
+                Buffer.from([2, 3, 2, 69, 148, 131, 156, 115, 19, 56, 151, 204, 201, 94, 138, 31, 232, 254, 219, 251, 63, 158, 178, 214, 155, 152, 238, 175, 244, 1, 1, 1])
+            );
+        });
+    });
+
+    describe("subtractPrivateKeys", () => {
+        it("should subtract the provided keys", () => {
+            //prettier-ignore
+            const key1 = Buffer.from([1, 2, 0, 221, 116, 9, 241, 149, 253, 82, 219, 45, 60, 186, 93, 114, 202, 103, 9, 191, 29, 148, 18, 27, 243, 116, 136, 1, 180, 1, 1, 0]);
+            //prettier-ignore
+            const key2 = Buffer.from([1, 1, 1, 104, 32, 121, 170, 221, 21, 229, 188, 159, 140, 164, 44, 173, 30, 151, 210, 60, 34, 10, 160, 186, 168, 36, 102, 174, 64, 0, 0, 1]);
+            expect(recrypt.subtractPrivateKeys(key1, key2)).toEqual(
+                //prettier-ignore
+                Buffer.from([0, 0, 255, 117, 83, 144, 70, 184, 231, 109, 30, 141, 176, 22, 48, 197, 171, 207, 55, 130, 251, 137, 113, 97, 75, 80, 33, 83, 116, 1, 0, 255])
+            );
+        });
+    });
 });
