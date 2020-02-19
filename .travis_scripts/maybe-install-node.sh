@@ -4,7 +4,7 @@
 
 if [ -z "${IMAGE}" ] ; then
     # install our own yarn to make things work on osx
-    curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.10.1
+    curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.22.0
     export PATH=$HOME/.yarn/bin:$PATH
 
     # install our own nodejs to get a reasonable version if outside docker
