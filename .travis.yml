@@ -95,6 +95,11 @@ jobs:
               - node publish.js --publish
 
 before_install:
+  - export NVS_HOME=$ProgramData/nvs
+  - git clone --single-branch https://github.com/jasongin/nvs $NVS_HOME
+  - source $NVS_HOME/nvs.sh
+  - nvs --version
+  - nvs add $TRAVIS_NODE_VERSION && nvs use $TRAVIS_NODE_VERSION
     - ./.travis_scripts/maybe-start-docker.sh
 
 install:
