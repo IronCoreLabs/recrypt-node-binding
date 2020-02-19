@@ -1,3 +1,15 @@
+## 0.7.0
+
+### Breaking Changes
+
+-   Removed support for Node 8.
+
+### Changed
+
+-   Added Windows builds.
+-   Added method `addPrivateKeys(privKeyA: PrivateKey, privKeyB: PrivateKey): PrivateKey` which takes two private keys and adds them together to return a new private key.
+-   Added method `subtractPrivateKeys(privKeyA: PrivateKey, privKeyB: PrivateKey): PrivateKey` which takes two private keys and subtracts `privKeyB` from `privKeyA` to return a new private key.
+
 ## 0.6.1
 
 ### Breaking Changes
