@@ -24,7 +24,7 @@ jobs:
           os: linux
           env:
               - SKIP_DEPLOY=0
-              - IMAGE=10-alpine3.11
+              - IMAGE=10-alpine3.9
               - INDOCKER="docker exec target"
           if: tag =~ /^\d+\.\d+\.\d+/ OR branch = master OR type = pull_request
         - name: "OSX - Node 10"
