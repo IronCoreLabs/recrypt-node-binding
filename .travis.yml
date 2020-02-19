@@ -14,25 +14,6 @@ jobs:
     include:
         # PRs, pushes to master, and tags build on all target arches
         # if this is release tag, the resultant binary will be uploaded to github
-        - name: "Linux - Node 8 - glibc"
-          os: linux
-          env:
-              - TRAVIS_NODE_VERSION="8"
-              - SKIP_DEPLOY=0
-          if: tag =~ /^\d+\.\d+\.\d+/ OR branch = master OR type = pull_request
-        - name: "Linux - Node 8 - musl"
-          os: linux
-          env:
-              - SKIP_DEPLOY=0
-              - IMAGE=8-alpine
-              - INDOCKER="docker exec target"
-          if: tag =~ /^\d+\.\d+\.\d+/ OR branch = master OR type = pull_request
-        - name: "OSX - Node 8"
-          os: osx
-          env:
-              - TRAVIS_NODE_VERSION="8"
-              - SKIP_DEPLOY=0
-          if: tag =~ /^\d+\.\d+\.\d+/ OR branch = master OR type = pull_request
         - name: "Linux - Node 10 - glibc"
           os: linux
           env:
@@ -77,7 +58,7 @@ jobs:
           name: "Publish to npm"
           os: linux
           env:
-              - TRAVIS_NODE_VERSION="8"
+              - TRAVIS_NODE_VERSION="10"
               - SKIP_DEPLOY=1
 
               # NPM_TOKEN
