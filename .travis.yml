@@ -14,12 +14,12 @@ jobs:
     include:
         # PRs, pushes to master, and tags build on all target arches
         # if this is release tag, the resultant binary will be uploaded to github
-        # - name: "Linux - Node 10 - glibc"
-        #   os: linux
-        #   env:
-        #       - TRAVIS_NODE_VERSION="10"
-        #       - SKIP_DEPLOY=0
-        #   if: tag =~ /^\d+\.\d+\.\d+/ OR branch = master OR type = pull_request
+        - name: "Linux - Node 10 - glibc"
+          os: linux
+          env:
+              - TRAVIS_NODE_VERSION="10"
+              - SKIP_DEPLOY=0
+          if: tag =~ /^\d+\.\d+\.\d+/ OR branch = master OR type = pull_request
         # - name: "Linux - Node 10 - musl"
         #   os: linux
         #   env:
