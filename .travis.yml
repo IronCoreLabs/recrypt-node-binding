@@ -14,47 +14,47 @@ jobs:
     include:
         # PRs, pushes to master, and tags build on all target arches
         # if this is release tag, the resultant binary will be uploaded to github
-        - name: "Linux - Node 10 - glibc"
-          os: linux
-          env:
-              - TRAVIS_NODE_VERSION="10"
-              - SKIP_DEPLOY=0
-          if: tag =~ /^\d+\.\d+\.\d+/ OR branch = master OR type = pull_request
-        - name: "Linux - Node 10 - musl"
-          os: linux
-          env:
-              - SKIP_DEPLOY=0
-              # Node 10 and Alpine 3.10/3.11 do not play well together and causes a random
-              # segfault when we try to run jest. So use Alpine 3.9 which does work.
-              # Ref: https://github.com/nodejs/docker-node/issues/1158
-              - IMAGE=10-alpine3.9
-              - INDOCKER="docker exec target"
-          if: tag =~ /^\d+\.\d+\.\d+/ OR branch = master OR type = pull_request
-        - name: "OSX - Node 10"
-          os: osx
-          env:
-              - TRAVIS_NODE_VERSION="10"
-              - SKIP_DEPLOY=0
-          if: tag =~ /^\d+\.\d+\.\d+/ OR branch = master OR type = pull_request
-        - name: "Linux - Node 12 - glibc"
-          os: linux
-          env:
-              - TRAVIS_NODE_VERSION="12"
-              - SKIP_DEPLOY=0
-          if: tag =~ /^\d+\.\d+\.\d+/ OR branch = master OR type = pull_request
-        - name: "Linux - Node 12 - musl"
-          os: linux
-          env:
-              - SKIP_DEPLOY=0
-              - IMAGE=12-alpine
-              - INDOCKER="docker exec target"
-          if: tag =~ /^\d+\.\d+\.\d+/ OR branch = master OR type = pull_request
-        - name: "OSX - Node 12"
-          os: osx
-          env:
-              - TRAVIS_NODE_VERSION="12"
-              - SKIP_DEPLOY=0
-          if: tag =~ /^\d+\.\d+\.\d+/ OR branch = master OR type = pull_request
+        # - name: "Linux - Node 10 - glibc"
+        #   os: linux
+        #   env:
+        #       - TRAVIS_NODE_VERSION="10"
+        #       - SKIP_DEPLOY=0
+        #   if: tag =~ /^\d+\.\d+\.\d+/ OR branch = master OR type = pull_request
+        # - name: "Linux - Node 10 - musl"
+        #   os: linux
+        #   env:
+        #       - SKIP_DEPLOY=0
+        #       # Node 10 and Alpine 3.10/3.11 do not play well together and causes a random
+        #       # segfault when we try to run jest. So use Alpine 3.9 which does work.
+        #       # Ref: https://github.com/nodejs/docker-node/issues/1158
+        #       - IMAGE=10-alpine3.9
+        #       - INDOCKER="docker exec target"
+        #   if: tag =~ /^\d+\.\d+\.\d+/ OR branch = master OR type = pull_request
+        # - name: "OSX - Node 10"
+        #   os: osx
+        #   env:
+        #       - TRAVIS_NODE_VERSION="10"
+        #       - SKIP_DEPLOY=0
+        #   if: tag =~ /^\d+\.\d+\.\d+/ OR branch = master OR type = pull_request
+        # - name: "Linux - Node 12 - glibc"
+        #   os: linux
+        #   env:
+        #       - TRAVIS_NODE_VERSION="12"
+        #       - SKIP_DEPLOY=0
+        #   if: tag =~ /^\d+\.\d+\.\d+/ OR branch = master OR type = pull_request
+        # - name: "Linux - Node 12 - musl"
+        #   os: linux
+        #   env:
+        #       - SKIP_DEPLOY=0
+        #       - IMAGE=12-alpine
+        #       - INDOCKER="docker exec target"
+        #   if: tag =~ /^\d+\.\d+\.\d+/ OR branch = master OR type = pull_request
+        # - name: "OSX - Node 12"
+        #   os: osx
+        #   env:
+        #       - TRAVIS_NODE_VERSION="12"
+        #       - SKIP_DEPLOY=0
+        #   if: tag =~ /^\d+\.\d+\.\d+/ OR branch = master OR type = pull_request
         - name: "Windows - Node 12"
           os: windows
           env:
