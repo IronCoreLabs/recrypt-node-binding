@@ -52,9 +52,7 @@ fs.writeFileSync("./dist/package.json", JSON.stringify(npmPackageJson, null, 2))
 
 shell.mkdir("./bin-package");
 shell.cp("./native/index.node", "./bin-package");
-shell.pushd("./node_modules/.bin");
-shell.exec("node-pre-gyp package");
-shell.popd();
+shell.exec("node_modules/.bin/node-pre-gyp package");
 var tgz = shell.exec("find ./build -name *.tar.gz");
 shell.cp(tgz, "./bin-package/");
 shell.pushd("./dist");
