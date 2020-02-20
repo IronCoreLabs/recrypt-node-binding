@@ -7,8 +7,8 @@ if [ -z "${IMAGE}" ] ; then
 	git clone --branch v1.5.4 --depth 1 https://github.com/jasongin/nvs ~/.nvs
 	. ~/.nvs/nvs.sh
 	nvs --version
-	nvs add $NODEJS_VERSION
-	nvs use $NODEJS_VERSION
+	nvs add $TRAVIS_NODE_VERSION
+	nvs use $TRAVIS_NODE_VERSION
 	node --version
 
     # install our own yarn to make things work on osx
