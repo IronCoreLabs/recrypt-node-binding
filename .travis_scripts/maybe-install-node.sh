@@ -4,6 +4,7 @@
 
 if [ -z "${IMAGE}" ] ; then
 
+	# install node via NVS -- supports Linux, OS X, and Windows
 	git clone --branch v1.5.4 --depth 1 https://github.com/jasongin/nvs ~/.nvs
 	. ~/.nvs/nvs.sh
 	nvs --version
@@ -15,6 +16,4 @@ if [ -z "${IMAGE}" ] ; then
     curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.22.0
     export PATH=$HOME/.yarn/bin:$PATH
 
-    # install our own nodejs to get a reasonable version if outside docker
-    # rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm install $TRAVIS_NODE_VERSION
 fi
