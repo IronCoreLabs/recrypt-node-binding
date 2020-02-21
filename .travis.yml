@@ -62,7 +62,9 @@ jobs:
               - YARN_GPG=no
               - TRAVIS_NODE_VERSION="10"
               - SKIP_DEPLOY=0
-          install: rustup target add x86_64-pc-windows-msvc
+          install: 
+              - rustup target add x86_64-pc-windows-msvc
+              - source .travis_scripts/maybe-install-node.sh
           if: tag =~ /^\d+\.\d+\.\d+/ OR branch = master OR type = pull_request
         - name: "Windows - Node 12"
           os: windows
@@ -71,7 +73,9 @@ jobs:
               - YARN_GPG=no
               - TRAVIS_NODE_VERSION="12"
               - SKIP_DEPLOY=0
-          install: rustup target add x86_64-pc-windows-msvc
+          install: 
+              - rustup target add x86_64-pc-windows-msvc
+              - source .travis_scripts/maybe-install-node.sh
           if: tag =~ /^\d+\.\d+\.\d+/ OR branch = master OR type = pull_request
         # Publish to npm only on release tag
         - stage: publish
@@ -93,6 +97,7 @@ jobs:
 before_install:
     - ./.travis_scripts/maybe-start-docker.sh
 
+# this install not used by windows builds
 install:
     - source .travis_scripts/maybe-install-node.sh
 
