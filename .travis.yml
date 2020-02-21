@@ -58,6 +58,7 @@ jobs:
         - name: "Windows - Node 12"
           os: windows
           env:
+              - YARN_GPG=no
               - TRAVIS_NODE_VERSION="12"
               - SKIP_DEPLOY=0
           if: tag =~ /^\d+\.\d+\.\d+/ OR branch = master OR type = pull_request
