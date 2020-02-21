@@ -103,6 +103,7 @@ before_script:
     - ${INDOCKER} rustup component add rustfmt-preview
     - ${INDOCKER} yarn --ignore-scripts
 script:
+    - ${INDOCKER} node testWindowsBs.js
     - ${INDOCKER} /bin/sh -c "cd native/ && cargo fmt -- --check"
     - ${INDOCKER} node publish.js
 
