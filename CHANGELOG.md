@@ -1,3 +1,9 @@
+## 0.7.1
+
+### Changed
+
+- Added support for Node 10/12 on Windows
+
 ## 0.7.0
 
 ### Breaking Changes

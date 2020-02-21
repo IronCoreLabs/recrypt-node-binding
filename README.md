@@ -14,6 +14,8 @@ This library uses the [Neon Bindings](https://www.neon-bindings.com) toolchain t
 | Linux x64 - glibc     | ✓       | ✓       |
 | Linux x64 - musl-libc | ✓       | ✓       |
 | OSX x64               | ✓       | ✓       |
+| Windows x64           | ✓       | ✓       |
+| Windows x64           | ✓       | ✓       |
 
 ## Install
 
