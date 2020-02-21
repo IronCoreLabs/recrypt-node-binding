@@ -62,6 +62,7 @@ jobs:
               - YARN_GPG=no
               - TRAVIS_NODE_VERSION="10"
               - SKIP_DEPLOY=0
+          install: rustup target add x86_64-pc-windows-msvc
           if: tag =~ /^\d+\.\d+\.\d+/ OR branch = master OR type = pull_request
         - name: "Windows - Node 12"
           os: windows
@@ -70,6 +71,7 @@ jobs:
               - YARN_GPG=no
               - TRAVIS_NODE_VERSION="12"
               - SKIP_DEPLOY=0
+          install: rustup target add x86_64-pc-windows-msvc
           if: tag =~ /^\d+\.\d+\.\d+/ OR branch = master OR type = pull_request
         # Publish to npm only on release tag
         - stage: publish
@@ -89,16 +91,10 @@ jobs:
               - node publish.js --publish
 
 before_install:
-  # - export NVS_HOME=$ProgramData/nvs
-  # - git clone --single-branch https://github.com/jasongin/nvs $NVS_HOME
-  # - source $NVS_HOME/nvs.sh
-  # - nvs --version
-  # - nvs add $TRAVIS_NODE_VERSION && nvs use $TRAVIS_NODE_VERSION
     - ./.travis_scripts/maybe-start-docker.sh
 
 install:
     - source .travis_scripts/maybe-install-node.sh
-    - rustup target add x86_64-pc-windows-msvc
 
 notifications:
     email:
