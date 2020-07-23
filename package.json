@@ -32,12 +32,12 @@
         "node-pre-gyp": "^0.14.0"
     },
     "devDependencies": {
-        "@types/node": "^12.12.27",
+        "@types/node": "^12.12.51",
         "benchmark": "^2.1.4",
-        "jest": "^25.1.0",
+        "jest": "^26.1.0",
         "jest-extended": "^0.11.5",
-        "neon-cli": "^0.3.3",
-        "shelljs": "^0.8.3"
+        "neon-cli": "^0.4.0",
+        "shelljs": "^0.8.4"
     },
     "prettier": {
         "printWidth": 160,
