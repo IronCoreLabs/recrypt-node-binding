@@ -29,7 +29,7 @@
         "test": "jest"
     },
     "dependencies": {
-        "node-pre-gyp": "^0.14.0"
+        "node-pre-gyp": "^0.15.0"
     },
     "devDependencies": {
         "@types/node": "^12.12.51",
