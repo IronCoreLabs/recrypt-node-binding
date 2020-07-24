@@ -1,3 +1,9 @@
+## 0.7.2
+
+### Changed
+
+- Updated all JS and Rust library dependencies
+
 ## 0.7.1
 
 ### Changed
