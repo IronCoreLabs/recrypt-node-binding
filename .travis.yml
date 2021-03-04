@@ -12,14 +12,14 @@ stages:
 
 jobs:
     include:
-        # PRs, pushes to master, and tags build on all target arches
+        # PRs, pushes to main, and tags build on all target arches
         # if this is release tag, the resultant binary will be uploaded to github
         - name: "Linux - Node 10 - glibc"
           os: linux
           env:
               - TRAVIS_NODE_VERSION="10"
               - SKIP_DEPLOY=0
-          if: tag =~ /^\d+\.\d+\.\d+/ OR branch = master OR type = pull_request
+          if: tag =~ /^\d+\.\d+\.\d+/ OR branch = main OR type = pull_request
         - name: "Linux - Node 10 - musl"
           os: linux
           env:
@@ -29,32 +29,32 @@ jobs:
               # Ref: https://github.com/nodejs/docker-node/issues/1158
               - IMAGE=10-alpine3.9
               - INDOCKER="docker exec target"
-          if: tag =~ /^\d+\.\d+\.\d+/ OR branch = master OR type = pull_request
+          if: tag =~ /^\d+\.\d+\.\d+/ OR branch = main OR type = pull_request
         - name: "OSX - Node 10"
           os: osx
           env:
               - TRAVIS_NODE_VERSION="10"
               - SKIP_DEPLOY=0
-          if: tag =~ /^\d+\.\d+\.\d+/ OR branch = master OR type = pull_request
+          if: tag =~ /^\d+\.\d+\.\d+/ OR branch = main OR type = pull_request
         - name: "Linux - Node 12 - glibc"
           os: linux
           env:
               - TRAVIS_NODE_VERSION="12"
               - SKIP_DEPLOY=0
-          if: tag =~ /^\d+\.\d+\.\d+/ OR branch = master OR type = pull_request
+          if: tag =~ /^\d+\.\d+\.\d+/ OR branch = main OR type = pull_request
         - name: "Linux - Node 12 - musl"
           os: linux
           env:
               - SKIP_DEPLOY=0
               - IMAGE=12-alpine
               - INDOCKER="docker exec target"
-          if: tag =~ /^\d+\.\d+\.\d+/ OR branch = master OR type = pull_request
+          if: tag =~ /^\d+\.\d+\.\d+/ OR branch = main OR type = pull_request
         - name: "OSX - Node 12"
           os: osx
           env:
               - TRAVIS_NODE_VERSION="12"
               - SKIP_DEPLOY=0
-          if: tag =~ /^\d+\.\d+\.\d+/ OR branch = master OR type = pull_request
+          if: tag =~ /^\d+\.\d+\.\d+/ OR branch = main OR type = pull_request
         - name: "Windows - Node 10"
           os: windows
           env:
@@ -62,10 +62,10 @@ jobs:
               - YARN_GPG=no
               - TRAVIS_NODE_VERSION="10"
               - SKIP_DEPLOY=0
-          install: 
+          install:
               - rustup target add x86_64-pc-windows-msvc
               - source .travis_scripts/maybe-install-node.sh
-          if: tag =~ /^\d+\.\d+\.\d+/ OR branch = master OR type = pull_request
+          if: tag =~ /^\d+\.\d+\.\d+/ OR branch = main OR type = pull_request
         - name: "Windows - Node 12"
           os: windows
           env:
@@ -73,10 +73,10 @@ jobs:
               - YARN_GPG=no
               - TRAVIS_NODE_VERSION="12"
               - SKIP_DEPLOY=0
-          install: 
+          install:
               - rustup target add x86_64-pc-windows-msvc
               - source .travis_scripts/maybe-install-node.sh
-          if: tag =~ /^\d+\.\d+\.\d+/ OR branch = master OR type = pull_request
+          if: tag =~ /^\d+\.\d+\.\d+/ OR branch = main OR type = pull_request
         # Publish to npm only on release tag
         - stage: publish
           name: "Publish to npm"
