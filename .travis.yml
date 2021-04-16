@@ -1,6 +1,6 @@
 language: rust
 rust:
-    - 1.41.0
+    - 1.48.0
 
 services:
     - docker
@@ -77,7 +77,7 @@ jobs:
               - rustup target add x86_64-pc-windows-msvc
               - source .travis_scripts/maybe-install-node.sh
           if: tag =~ /^\d+\.\d+\.\d+/ OR branch = main OR type = pull_request
-          - name: "Linux - Node 14 - glibc"
+        - name: "Linux - Node 14 - glibc"
           os: linux
           env:
               - TRAVIS_NODE_VERSION="14"
