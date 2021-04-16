@@ -112,7 +112,7 @@ jobs:
           name: "Publish to npm"
           os: linux
           env:
-              - TRAVIS_NODE_VERSION="10"
+              - TRAVIS_NODE_VERSION="14"
               - SKIP_DEPLOY=1
 
               # NPM_TOKEN
