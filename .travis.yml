@@ -77,6 +77,36 @@ jobs:
               - rustup target add x86_64-pc-windows-msvc
               - source .travis_scripts/maybe-install-node.sh
           if: tag =~ /^\d+\.\d+\.\d+/ OR branch = main OR type = pull_request
+          - name: "Linux - Node 14 - glibc"
+          os: linux
+          env:
+              - TRAVIS_NODE_VERSION="14"
+              - SKIP_DEPLOY=0
+          if: tag =~ /^\d+\.\d+\.\d+/ OR branch = main OR type = pull_request
+        - name: "Linux - Node 14 - musl"
+          os: linux
+          env:
+              - SKIP_DEPLOY=0
+              - IMAGE=14-alpine
+              - INDOCKER="docker exec target"
+          if: tag =~ /^\d+\.\d+\.\d+/ OR branch = main OR type = pull_request
+        - name: "OSX - Node 14"
+          os: osx
+          env:
+              - TRAVIS_NODE_VERSION="14"
+              - SKIP_DEPLOY=0
+          if: tag =~ /^\d+\.\d+\.\d+/ OR branch = main OR type = pull_request
+        - name: "Windows - Node 14"
+          os: windows
+          env:
+              # Stop Windows builds from hanging after completion https://travis-ci.community/t/timeout-after-build-finished-and-succeeded/1336
+              - YARN_GPG=no
+              - TRAVIS_NODE_VERSION="14"
+              - SKIP_DEPLOY=0
+          install:
+              - rustup target add x86_64-pc-windows-msvc
+              - source .travis_scripts/maybe-install-node.sh
+          if: tag =~ /^\d+\.\d+\.\d+/ OR branch = main OR type = pull_request
         # Publish to npm only on release tag
         - stage: publish
           name: "Publish to npm"
