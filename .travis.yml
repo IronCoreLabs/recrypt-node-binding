@@ -116,7 +116,7 @@ jobs:
               - SKIP_DEPLOY=1
 
               # NPM_TOKEN
-              - secure: Jm9ax8QP+t8DhuDfU7ek4bH85XSAei8Ex5MmETr1A0+5ELQ6RnGcR9Z6PE4BZN4hTZkytmHePdJ4MvB5MfB0EBoZf2DHUbk/E0/stAFzQlsqu4WSDeHD1+LcoN9k4vg+3eVL8I7T7IMtt3mLiwrdaqbDO220UrQewiU+6DzsDIeAOAFCjYGurxdUbjfKv4P/5Fik2jmDQeu/+C70ZCkWq0jtisXke07Kj43+VGZCUfCxObg/9t3u6g7MyllF7CGLmxHXEgdDMSP56/PProqch5MlljSie/D1ze1LH5wpBcaex9fiGKnfOW23r8i8CG7EYSHaePcmBes6fwW1gcvQ5NmGSGFg0r0UZa82ux4X5SEEHfuU+F0ylU3COJGVGiZVD4vx6m+Gm2SffXsJ6ATU0MCU2ZFpwiEdVQxdCYDDXNqTk7WMiQP+UNiuHLZCKvs+caiRXTZlEVR33TzMooJY8BgU8jv3sHT3fI3O19Pii0hS3ymvM7M7LxPt6wKNk49chn4ouoTUbJZ4HEfomETgFc5/wp7Ozyoemx2Rf1pNQjx3KUFMCbzSuFVPyaIHjc2UViw/7svFzaHQlNTOkFBf9AxCyrrSmHP7VnXke/ujofHpdn9KSAFR2fs5VwLNuxKLcSf44ig9SNt37yO6c2JDA+heSE7aZ88E11NPRfyfyA0=
+              - secure: jmqOY1NsZTA03HZFwR64GK1juUADRfNEZ+4RUSjj05vxYJovLU8YtHRLoiZrKSrQDeOMdueCjONO3SjcZ/3/ZMo6fcFWR3VZcRAeEqzyTRoLQorPjcsMFVT1xBYWOT/9KBAI6/SoyFAsaLui7rZt3ZJbl5twNjC/e0jnpJa2kUIYLA3GtSBLjT6odeQu/AkxxOfBnhgpwb4+kP0fbSyZWRyPxq6ldnomL6QqeWfKWRx0NJ+2wx1InDC3moHPhYvQsTotRuGbyXSsl9md8DcVUhKdrmduqS0PrDyqYbIEorA9TdWO+fHEdlveuy7WAtM+YADIlhkX8318K4QjzdNyMFnoLitGMk76V64ak2119T9P3gG4aiYYBI/fn2nN2zDIbROK0PynPWHkWmQEKiZvsde58ooYjm5LG+jJQcLzFW/ME9yE6PmkmgxaSvvho/cABMgBPIla+AkQuDO0ckn7k192UOtVY/4iHqnYx/aYscxWlj5t38MSeb3eoZsK6f38ARtb0jdYkZkZpN7ACkWoiFr6eaXkuSijMay1dBZ7bd0MQ4rVIJ4/3UBicrvkuEDoF4E4ONxYHDtJWHCkzuVFFHR8Ix0zVt/KvWZBTCue/9c6nHvfBVFH0x2z+xw9j5kasScwn77oaQ/+mfaZNYcWdxNaq4Ct57nXHTlhZexSSIk=
           if: tag =~ /^\d+\.\d+\.\d+/
           before_install:
               - npm config set //registry.npmjs.org/:_authToken=$NPM_TOKEN
