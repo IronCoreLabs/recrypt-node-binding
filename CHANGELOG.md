@@ -1,14 +1,24 @@
+## 0.7.3
+
+### Breaking Changes
+
+None
+
+### Changed
+
+-   Added support for Node 14.
+
 ## 0.7.2
 
 ### Changed
 
-- Updated all JS and Rust library dependencies
+-   Updated all JS and Rust library dependencies
 
 ## 0.7.1
 
 ### Changed
 
-- Added support for Node 10/12 on Windows
+-   Added support for Node 10/12 on Windows
 
 ## 0.7.0
 

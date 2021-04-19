@@ -9,13 +9,12 @@ This library uses the [Neon Bindings](https://www.neon-bindings.com) toolchain t
 
 ## Supported Platforms
 
-|                       | Node 10 | Node 12 |
-| --------------------- | ------- | ------- |
-| Linux x64 - glibc     | ✓       | ✓       |
-| Linux x64 - musl-libc | ✓       | ✓       |
-| OSX x64               | ✓       | ✓       |
-| Windows x64           | ✓       | ✓       |
-| Windows x64           | ✓       | ✓       |
+|                       | Node 10 | Node 12 | Node 14 |
+| --------------------- | ------- | ------- | ------- |
+| Linux x64 - glibc     | ✓       | ✓       | ✓       |
+| Linux x64 - musl-libc | ✓       | ✓       | ✓       |
+| OSX x64               | ✓       | ✓       | ✓       |
+| Windows x64           | ✓       | ✓       | ✓       |
 
 ## Install
 
@@ -108,7 +107,7 @@ npm run compile
 or
 
 ```
-yarn run compile
+yarn compile
 ```
 
 This will produce an `index.node` file within the `native` directory. This file can then be included within a NodeJS file by simply requiring the file, e.g.
