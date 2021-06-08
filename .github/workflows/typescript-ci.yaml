@@ -50,9 +50,7 @@ jobs:
         version: latest
     - name: Setup sccache env variables
       if: steps.rust-cache.outputs.cache-hit != 'true'
-      run: 'echo "CC=$(which cc)" >> $GITHUB_ENV
-
-        echo "RUSTC_WRAPPER=$HOME/.cargo/bin/sccache" >> $GITHUB_ENV
+      run: 'echo "RUSTC_WRAPPER=$HOME/.cargo/bin/sccache" >> $GITHUB_ENV
 
         echo "AWS_ACCESS_KEY_ID=AKIAU2WBY6VDVHUO5WSN" >> $GITHUB_ENV
 
@@ -116,9 +114,7 @@ jobs:
         version: latest
     - name: Setup sccache env variables
       if: steps.rust-cache.outputs.cache-hit != 'true'
-      run: 'echo "CC=$(which cc)" >> $GITHUB_ENV
-
-        echo "RUSTC_WRAPPER=$HOME/.cargo/bin/sccache" >> $GITHUB_ENV
+      run: 'echo "RUSTC_WRAPPER=$HOME/.cargo/bin/sccache" >> $GITHUB_ENV
 
         echo "AWS_ACCESS_KEY_ID=AKIAU2WBY6VDVHUO5WSN" >> $GITHUB_ENV
 
