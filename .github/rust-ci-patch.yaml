@@ -1,6 +1,8 @@
 # Tests are run from the Typescript side, not here.
 - op: remove
   path: /jobs/cargo-test
+- op: remove
+  path: /jobs/coverage
 
 # Everything needs to run in the native directory.
 - op: add

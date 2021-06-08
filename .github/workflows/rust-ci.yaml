@@ -14,58 +14,6 @@ name: Rust CI
 env:
   MIN_COVERAGE: '24'
 jobs:
-  coverage:
-    runs-on: ubuntu-20.04
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions-rs/toolchain@v1
-      with:
-        profile: minimal
-        toolchain: 1.51.0
-        override: true
-    - uses: Swatinem/rust-cache@v1
-      id: rust-cache
-    - name: Install sccache
-      if: steps.rust-cache.outputs.cache-hit != 'true'
-      uses: IronCoreLabs/rust-install@v0.1.0
-      with:
-        crate: sccache
-        accesskey: AKIAU2WBY6VDTC563V7G
-        secretkey: ${{ secrets.TOOL_CACHE_SECRET_KEY }}
-        os: ubuntu-20.04
-        version: latest
-    - name: Setup sccache env variables
-      if: steps.rust-cache.outputs.cache-hit != 'true'
-      run: 'echo "CC=$(which cc)" >> $GITHUB_ENV
-
-        echo "RUSTC_WRAPPER=$HOME/.cargo/bin/sccache" >> $GITHUB_ENV
-
-        echo "AWS_ACCESS_KEY_ID=AKIAU2WBY6VDVHUO5WSN" >> $GITHUB_ENV
-
-        echo "AWS_SECRET_ACCESS_KEY=${{ secrets.SCCACHE_AWS_SECRET }}" >> $GITHUB_ENV
-
-        echo "SCCACHE_BUCKET=sccache-rust" >> $GITHUB_ENV
-
-        echo "SCCACHE_S3_USE_SSL=true" >> $GITHUB_ENV
-
-        '
-    - name: Run cargo-tarpaulin
-      uses: actions-rs/tarpaulin@v0.1
-      with:
-        version: latest
-        args: --ignore-tests --out html --out xml
-    - name: Archive code coverage results
-      uses: actions/upload-artifact@v2
-      with:
-        name: code-coverage-report
-        path: tarpaulin-report.html
-    - uses: 5monkeys/cobertura-action@master
-      with:
-        path: cobertura.xml
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
-        only_changed_files: true
-        show_line: true
-        minimum_coverage: ${{ env.MIN_COVERAGE }}
   format:
     runs-on: ubuntu-20.04
     steps:
