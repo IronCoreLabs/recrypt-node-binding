@@ -9,8 +9,8 @@ name = "recrypt_node"
 crate-type = ["cdylib"]
 
 [dependencies]
-recrypt = "~0.11"
 neon = "0.4"
+recrypt = "~0.11"
 
 [build-dependencies]
 neon-build = "0.4"
