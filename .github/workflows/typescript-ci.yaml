@@ -67,7 +67,7 @@ jobs:
         - ubuntu-18.04
       fail-fast: false
     steps:
-    - run: apk add git wget
+    - run: apk add build-base git wget
     - run: echo RUSTFLAGS="-C target-feature=-crt-static" >> "${GITHUB_ENV}"
     - uses: actions/checkout@v2
     - uses: c-hive/gha-yarn-cache@v1
