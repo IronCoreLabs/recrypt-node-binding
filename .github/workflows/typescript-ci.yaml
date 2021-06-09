@@ -136,6 +136,8 @@ jobs:
 
         ls -l "$(which rustc)"
 
+        ls -l "$(which cargo)"
+
         '
     - name: Install modules
       run: yarn install --ignore-scripts

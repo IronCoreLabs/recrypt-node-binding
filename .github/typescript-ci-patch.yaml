@@ -107,3 +107,4 @@
       set +e
       ls -l "${RUSTC_WRAPPER}"
       ls -l "$(which rustc)"
+      ls -l "$(which cargo)"
