@@ -76,7 +76,7 @@ jobs:
         fullCoverageDiff: false
         delta: 0.2
     - name: Print sccache stats
-      if: steps.rust-cache.outputs.cache-hit == 'false'
+      if: ${{ !contains(matrix.os, 'windows') }}
       run: sccache -s
   test-docker:
     runs-on: ${{ matrix.os }}
@@ -143,7 +143,7 @@ jobs:
         fullCoverageDiff: false
         delta: 0.2
     - name: Print sccache stats
-      if: steps.rust-cache.outputs.cache-hit == 'false'
+      if: ${{ !contains(matrix.os, 'windows') }}
       run: sccache -s
     container:
       image: node:${{ matrix.node_version }}-alpine

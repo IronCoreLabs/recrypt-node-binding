@@ -66,6 +66,11 @@
     if: steps.rust-cache.outputs.cache-hit == 'false'
     run: sccache -s
 
+# Don't check test coverage on Windows, because anuraag016/Jest-Coverage-Diff calls '/usr/bin/git'.
+- op: add
+  path: /jobs/test/steps/10/if
+  value: ${{ !contains(matrix.os, 'windows') }}
+
 # Modify the yarn actions.
 - op: replace
   path: /jobs/test/steps/7/run
