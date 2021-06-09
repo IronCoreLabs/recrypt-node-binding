@@ -64,3 +64,7 @@
   path: /jobs/test-docker/steps/0
   value:
     run: apk add git wget
+- op: add
+  path: /jobs/test-docker/steps/1
+  value:
+    run: echo RUSTFLAGS="-C target-feature=-crt-static" >> "${GITHUB_ENV}"
