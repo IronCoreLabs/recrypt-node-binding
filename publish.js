@@ -35,7 +35,6 @@ shell.rm("-rf", "./build");
 shell.exec("yarn install --ignore-scripts");
 shell.exec("yarn run clean");
 shell.pushd("./native");
-shell.exec("cargo update");
 shell.popd();
 shell.exec("yarn run compile");
 
