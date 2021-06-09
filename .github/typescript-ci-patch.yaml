@@ -63,7 +63,7 @@
 - op: add
   path: /jobs/test-docker/steps/0
   value:
-    run: apk add build-base git wget
+    run: apk add build-base git python3 wget
 - op: add
   path: /jobs/test-docker/steps/1
   value:
