@@ -64,7 +64,12 @@
   path: /jobs/test-docker/steps/0
   value:
     run: apk add build-base git python3 wget
+# hack to get dynlibs working with musl
+# https://github.com/rust-lang/rust/pull/55163#issuecomment-436631090
 - op: add
   path: /jobs/test-docker/steps/1
   value:
     run: echo RUSTFLAGS="-C target-feature=-crt-static" >> "${GITHUB_ENV}"
+# We don't need to run setup-node inside of a node docker image.
+- op: remove
+  path: /jobs/test-docker/steps/4
