@@ -14,6 +14,9 @@
       - macos-10.15
       - ubuntu-20.04
       - windows-2019
+- op: add
+  path: /jobs/test/strategy/fail-fast
+  value: true
 - op: replace
   path: /jobs/test/runs-on
   value: "${{ matrix.os }}"
@@ -30,13 +33,14 @@
 - op: add
   path: /jobs/test/steps/4
   value:
+    if: ${{ !contains(matrix.os, 'macos') }}
     uses: Swatinem/rust-cache@v1
     id: rust-cache
 - op: add
   path: /jobs/test/steps/5
   value:
     name: Install sccache
-    if: steps.rust-cache.outputs.cache-hit != 'true'
+    if: steps.rust-cache.outputs.cache-hit == 'false'
     uses: IronCoreLabs/rust-install@v0.1.0
     with:
       crate: sccache
@@ -48,7 +52,7 @@
   path: /jobs/test/steps/6
   value:
     name: Setup sccache env variables
-    if: steps.rust-cache.outputs.cache-hit != 'true'
+    if: steps.rust-cache.outputs.cache-hit == 'false'
     run: |
       echo "RUSTC_WRAPPER=$HOME/.cargo/bin/sccache" >> $GITHUB_ENV
       echo "AWS_ACCESS_KEY_ID=AKIAU2WBY6VDVHUO5WSN" >> $GITHUB_ENV
@@ -59,7 +63,7 @@
   path: /jobs/test/steps/-
   value:
     name: Print sccache stats
-    if: steps.rust-cache.outputs.cache-hit != 'true'
+    if: steps.rust-cache.outputs.cache-hit == 'false'
     run: sccache -s
 
 # Modify the yarn actions.

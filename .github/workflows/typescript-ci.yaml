@@ -26,6 +26,7 @@ jobs:
         - macos-10.15
         - ubuntu-20.04
         - windows-2019
+      fail-fast: true
     steps:
     - uses: actions/checkout@v2
     - uses: c-hive/gha-yarn-cache@v1
@@ -37,10 +38,11 @@ jobs:
         profile: minimal
         toolchain: ${{ matrix.rust_version }}
         override: true
-    - uses: Swatinem/rust-cache@v1
+    - if: ${{ !contains(matrix.os, 'macos') }}
+      uses: Swatinem/rust-cache@v1
       id: rust-cache
     - name: Install sccache
-      if: steps.rust-cache.outputs.cache-hit != 'true'
+      if: steps.rust-cache.outputs.cache-hit == 'false'
       uses: IronCoreLabs/rust-install@v0.1.0
       with:
         crate: sccache
@@ -49,7 +51,7 @@ jobs:
         os: ubuntu-20.04
         version: latest
     - name: Setup sccache env variables
-      if: steps.rust-cache.outputs.cache-hit != 'true'
+      if: steps.rust-cache.outputs.cache-hit == 'false'
       run: 'echo "RUSTC_WRAPPER=$HOME/.cargo/bin/sccache" >> $GITHUB_ENV
 
         echo "AWS_ACCESS_KEY_ID=AKIAU2WBY6VDVHUO5WSN" >> $GITHUB_ENV
@@ -74,7 +76,7 @@ jobs:
         fullCoverageDiff: false
         delta: 0.2
     - name: Print sccache stats
-      if: steps.rust-cache.outputs.cache-hit != 'true'
+      if: steps.rust-cache.outputs.cache-hit == 'false'
       run: sccache -s
   test-docker:
     runs-on: ${{ matrix.os }}
@@ -90,6 +92,7 @@ jobs:
         - beta
         os:
         - ubuntu-18.04
+      fail-fast: true
     steps:
     - uses: actions/checkout@v2
     - uses: c-hive/gha-yarn-cache@v1
@@ -101,10 +104,11 @@ jobs:
         profile: minimal
         toolchain: ${{ matrix.rust_version }}
         override: true
-    - uses: Swatinem/rust-cache@v1
+    - if: ${{ !contains(matrix.os, 'macos') }}
+      uses: Swatinem/rust-cache@v1
       id: rust-cache
     - name: Install sccache
-      if: steps.rust-cache.outputs.cache-hit != 'true'
+      if: steps.rust-cache.outputs.cache-hit == 'false'
       uses: IronCoreLabs/rust-install@v0.1.0
       with:
         crate: sccache
@@ -113,7 +117,7 @@ jobs:
         os: ubuntu-20.04
         version: latest
     - name: Setup sccache env variables
-      if: steps.rust-cache.outputs.cache-hit != 'true'
+      if: steps.rust-cache.outputs.cache-hit == 'false'
       run: 'echo "RUSTC_WRAPPER=$HOME/.cargo/bin/sccache" >> $GITHUB_ENV
 
         echo "AWS_ACCESS_KEY_ID=AKIAU2WBY6VDVHUO5WSN" >> $GITHUB_ENV
@@ -138,7 +142,7 @@ jobs:
         fullCoverageDiff: false
         delta: 0.2
     - name: Print sccache stats
-      if: steps.rust-cache.outputs.cache-hit != 'true'
+      if: steps.rust-cache.outputs.cache-hit == 'false'
       run: sccache -s
     container:
       image: node:${{ matrix.node_version }}-alpine
