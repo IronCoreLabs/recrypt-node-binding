@@ -30,56 +30,21 @@
       profile: minimal
       toolchain: ${{ matrix.rust_version }}
       override: true
-- op: add
-  path: /jobs/test/steps/4
-  value:
-    if: ${{ !contains(matrix.os, 'macos') }}
-    uses: Swatinem/rust-cache@v1
-    id: rust-cache
-- op: add
-  path: /jobs/test/steps/5
-  value:
-    name: Install sccache
-    if: steps.rust-cache.outputs.cache-hit == 'false'
-    uses: IronCoreLabs/rust-install@v0.1.0
-    with:
-      crate: sccache
-      accesskey: AKIAU2WBY6VDTC563V7G
-      secretkey: ${{ secrets.TOOL_CACHE_SECRET_KEY }}
-      os: ubuntu-20.04
-      version: latest
-- op: add
-  path: /jobs/test/steps/6
-  value:
-    name: Setup sccache env variables
-    if: steps.rust-cache.outputs.cache-hit == 'false'
-    run: |
-      echo "RUSTC_WRAPPER=$HOME/.cargo/bin/sccache" >> $GITHUB_ENV
-      echo "AWS_ACCESS_KEY_ID=AKIAU2WBY6VDVHUO5WSN" >> $GITHUB_ENV
-      echo "AWS_SECRET_ACCESS_KEY=${{ secrets.SCCACHE_AWS_SECRET }}" >> $GITHUB_ENV
-      echo "SCCACHE_BUCKET=sccache-rust" >> $GITHUB_ENV
-      echo "SCCACHE_S3_USE_SSL=true" >> $GITHUB_ENV
-- op: add
-  path: /jobs/test/steps/-
-  value:
-    name: Print sccache stats
-    if: steps.rust-cache.outputs.cache-hit == 'false'
-    run: sccache -s
-
-# Only check coverage in one of the matrix job instances.
-- op: add
-  path: /jobs/test/steps/9/if
-  value: ${{ contains(matrix.os, 'ubuntu') && node_version == '10' && rust_version == 'stable' }}
 
 # Modify the yarn actions.
 - op: replace
-  path: /jobs/test/steps/7/run
+  path: /jobs/test/steps/4/run
   value: yarn install --ignore-scripts
 - op: add
-  path: /jobs/test/steps/8
+  path: /jobs/test/steps/5
   value:
     name: Compile
     run: yarn run compile
+
+# Only check coverage in one of the matrix job instances.
+- op: add
+  path: /jobs/test/steps/7/if
+  value: ${{ contains(matrix.os, 'ubuntu') && matrix.node_version == '10' && matrix.rust_version == 'stable' }}
 
 # Also run on musl. That means we need to run it in a Docker container. To do that, we copy the entire job and modify its
 # strategy/matrix.
@@ -98,10 +63,4 @@
 - op: add
   path: /jobs/test-docker/steps/0
   value:
-    run: apk add git wget build-base openssl-dev
-- op: remove
-  path: /jobs/test-docker/steps/5
-- op: remove
-  path: /jobs/test-docker/steps/6
-- op: remove
-  path: /jobs/test-docker/steps/7
+    run: apk add git wget
