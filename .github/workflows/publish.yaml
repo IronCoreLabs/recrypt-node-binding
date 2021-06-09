@@ -1,0 +1,99 @@
+# Creates and publishes assets for a new release.
+# To manually trigger this workflow, create a release in the GitHub UI.
+
+name: Publish
+
+'on':
+  # https://docs.github.com/en/developers/webhooks-and-events/webhook-events-and-payloads#release
+  release:
+    types:
+      - created
+
+jobs:
+  publish-github:
+    runs-on: ${{ matrix.os }}
+    container: ${{ matrix.container }}
+    strategy:
+      fail-fast: false
+      matrix:
+        node_version:
+          - '10'
+          - '12'
+          - '14'
+        os:
+          - macos-10.15
+          - ubuntu-20.04
+          - windows-2019
+        include:
+          # These entries must have a unique value of 'os' so they create new entries in the matrix instead of modifying existing
+          # ones.
+          - os: ubuntu-latest
+            node_version: '10'
+            container: '{"container": {"image": "node:${{ matrix.node_version }}-alpine"}}'
+          - os: ubuntu-latest
+            node_version: '12'
+            container: '{"container": {"image": "node:${{ matrix.node_version }}-alpine"}}'
+          - os: ubuntu-latest
+            node_version: '14'
+            container: '{"container": {"image": "node:${{ matrix.node_version }}-alpine"}}'
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.release.tag_name }}
+      - uses: c-hive/gha-yarn-cache@v1
+      - uses: actions/setup-node@v2.1.5
+        with:
+          node-version: ${{ matrix.node_version }}
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+      - name: Install modules
+        run: yarn install --ignore-scripts
+      - name: Build
+        id: build
+        run: |
+          node publish.js
+          cd bin-package
+          echo "::set-output name=asset::$(echo *.tar.gz)"
+      - name: Upload release asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.assets_url }}
+          asset_path: bin-package/${{ steps.build.outputs.asset }}
+          asset_name: ${{ steps.build.outputs.asset }}
+          asset_content_type: application/gzip
+
+  publish-npm:
+    needs:
+      - publish-github
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.release.tag_name }}
+      - uses: c-hive/gha-yarn-cache@v1
+      - uses: actions/setup-node@v2.1.5
+        with:
+          node-version: 14
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+      - name: Install modules
+        run: yarn install --ignore-scripts
+      - run: npm config set //registry.npmjs.org/:_authToken=$NPM_TOKEN
+      - name: Publish NPM release
+        run: node publish.js --publish
+      - name: Finalize GitHub release
+        uses: ncipollo/release-action@v1
+        with:
+          token: ${{ secrets.WORKFLOW_PAT }}
+          prerelease: false
+          allowUpdates: true
+          tag: ${{ github.event.release.tag_name }}
+          name: ${{ github.event.release.name }}
