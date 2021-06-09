@@ -16,7 +16,7 @@
       - windows-2019
 - op: add
   path: /jobs/test/strategy/fail-fast
-  value: true
+  value: false
 - op: replace
   path: /jobs/test/runs-on
   value: "${{ matrix.os }}"
