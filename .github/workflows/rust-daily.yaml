@@ -7,7 +7,6 @@ name: Rust Daily
   schedule:
   - cron: 0 14 * * *
   workflow_dispatch: null
-  pull_request: null
 jobs:
   cargo-check:
     runs-on: ubuntu-20.04
