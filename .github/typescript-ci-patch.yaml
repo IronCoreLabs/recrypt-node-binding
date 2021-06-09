@@ -66,10 +66,10 @@
     if: steps.rust-cache.outputs.cache-hit == 'false'
     run: sccache -s
 
-# Don't check test coverage on Windows, because anuraag016/Jest-Coverage-Diff calls '/usr/bin/git'.
+# Only check coverage in one of the matrix job instances.
 - op: add
   path: /jobs/test/steps/9/if
-  value: ${{ !contains(matrix.os, 'windows') }}
+  value: ${{ contains(matrix.os, 'ubuntu') && node_version == '10' && rust_version == 'stable' }}
 
 # Modify the yarn actions.
 - op: replace
@@ -98,13 +98,10 @@
 - op: add
   path: /jobs/test-docker/steps/0
   value:
-    run: apk add git wget
-# TODO Remove this debugging step.
-- op: add
-  path: /jobs/test-docker/steps/8
-  value:
-    run: |
-      set +e
-      ls -l "${RUSTC_WRAPPER}"
-      ls -l "$(which rustc)"
-      ls -l "$(which cargo)"
+    run: apk add git wget build-base openssl-dev
+- op: remove
+  path: /jobs/test-docker/steps/5
+- op: remove
+  path: /jobs/test-docker/steps/6
+- op: remove
+  path: /jobs/test-docker/steps/7

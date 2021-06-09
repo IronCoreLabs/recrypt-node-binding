@@ -70,7 +70,8 @@ jobs:
     - name: Run tests
       run: yarn run test
     - name: Check test coverage
-      if: ${{ !contains(matrix.os, 'windows') }}
+      if: ${{ contains(matrix.os, 'ubuntu') && node_version == '10' && rust_version
+        == 'stable' }}
       uses: anuraag016/Jest-Coverage-Diff@V1.1
       with:
         fullCoverageDiff: false
@@ -94,7 +95,7 @@ jobs:
         - ubuntu-18.04
       fail-fast: false
     steps:
-    - run: apk add git wget
+    - run: apk add git wget build-base openssl-dev
     - uses: actions/checkout@v2
     - uses: c-hive/gha-yarn-cache@v1
     - uses: actions/setup-node@v2.1.5
@@ -105,9 +106,6 @@ jobs:
         profile: minimal
         toolchain: ${{ matrix.rust_version }}
         override: true
-    - if: ${{ !contains(matrix.os, 'macos') }}
-      uses: Swatinem/rust-cache@v1
-      id: rust-cache
     - name: Install sccache
       if: steps.rust-cache.outputs.cache-hit == 'false'
       uses: IronCoreLabs/rust-install@v0.1.0
@@ -117,36 +115,13 @@ jobs:
         secretkey: ${{ secrets.TOOL_CACHE_SECRET_KEY }}
         os: ubuntu-20.04
         version: latest
-    - name: Setup sccache env variables
-      if: steps.rust-cache.outputs.cache-hit == 'false'
-      run: 'echo "RUSTC_WRAPPER=$HOME/.cargo/bin/sccache" >> $GITHUB_ENV
-
-        echo "AWS_ACCESS_KEY_ID=AKIAU2WBY6VDVHUO5WSN" >> $GITHUB_ENV
-
-        echo "AWS_SECRET_ACCESS_KEY=${{ secrets.SCCACHE_AWS_SECRET }}" >> $GITHUB_ENV
-
-        echo "SCCACHE_BUCKET=sccache-rust" >> $GITHUB_ENV
-
-        echo "SCCACHE_S3_USE_SSL=true" >> $GITHUB_ENV
-
-        '
-    - run: 'set +e
-
-        ls -l "${RUSTC_WRAPPER}"
-
-        ls -l "$(which rustc)"
-
-        ls -l "$(which cargo)"
-
-        '
     - name: Install modules
       run: yarn install --ignore-scripts
-    - name: Compile
-      run: yarn run compile
     - name: Run tests
       run: yarn run test
     - name: Check test coverage
-      if: ${{ !contains(matrix.os, 'windows') }}
+      if: ${{ contains(matrix.os, 'ubuntu') && node_version == '10' && rust_version
+        == 'stable' }}
       uses: anuraag016/Jest-Coverage-Diff@V1.1
       with:
         fullCoverageDiff: false
