@@ -70,13 +70,13 @@ jobs:
     - name: Run tests
       run: yarn run test
     - name: Check test coverage
-      if: github.base_ref != ''
+      if: ${{ !contains(matrix.os, 'windows') }}
       uses: anuraag016/Jest-Coverage-Diff@V1.1
       with:
         fullCoverageDiff: false
         delta: 0.2
     - name: Print sccache stats
-      if: ${{ !contains(matrix.os, 'windows') }}
+      if: steps.rust-cache.outputs.cache-hit == 'false'
       run: sccache -s
   test-docker:
     runs-on: ${{ matrix.os }}
@@ -144,13 +144,13 @@ jobs:
     - name: Run tests
       run: yarn run test
     - name: Check test coverage
-      if: github.base_ref != ''
+      if: ${{ !contains(matrix.os, 'windows') }}
       uses: anuraag016/Jest-Coverage-Diff@V1.1
       with:
         fullCoverageDiff: false
         delta: 0.2
     - name: Print sccache stats
-      if: ${{ !contains(matrix.os, 'windows') }}
+      if: steps.rust-cache.outputs.cache-hit == 'false'
       run: sccache -s
     container:
       image: node:${{ matrix.node_version }}-alpine
