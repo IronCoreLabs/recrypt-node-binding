@@ -94,7 +94,7 @@ jobs:
         - ubuntu-18.04
       fail-fast: true
     steps:
-    - run: cat /etc/os-release
+    - run: apk add git wget
     - uses: actions/checkout@v2
     - uses: c-hive/gha-yarn-cache@v1
     - uses: actions/setup-node@v2.1.5
@@ -128,6 +128,13 @@ jobs:
         echo "SCCACHE_BUCKET=sccache-rust" >> $GITHUB_ENV
 
         echo "SCCACHE_S3_USE_SSL=true" >> $GITHUB_ENV
+
+        '
+    - run: 'set +e
+
+        ls -l "${RUSTC_WRAPPER}"
+
+        ls -l "$(which rustc)"
 
         '
     - name: Install modules
