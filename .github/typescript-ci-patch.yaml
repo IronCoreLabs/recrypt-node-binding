@@ -89,3 +89,8 @@
   path: /jobs/test-docker/container
   value:
     image: node:${{ matrix.node_version }}-alpine
+# TODO Remove this debugging step.
+- op: add
+  path: /jobs/test-docker/steps/0
+  value:
+    run: cat /etc/os-release

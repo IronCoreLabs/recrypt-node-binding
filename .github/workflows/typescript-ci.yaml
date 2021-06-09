@@ -94,6 +94,7 @@ jobs:
         - ubuntu-18.04
       fail-fast: true
     steps:
+    - run: cat /etc/os-release
     - uses: actions/checkout@v2
     - uses: c-hive/gha-yarn-cache@v1
     - uses: actions/setup-node@v2.1.5
