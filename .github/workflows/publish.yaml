@@ -13,7 +13,7 @@ name: Publish
 jobs:
   publish-github:
     runs-on: ${{ matrix.os }}
-    container: ${{ fromJSON('{${{ matrix.container }}}') }}
+    container: ${{ fromJSON(matrix.container) }}
     strategy:
       fail-fast: false
       matrix:
@@ -25,18 +25,19 @@ jobs:
           - macos-10.15
           - ubuntu-20.04
           - windows-2019
+        container: [ '{}' ]
         include:
           # These entries must have a unique value of 'os' so they create new entries in the matrix instead of modifying existing
           # ones.
           - os: ubuntu-latest
             node_version: '10'
-            container: '"container": {"image": "node:$\\{{ matrix.node_version }}-alpine"}'
+            container: '{"image": "node:10-alpine"}'
           - os: ubuntu-latest
             node_version: '12'
-            container: '"container": {"image": "node:$\\{{ matrix.node_version }}-alpine"}'
+            container: '{"image": "node:12-alpine"}'
           - os: ubuntu-latest
             node_version: '14'
-            container: '"container": {"image": "node:$\\{{ matrix.node_version }}-alpine"}'
+            container: '{"image": "node:14-alpine"}'
     steps:
       - uses: actions/checkout@v2
         with:
