@@ -46,6 +46,8 @@ jobs:
         run: yarn install --ignore-scripts
       - name: Build
         id: build
+        # Use bash, even on Windows.
+        shell: bash
         run: |
           node publish.js
           cd bin-package
