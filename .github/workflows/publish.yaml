@@ -72,6 +72,7 @@ jobs:
           - '12'
           - '14'
     steps:
+      - run: apk add build-base git python3 wget
       - uses: actions/checkout@v2
         with:
           ref: ${{ github.event.release.tag_name }}
