@@ -125,7 +125,7 @@ jobs:
       - name: Publish NPM release
         run: |
           # If it's not a simple 1.2.3 version, then it's a prerelease of some kind.
-          if ! [[ ${TAG} =~ ^[0-9.]*$\ ]]
+          if ! [[ ${TAG} =~ ^[0-9.]*$\ ]] ; then
             PRE="--prerelease"
           fi
           node publish.js --publish "${PRE}"
