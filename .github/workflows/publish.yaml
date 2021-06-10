@@ -8,6 +8,7 @@ name: Publish
   release:
     types:
       - created
+  pull_request: null
 
 jobs:
   publish-github:
@@ -62,7 +63,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ github.event.release.assets_url }}
+          upload_url: ${{ github.event.release.assets_url }}https://api.github.com/repos/IronCoreLabs/recrypt-node-binding/releases/44423819/assets
           asset_path: bin-package/${{ steps.build.outputs.asset }}
           asset_name: ${{ steps.build.outputs.asset }}
           asset_content_type: application/gzip
@@ -95,5 +96,5 @@ jobs:
           token: ${{ secrets.WORKFLOW_PAT }}
           prerelease: false
           allowUpdates: true
-          tag: ${{ github.event.release.tag_name }}
-          name: ${{ github.event.release.name }}
+          tag: ${{ github.event.release.tag_name }}0.1.1-test
+          name: ${{ github.event.release.name }}0.1.1-test
