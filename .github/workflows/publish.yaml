@@ -30,13 +30,13 @@ jobs:
           # ones.
           - os: ubuntu-latest
             node_version: '10'
-            container: '{"container": {"image": "node:$${{ matrix.node_version }}-alpine"}}'
+            container: '{"container": {"image": "node:$\{{ matrix.node_version }}-alpine"}}'
           - os: ubuntu-latest
             node_version: '12'
-            container: '{"container": {"image": "node:$${{ matrix.node_version }}-alpine"}}'
+            container: '{"container": {"image": "node:$\{{ matrix.node_version }}-alpine"}}'
           - os: ubuntu-latest
             node_version: '14'
-            container: '{"container": {"image": "node:$${{ matrix.node_version }}-alpine"}}'
+            container: '{"container": {"image": "node:$\{{ matrix.node_version }}-alpine"}}'
     steps:
       - uses: actions/checkout@v2
         with:
