@@ -25,6 +25,7 @@ shell.set("-e");
 const rootDirectory = path.dirname(process.argv[1]);
 shell.cd(rootDirectory);
 const shouldPublish = process.argv.slice(2).indexOf("--publish") !== -1;
+const isPreRelease = process.argv.slice(2).indexOf("--prerelease") !== -1;
 
 //Cleanup the previous build, if it exists
 shell.rm("-rf", "./dist");
@@ -58,7 +59,15 @@ var tgz = shell.exec("find ./build -name *.tar.gz");
 shell.cp(tgz, "./bin-package/");
 shell.pushd("./dist");
 
-shell.exec(shouldPublish ? "npm publish --access public" : "echo 'Skipping publishing to npm...'");
+var publishCmd = "echo 'Skipping publishing to npm...'"
+if (shouldPublish) {
+    publishCmd = "npm publish --access public";
+    // If we're publishing a branch build or prerelease like "1.2.3-pre.4", use "--tag next".
+    if (isPreRelease) {
+        publishCmd += " --tag next";
+    }
+}
+shell.exec(publishCmd);
 shell.popd();
 
 shell.echo("publish.js COMPLETE");

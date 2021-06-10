@@ -4,7 +4,14 @@
 
 name: Bump Version
 'on':
-  workflow_dispatch: null
+  push:
+    branches:
+    - main
+  workflow_dispatch:
+    inputs:
+      version:
+        description: New semver release version.
+        required: true
 env:
   COMMIT_PREFIX: 'bump-version: '
 jobs:
@@ -31,23 +38,23 @@ jobs:
         git config --global user.name "Leeroy Travis"
 
         '
-    - name: Compute versions
+    - name: Compute version
       id: versions
-      run: 'set -x
-
-        VERSION=$(.github/bump-version.sh)
-
-        echo "::set-output name=old::${VERSION}"
-
-        VERSION="${VERSION/-*}"
-
-        echo "::set-output name=release::${VERSION}"
-
-        VERSION="$(echo "${VERSION}" | awk -F. -v OFS=. ''{$NF += 1 ; print}'')-pre"
-
-        echo "::set-output name=bumped::${VERSION}"
-
-        '
+      run: "set -x\n# Read the current prerelease version.\nVERSION=$(.github/bump-version.sh)\n\
+        echo \"::set-output name=old::${VERSION}\"\nBUILDNUM=$(echo \"${VERSION}\"\
+        \ | sed 's/[^0-9][^0-9]*/ /g' | awk '{print $NF}')\nif [ \"${BUILDNUM}\" =\
+        \ \"\" ] ; then\n  BUILDNUM=0\nfi\n\n# Set the release version. If this is\
+        \ a workflow_dispatch, use the specified version. Otherwise increment the\
+        \ \"-pre.N\" part.\nif [ -n \"${{ github.event.inputs.version }}\" ] ; then\n\
+        \  VERSION=\"${{ github.event.inputs.version }}\"\nelse\n  BUILDNUM=$(expr\
+        \ \"${BUILDNUM}\" + 1)\n  VERSION=\"$(echo \"${VERSION}\" | sed 's/-.*//')\"\
+        \n  VERSION=\"${VERSION}-pre.${BUILDNUM}\"\nfi\necho \"::set-output name=release::${VERSION}\"\
+        \n\n# Is it a release version? If so, it won't have a '-' character in it.\
+        \ \"1.2.3-pre.4\" is not a release version.\nif [[ ${VERSION} =~ .*-.* ]]\
+        \ ; then\n  echo \"::set-output name=is_release::false\"\nelse\n  echo \"\
+        ::set-output name=is_release::true\"\n  VERSION=\"$(echo \"${VERSION}\" |\
+        \ awk -F. -v OFS=. '{$NF += 1 ; print}')-pre.1\"\n  echo \"::set-output name=bumped::${VERSION}\"\
+        \nfi\n"
     - name: Set release version
       run: '.github/bump-version.sh "${{ steps.versions.outputs.release }}"
 
@@ -80,6 +87,7 @@ jobs:
         git diff --cached
 
         '
+      if: ${{ steps.versions.outputs.bumped != '' }}
     - name: Commit and push pre-release version
       run: 'git commit -m "${COMMIT_PREFIX}Bump to next pre-release version ${{ steps.versions.outputs.bumped
         }}"
@@ -87,3 +95,4 @@ jobs:
         git push origin main
 
         '
+      if: ${{ steps.versions.outputs.bumped != '' }}

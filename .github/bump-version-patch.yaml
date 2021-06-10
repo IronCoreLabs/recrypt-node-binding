@@ -1,3 +1,49 @@
-# Because this is a public library, we want to release it manually only, not in response to merging a PR.
-- op: remove
-  path: /on/push
+# If we're running on merge to main, then we're just incrementing the "-pre.N" and starting the docker workflow.
+# If we're running from workflow_dispatch, then we're making a new release.
+# The next several entries in the patch cover the two cases just described.
+- op: replace
+  path: /on/workflow_dispatch
+  value:
+    inputs:
+      version:
+        description: New semver release version.
+        required: true
+- op: replace
+  path: /jobs/bump/steps/2
+  value:
+    name: Compute version
+    id: versions
+    run: |
+      set -x
+      # Read the current prerelease version.
+      VERSION=$(.github/bump-version.sh)
+      echo "::set-output name=old::${VERSION}"
+      BUILDNUM=$(echo "${VERSION}" | sed 's/[^0-9][^0-9]*/ /g' | awk '{print $NF}')
+      if [ "${BUILDNUM}" = "" ] ; then
+        BUILDNUM=0
+      fi
+
+      # Set the release version. If this is a workflow_dispatch, use the specified version. Otherwise increment the "-pre.N" part.
+      if [ -n "${{ github.event.inputs.version }}" ] ; then
+        VERSION="${{ github.event.inputs.version }}"
+      else
+        BUILDNUM=$(expr "${BUILDNUM}" + 1)
+        VERSION="$(echo "${VERSION}" | sed 's/-.*//')"
+        VERSION="${VERSION}-pre.${BUILDNUM}"
+      fi
+      echo "::set-output name=release::${VERSION}"
+
+      # Is it a release version? If so, it won't have a '-' character in it. "1.2.3-pre.4" is not a release version.
+      if [[ ${VERSION} =~ .*-.* ]] ; then
+        echo "::set-output name=is_release::false"
+      else
+        echo "::set-output name=is_release::true"
+        VERSION="$(echo "${VERSION}" | awk -F. -v OFS=. '{$NF += 1 ; print}')-pre.1"
+        echo "::set-output name=bumped::${VERSION}"
+      fi
+- op: add
+  path: /jobs/bump/steps/8/if
+  value: ${{ steps.versions.outputs.bumped != '' }}
+- op: add
+  path: /jobs/bump/steps/9/if
+  value: ${{ steps.versions.outputs.bumped != '' }}

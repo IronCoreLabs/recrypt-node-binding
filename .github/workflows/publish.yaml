@@ -124,7 +124,12 @@ jobs:
         run: yarn install --ignore-scripts
       - run: npm config set //registry.npmjs.org/:_authToken=$NPM_TOKEN
       - name: Publish NPM release
-        run: node publish.js --publish
+        run: |
+          # If it's not a simple 1.2.3 version, then it's a prerelease of some kind.
+          if ! [[ ${TAG} =~ ^[0-9.]*$\ ]]
+            PRE="--prerelease"
+          fi
+          node publish.js --publish "${PRE}"
       - name: Finalize GitHub release
         uses: ncipollo/release-action@v1
         with:
