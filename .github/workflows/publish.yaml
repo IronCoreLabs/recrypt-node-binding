@@ -57,7 +57,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ github.event.release.assets_url }}https://uploads.github.com/repos/IronCoreLabs/recrypt-node-binding/releases/44423819/assets # TODO remove debug
+          upload_url: ${{ github.event.release.assets_url }}https://uploads.github.com/repos/IronCoreLabs/recrypt-node-binding/releases/44423819/assets{?name,label} # TODO remove debug
           asset_path: bin-package/${{ steps.build.outputs.asset }}
           asset_name: ${{ steps.build.outputs.asset }}
           asset_content_type: application/gzip
@@ -97,7 +97,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ github.event.release.assets_url }}https://uploads.github.com/repos/IronCoreLabs/recrypt-node-binding/releases/44423819/assets # TODO remove debug
+          upload_url: ${{ github.event.release.assets_url }}https://uploads.github.com/repos/IronCoreLabs/recrypt-node-binding/releases/44423819/assets{?name,label} # TODO remove debug
           asset_path: bin-package/${{ steps.build.outputs.asset }}
           asset_name: ${{ steps.build.outputs.asset }}
           asset_content_type: application/gzip
