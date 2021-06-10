@@ -10,6 +10,11 @@ name: Publish
       - created
   pull_request: null
 
+env:
+  # hack to get dynlibs working with musl
+  # https://github.com/rust-lang/rust/pull/55163#issuecomment-436631090
+  RUSTFLAGS: -C target-feature=-crt-static
+
 jobs:
   publish-github:
     runs-on: ${{ matrix.os }}
@@ -25,7 +30,6 @@ jobs:
           - macos-10.15
           - ubuntu-20.04
           - windows-2019
-        container: [ '{}' ]
         include:
           # These entries must have a unique value of 'os' so they create new entries in the matrix instead of modifying existing
           # ones.
@@ -69,9 +73,49 @@ jobs:
           asset_name: ${{ steps.build.outputs.asset }}
           asset_content_type: application/gzip
 
+  publish-github-docker:
+    runs-on: ubuntu-20.04
+    container:
+      image: node:${{ matrix.node_version }}-alpine
+    strategy:
+      fail-fast: false
+      matrix:
+        node_version:
+          - '10'
+          - '12'
+          - '14'
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.release.tag_name }}
+      - uses: c-hive/gha-yarn-cache@v1
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+      - name: Install modules
+        run: yarn install --ignore-scripts
+      - name: Build
+        id: build
+        run: |
+          node publish.js
+          cd bin-package
+          echo "::set-output name=asset::$(echo *.tar.gz)"
+      - name: Upload release asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.assets_url }}https://api.github.com/repos/IronCoreLabs/recrypt-node-binding/releases/44423819/assets
+          asset_path: bin-package/${{ steps.build.outputs.asset }}
+          asset_name: ${{ steps.build.outputs.asset }}
+          asset_content_type: application/gzip
+
   publish-npm:
     needs:
       - publish-github
+      - publish-github-docker
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
