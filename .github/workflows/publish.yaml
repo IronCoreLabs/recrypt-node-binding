@@ -13,7 +13,7 @@ name: Publish
 jobs:
   publish-github:
     runs-on: ${{ matrix.os }}
-    container: ${{ fromJSON('{'matrix.container'}') }}
+    container: ${{ fromJSON('{${{ matrix.container }}}') }}
     strategy:
       fail-fast: false
       matrix:
