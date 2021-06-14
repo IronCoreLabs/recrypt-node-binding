@@ -46,7 +46,7 @@ jobs:
       run: yarn run test
     - name: Check test coverage
       if: ${{ contains(matrix.os, 'ubuntu') && matrix.node_version == '10' && matrix.rust_version
-        == 'stable' }}
+        == 'stable' }} && github.base_ref != ''
       uses: anuraag016/Jest-Coverage-Diff@V1.1
       with:
         fullCoverageDiff: false
@@ -82,12 +82,5 @@ jobs:
       run: yarn run compile
     - name: Run tests
       run: yarn run test
-    - name: Check test coverage
-      if: ${{ contains(matrix.os, 'ubuntu') && matrix.node_version == '10' && matrix.rust_version
-        == 'stable' }}
-      uses: anuraag016/Jest-Coverage-Diff@V1.1
-      with:
-        fullCoverageDiff: false
-        delta: 0.2
     container:
       image: node:${{ matrix.node_version }}-alpine

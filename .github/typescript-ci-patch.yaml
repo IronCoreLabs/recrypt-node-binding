@@ -44,7 +44,7 @@
 # Only check coverage in one of the matrix job instances.
 - op: add
   path: /jobs/test/steps/7/if
-  value: ${{ contains(matrix.os, 'ubuntu') && matrix.node_version == '10' && matrix.rust_version == 'stable' }}
+  value: ${{ contains(matrix.os, 'ubuntu') && matrix.node_version == '10' && matrix.rust_version == 'stable' }} && github.base_ref != ''
 
 # Also run on musl. That means we need to run it in a Docker container. To do that, we copy the entire job and modify its
 # strategy/matrix.
@@ -73,3 +73,6 @@
 # We don't need to run setup-node inside of a node docker image.
 - op: remove
   path: /jobs/test-docker/steps/4
+# No need to check test coverage here, since we do it in the first matrix build.
+- op: remove
+  path: /jobs/test-docker/steps/8
