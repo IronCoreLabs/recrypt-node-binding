@@ -365,7 +365,7 @@ dependencies = [
 
 [[package]]
 name = "recrypt-node-binding"
-version = "0.7.4-pre.5"
+version = "0.7.4-pre.6"
 dependencies = [
  "neon",
  "neon-build",
