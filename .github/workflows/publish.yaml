@@ -122,10 +122,13 @@ jobs:
       - name: Install modules
         run: yarn install --ignore-scripts
       - run: npm config set //registry.npmjs.org/:_authToken=$NPM_TOKEN
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Publish NPM release
         run: |
+          set -x
           # If it's not a simple 1.2.3 version, then it's a prerelease of some kind.
-          if ! [[ ${TAG} =~ ^[0-9.]*$ ]] ; then
+          if ! [[ ${{ github.event.release.tag_name }} =~ ^[0-9.]*$ ]] ; then
             PRE="--prerelease"
           fi
           node publish.js --publish "${PRE}"
