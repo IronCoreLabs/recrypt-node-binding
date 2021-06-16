@@ -1,6 +1,6 @@
 [package]
 name = "recrypt-node-binding"
-version = "0.7.4-pre.6"
+version = "0.7.4-pre.7"
 authors = ["IronCore Labs <code@ironcorelabs.com>"]
 build = "build.rs"
 
