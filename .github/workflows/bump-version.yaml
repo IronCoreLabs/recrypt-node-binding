@@ -71,8 +71,9 @@ jobs:
 
         '
     - name: Push release tag
-      run: 'git push origin "${{ github.ref }}" "${{ steps.versions.outputs.release
-        }}"
+      run: 'git push origin "${{ github.ref }}"
+
+        git push origin "${{ steps.versions.outputs.release }}"
 
         '
     - name: Create prerelease

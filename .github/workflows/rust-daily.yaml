@@ -5,7 +5,7 @@
 name: Rust Daily
 'on':
   schedule:
-  - cron: 0 14 * * *
+  - cron: 0 14 * * 2-5
   workflow_dispatch: null
 jobs:
   cargo-check:

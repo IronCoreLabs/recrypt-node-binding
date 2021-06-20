@@ -30,7 +30,7 @@ case "$#" in
 esac
 
 # Find the version files in this directory or its descendants, but don't recurse too deep.
-VERSFILES=$(find . -maxdepth 3 ! -path ./.git/\* | grep -E '.*/(version|Cargo.toml|package.json|pom.xml|version.sbt)$')
+VERSFILES=$(find . -maxdepth 3 ! -path ./.git/\* | grep -v /node_modules/ | grep -E '.*/(version|Cargo.toml|package.json|pom.xml|version.sbt)$')
 
 # Do we have at least one?
 if [ -z "${VERSFILES}" ] ; then
@@ -131,7 +131,8 @@ for FILE in ${VERSFILES} ; do
         ;;
 
     Cargo.toml)
-        sed -i 's/^version = ".*"$/version = "'"${NEWVERS}"'"/' "${FILE}"
+        sed 's/^version = ".*"$/version = "'"${NEWVERS}"'"/' "${FILE}" > "${FILE}.tmp"
+        mv "${FILE}.tmp" "${FILE}"
 
         # If there's a Cargo.lock, update it also.
         if [ -f "${DIR}/Cargo.lock" ] ; then
@@ -171,8 +172,9 @@ for FILE in ${VERSFILES} ; do
         # The file might use the old, deprecated syntax or the newer syntax:
         # version in ThisBuild := "1.2.3-SNAPSHOT"
         # ThisBuild / version := "1.2.3-SNAPSHOT"
-        sed -i 's,^ThisBuild / version := ".*"$,ThisBuild / version := "'"${JAVAVERS}"'",' "${FILE}"
-        sed -i 's,^version in ThisBuild := ".*"$,ThisBuild / version := "'"${JAVAVERS}"'",' "${FILE}"
+        sed 's,^ThisBuild / version := ".*"$,ThisBuild / version := "'"${JAVAVERS}"'",' "${FILE}" > "${FILE}.tmp"
+        sed 's,^version in ThisBuild := ".*"$,ThisBuild / version := "'"${JAVAVERS}"'",' "${FILE}.tmp" > "${FILE}"
+        rm "${FILE}.tmp"
         ;;
 
     *)
