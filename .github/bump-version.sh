@@ -136,8 +136,7 @@ for FILE in ${VERSFILES} ; do
 
         # If there's a Cargo.lock, update it also.
         if [ -f "${DIR}/Cargo.lock" ] ; then
-            ( cd "${DIR}" && cargo fetch )
-            git add "${DIR}/Cargo.lock"
+            CARGO_LOCKS="${CARGO_LOCKS} ${DIR}"
         fi
         ;;
 
@@ -195,6 +194,12 @@ for FILE in ${VERSFILES} ; do
             exit 1
         fi
     fi
+done
+
+# If there are Cargo.lock files, we need to run "cargo fetch" after all the Cargo.toml files have been edited.
+for DIR in ${CARGO_LOCKS} ; do
+    ( cd "${DIR}" && cargo fetch )
+    git add "${DIR}/Cargo.lock"
 done
 
 # Look for files that have been changed, but that we haven't told git about.
