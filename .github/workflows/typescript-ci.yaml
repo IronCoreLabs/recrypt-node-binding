@@ -29,10 +29,10 @@ jobs:
       fail-fast: false
     steps:
     - uses: actions/checkout@v2
-    - uses: c-hive/gha-yarn-cache@v1
-    - uses: actions/setup-node@v2.1.5
+    - uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node_version }}
+        cache: yarn
     - uses: actions-rs/toolchain@v1
       with:
         profile: minimal
@@ -70,7 +70,6 @@ jobs:
     - run: apk add build-base git python3 wget
     - run: echo RUSTFLAGS="-C target-feature=-crt-static" >> "${GITHUB_ENV}"
     - uses: actions/checkout@v2
-    - uses: c-hive/gha-yarn-cache@v1
     - uses: actions-rs/toolchain@v1
       with:
         profile: minimal
