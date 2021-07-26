@@ -55,9 +55,9 @@ jobs:
         \ \\\n  -H \"Authorization: token ${{ secrets.WORKFLOW_PAT }}\" \\\n  -H \"\
         Content-Type: application/json\" \\\n  --data '{\"title\": \"Update workflows\
         \ from templates\",\n    \"head\": \"'${NEW_BRANCH}'\",\n    \"base\": \"\
-        main\",\n    \"body\": \"'\"${PRBODY}\"'\",\n    \"draft\": ${{ steps.update.outputs.failed\
-        \ }}\n    }' \\\n  https://api.github.com/repos/${{ github.repository }}/pulls\
-        \ \\\n  | tee pr.json\n\n# Label the PR.\nPR=$(jq -r '.issue_url' < pr.json)\n\
-        curl -Ss -X POST \\\n  -H \"Authorization: token ${{ secrets.WORKFLOW_PAT\
-        \ }}\" \\\n  -H \"Content-Type: application/json\" \\\n  --data '{\"labels\"\
-        : [\"ops\"]}' \\\n  \"${PR}/labels\"\n"
+        main\",\n    \"body\": '$(echo \"${PRBODY}\" | jq -aRs .)',\n    \"draft\"\
+        : ${{ steps.update.outputs.failed }}\n    }' \\\n  https://api.github.com/repos/${{\
+        \ github.repository }}/pulls \\\n  | tee pr.json\n\n# Label the PR.\nPR=$(jq\
+        \ -r '.issue_url' < pr.json)\ncurl -Ss -X POST \\\n  -H \"Authorization: token\
+        \ ${{ secrets.WORKFLOW_PAT }}\" \\\n  -H \"Content-Type: application/json\"\
+        \ \\\n  --data '{\"labels\": [\"ops\"]}' \\\n  \"${PR}/labels\"\n"
