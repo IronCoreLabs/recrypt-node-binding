@@ -51,13 +51,15 @@ jobs:
         \ workflows from templates.\"\ngit push -u origin \"${NEW_BRANCH}\"\n\n# Create\
         \ a PR.\nPRBODY=\"Updating from templates.\"\nif [ \"${{ steps.update.outputs.failed\
         \ }}\" == \"true\" ] ; then\n  PRBODY=$(printf \"%s\\n\\n%s\" \"${PRBODY}\"\
-        \ \"@IronCoreLabs/ops patch didn't apply cleanly.\")\nfi\ncurl -Ss -X POST\
-        \ \\\n  -H \"Authorization: token ${{ secrets.WORKFLOW_PAT }}\" \\\n  -H \"\
-        Content-Type: application/json\" \\\n  --data '{\"title\": \"Update workflows\
-        \ from templates\",\n    \"head\": \"'${NEW_BRANCH}'\",\n    \"base\": \"\
-        main\",\n    \"body\": '$(echo \"${PRBODY}\" | jq -aRs .)',\n    \"draft\"\
-        : ${{ steps.update.outputs.failed }}\n    }' \\\n  https://api.github.com/repos/${{\
-        \ github.repository }}/pulls \\\n  | tee pr.json\n\n# Label the PR.\nPR=$(jq\
-        \ -r '.issue_url' < pr.json)\ncurl -Ss -X POST \\\n  -H \"Authorization: token\
-        \ ${{ secrets.WORKFLOW_PAT }}\" \\\n  -H \"Content-Type: application/json\"\
-        \ \\\n  --data '{\"labels\": [\"ops\"]}' \\\n  \"${PR}/labels\"\n"
+        \ \"@IronCoreLabs/ops patch didn't apply cleanly.\")\nfi\n# https://github.com/IronCoreLabs/depot/issues/333\n\
+        echo \"${PRBODY}\" > body.txt\necho -n \"${NEW_BRANCH}\" > head.txt\necho\
+        \ ${{ steps.update.outputs.failed }} | \\\njq --rawfile body body.txt --rawfile\
+        \ head head.txt \\\n  '{\"title\": \"Update workflows from templates\",\n\
+        \    \"base\": \"main\",\n    \"head\": $head,\n    \"body\": $body,\n   \
+        \ \"draft\": .}' | \\\ncurl -Ss -X POST \\\n  -H \"Authorization: token ${{\
+        \ secrets.WORKFLOW_PAT }}\" \\\n  -H \"Content-Type: application/json\" \\\
+        \n  --data @- \\\n  https://api.github.com/repos/${{ github.repository }}/pulls\
+        \ \\\n  | tee pr.json\n\n# Label the PR.\nPR=$(jq -r '.issue_url' < pr.json)\n\
+        curl -Ss -X POST \\\n  -H \"Authorization: token ${{ secrets.WORKFLOW_PAT\
+        \ }}\" \\\n  -H \"Content-Type: application/json\" \\\n  --data '{\"labels\"\
+        : [\"ops\"]}' \\\n  \"${PR}/labels\"\n"
