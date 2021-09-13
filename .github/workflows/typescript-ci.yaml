@@ -47,10 +47,11 @@ jobs:
     - name: Check test coverage
       if: ${{ contains(matrix.os, 'ubuntu') && matrix.node_version == '10' && matrix.rust_version
         == 'stable' && github.base_ref != '' }}
-      uses: anuraag016/Jest-Coverage-Diff@V1.1
+      uses: anuraag016/Jest-Coverage-Diff@V1.3
       with:
         fullCoverageDiff: false
         delta: 0.2
+        afterSwitchCommand: yarn
   test-docker:
     runs-on: ${{ matrix.os }}
     strategy:
