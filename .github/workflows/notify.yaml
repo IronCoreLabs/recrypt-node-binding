@@ -13,6 +13,7 @@ name: Notify
     - Rust CI
     - Rust Daily
     - Scala CI
+    - Scala CVE
     - Scala Daily
     - TypeScript CI
     - Update Workflows
