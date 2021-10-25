@@ -18,7 +18,41 @@ jobs:
     steps:
     - uses: actions/setup-python@v2
     - name: Install JSON tools
-      run: pip3 install jsonpatch json2yaml
+      run: pip3 install jsonpatch pyyaml
+    - name: Build yaml2json, json2yaml
+      run: 'mkdir -p ~/bin
+
+        cat - << EOF > ~/bin/json2yaml
+
+        #!/usr/bin/env python3
+
+        import json
+
+        import sys
+
+        import yaml
+
+        sys.stdout.write(yaml.dump(json.load(sys.stdin),sort_keys=False))
+
+        EOF
+
+        cat - << EOF > ~/bin/yaml2json
+
+        #!/usr/bin/env python3
+
+        import json
+
+        import sys
+
+        import yaml
+
+        json.dump(yaml.full_load(sys.stdin),sys.stdout)
+
+        EOF
+
+        chmod +x ~/bin/json2yaml ~/bin/yaml2json
+
+        '
     - name: Check out this repo
       uses: actions/checkout@v2
       with:
