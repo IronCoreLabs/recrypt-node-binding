@@ -166,7 +166,10 @@ for FILE in ${VERSFILES} ; do
 
     version.sbt)
         # Replace -foo with -SNAPSHOT to be compatible with Java conventions.
-        JAVAVERS="${NEWVERS/-*/-SNAPSHOT}"
+        # Disabling this logic to work with cmk-s3-proxy. Since we only use bump-version to publish our scala containers, not our
+        # scala libs, the -SNAPSHOT suffix isn't an important convention.
+        # JAVAVERS="${NEWVERS/-*/-SNAPSHOT}"
+        JAVAVERS="${NEWVERS}"
 
         # The file might use the old, deprecated syntax or the newer syntax:
         # version in ThisBuild := "1.2.3-SNAPSHOT"
