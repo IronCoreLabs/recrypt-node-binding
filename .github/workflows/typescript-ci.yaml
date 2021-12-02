@@ -14,11 +14,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node_version:
-        - '10'
-        - '12'
-        - '14'
-        - '16'
+        node_version: ['10', '12', '14']
         rust_version:
         - 1.48.0
         - stable
@@ -27,6 +23,10 @@ jobs:
         - macos-10.15
         - ubuntu-20.04
         - windows-2019
+        include:
+          - node_version: '16'
+            rust_version: stable
+            os: ubuntu-20.04
       fail-fast: false
     steps:
     - uses: actions/checkout@v2
@@ -54,20 +54,17 @@ jobs:
         delta: 0.2
         afterSwitchCommand: yarn
   test-docker:
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
-        node_version:
-        - '10'
-        - '12'
-        - '14'
-        - '16'
+        node_version: ['10', '12', '14']
         rust_version:
         - 1.48.0
         - stable
         - beta
-        os:
-        - ubuntu-18.04
+        include:
+          - node_version: '16'
+            rust_version: stable
       fail-fast: false
     steps:
     - run: apk add build-base git python3 wget
