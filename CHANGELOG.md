@@ -7,7 +7,7 @@
 ### Changed
 
 -   Added support for Node 16.
--   Upgraded Recrypt to 0.12
+-   Upgraded Recrypt to 0.13
 
 ## 0.7.3
 
