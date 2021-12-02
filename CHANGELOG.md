@@ -1,3 +1,14 @@
+## 0.8.0
+
+### Breaking Changes
+
+-   Removed support for Node 10.
+
+### Changed
+
+-   Added support for Node 16.
+-   Upgraded Recrypt to 0.12
+
 ## 0.7.3
 
 ### Breaking Changes
