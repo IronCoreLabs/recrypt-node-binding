@@ -7,7 +7,7 @@
       - "14"
       - "16"
     rust_version:
-      - 1.51.0
+      - 1.56.0
       - stable
       - beta
     os:

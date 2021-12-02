@@ -1,9 +1,9 @@
+use crate::util;
 use neon::{prelude::*, types::JsBuffer};
 use recrypt::api::{
     CryptoOps, DefaultRng, Ed25519, Ed25519Ops, Hashable, KeyGenOps, PublicSigningKey, RandomBytes,
     Recrypt, SchnorrOps, Sha256, SigningKeypair,
 };
-use util;
 
 pub struct RecryptApi256 {
     api: Recrypt<Sha256, Ed25519, RandomBytes<DefaultRng>>,
