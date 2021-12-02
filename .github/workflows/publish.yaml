@@ -21,9 +21,9 @@ jobs:
       fail-fast: false
       matrix:
         node_version:
-          - '10'
           - '12'
           - '14'
+          - '16'
         os:
           - macos-10.15
           - ubuntu-20.04
@@ -69,9 +69,9 @@ jobs:
       fail-fast: false
       matrix:
         node_version:
-          - '10'
           - '12'
           - '14'
+          - '16'
     steps:
       - run: apk add build-base git python3 wget
       - uses: actions/checkout@v2

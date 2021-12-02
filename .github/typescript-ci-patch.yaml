@@ -2,10 +2,10 @@
 - op: replace
   path: /jobs/test/strategy/matrix
   value:
-    node_version:
-      - "10"
+    node_version:"
       - "12"
       - "14"
+      - "16"
     rust_version:
       - 1.51.0
       - stable
@@ -44,7 +44,7 @@
 # Only check coverage in one of the matrix job instances.
 - op: add
   path: /jobs/test/steps/6/if
-  value: ${{ contains(matrix.os, 'ubuntu') && matrix.node_version == '10' && matrix.rust_version == 'stable' && github.base_ref != '' }}
+  value: ${{ contains(matrix.os, 'ubuntu') && matrix.node_version == '16' && matrix.rust_version == 'stable' && github.base_ref != '' }}
 
 # Also run on musl. That means we need to run it in a Docker container. To do that, we copy the entire job and modify its
 # strategy/matrix.

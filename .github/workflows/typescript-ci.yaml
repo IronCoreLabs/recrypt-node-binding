@@ -14,7 +14,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node_version: ['10', '12', '14']
+        node_version: ['12', '14', '16']
         rust_version:
         - 1.51.0
         - stable
@@ -23,10 +23,6 @@ jobs:
         - macos-10.15
         - ubuntu-20.04
         - windows-2019
-        include:
-          - node_version: '16'
-            rust_version: stable
-            os: ubuntu-20.04
       fail-fast: false
     steps:
     - uses: actions/checkout@v2
@@ -46,7 +42,7 @@ jobs:
     - name: Run tests
       run: yarn run test
     - name: Check test coverage
-      if: ${{ contains(matrix.os, 'ubuntu') && matrix.node_version == '10' && matrix.rust_version
+      if: ${{ contains(matrix.os, 'ubuntu') && matrix.node_version == '16' && matrix.rust_version
         == 'stable' && github.base_ref != '' }}
       uses: anuraag016/Jest-Coverage-Diff@V1.3
       with:
@@ -57,14 +53,11 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        node_version: ['10', '12', '14']
+        node_version: ['12', '14', '16']
         rust_version:
         - 1.51.0
         - stable
         - beta
-        include:
-          - node_version: '16'
-            rust_version: stable
       fail-fast: false
     steps:
     - run: apk add build-base git python3 wget
