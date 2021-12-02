@@ -10,7 +10,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 neon = "0.9"
-recrypt = "0.13"
+recrypt = "0.12"
 
 [build-dependencies]
 neon-build = "0.9"
