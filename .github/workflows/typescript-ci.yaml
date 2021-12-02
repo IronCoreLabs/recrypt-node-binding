@@ -18,6 +18,7 @@ jobs:
         - '10'
         - '12'
         - '14'
+        - '16'
         rust_version:
         - 1.48.0
         - stable
@@ -60,6 +61,7 @@ jobs:
         - '10'
         - '12'
         - '14'
+        - '16'
         rust_version:
         - 1.48.0
         - stable
