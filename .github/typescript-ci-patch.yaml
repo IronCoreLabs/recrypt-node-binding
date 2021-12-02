@@ -2,7 +2,7 @@
 - op: replace
   path: /jobs/test/strategy/matrix
   value:
-    node_version:"
+    node_version:
       - "12"
       - "14"
       - "16"
@@ -54,7 +54,7 @@
 - op: replace
   path: /jobs/test-docker/strategy/matrix/os
   value:
-    - ubuntu-18.04
+    - ubuntu-20.04
 - op: add
   path: /jobs/test-docker/container
   value:
