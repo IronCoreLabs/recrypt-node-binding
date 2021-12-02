@@ -9,11 +9,11 @@ name = "recrypt_node"
 crate-type = ["cdylib"]
 
 [dependencies]
-neon = "0.4"
-recrypt = "~0.11"
+neon = "0.9"
+recrypt = "0.13"
 
 [build-dependencies]
-neon-build = "0.4"
+neon-build = "0.9"
 
 [profile.release]
 lto = true

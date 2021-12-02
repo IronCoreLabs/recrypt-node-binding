@@ -14,7 +14,7 @@ macro_rules! buffer_to_fixed_bytes { ($($fn_name: ident, $n: expr); *) => {
         let guard = cx.lock();
         let slice = buffer.borrow_mut(&guard).as_slice::<u8>();
         if slice.len() != $n {
-            panic!(format!("Provided Buffer for '{}' is not of expected size of {} bytes. Instead got {} bytes.", field_name, $n, slice.len()));
+            panic!("Provided Buffer for '{}' is not of expected size of {} bytes. Instead got {} bytes.", field_name, $n, slice.len());
         }
         let mut result: [u8;$n] = [0;$n];
         result.clone_from_slice(slice);
