@@ -1,9 +1,9 @@
+use crate::util;
 use neon::{prelude::*, types::JsBuffer};
 use recrypt::api::{
     CryptoOps, DefaultRng, Ed25519, Ed25519Ops, Hashable, KeyGenOps, PublicSigningKey, RandomBytes,
     Recrypt, SchnorrOps, Sha256, SigningKeypair,
 };
-use util;
 
 pub struct RecryptApi256 {
     api: Recrypt<Sha256, Ed25519, RandomBytes<DefaultRng>>,
@@ -18,13 +18,13 @@ impl Finalize for RecryptApi256 {}
 //
 // Otherwise, each index in the `cx.argument` is an expected parameter, so make sure the mapping function takes that
 // into account.
-fn create_recrypt_api_256(mut cx: FunctionContext) -> JsResult<JsBox<RecryptApi256>> {
+pub fn api256_create_recrypt_api_256(mut cx: FunctionContext) -> JsResult<JsBox<RecryptApi256>> {
     Ok(cx.boxed(RecryptApi256 {
         api: Recrypt::new(),
     }))
 }
 
-fn generate_key_pair(mut cx: FunctionContext) -> JsResult<JsObject> {
+pub fn api256_generate_key_pair(mut cx: FunctionContext) -> JsResult<JsObject> {
     let recrypt_api_256 = cx.argument::<JsBox<RecryptApi256>>(0)?;
 
     let (priv_key, pub_key) = recrypt_api_256.api.generate_key_pair().unwrap();
@@ -38,7 +38,7 @@ fn generate_key_pair(mut cx: FunctionContext) -> JsResult<JsObject> {
     Ok(key_pair)
 }
 
-fn generate_ed25519_key_pair(mut cx: FunctionContext) -> JsResult<JsObject> {
+pub fn api256_generate_ed25519_key_pair(mut cx: FunctionContext) -> JsResult<JsObject> {
     let recrypt_api_256 = cx.argument::<JsBox<RecryptApi256>>(0)?;
 
     let signing_key_pair = recrypt_api_256.api.generate_ed25519_key_pair();
@@ -53,12 +53,12 @@ fn generate_ed25519_key_pair(mut cx: FunctionContext) -> JsResult<JsObject> {
     Ok(signing_key_pair_obj)
 }
 
-fn ed25519_sign(mut cx: FunctionContext) -> JsResult<JsBuffer> {
+pub fn api256_ed25519_sign(mut cx: FunctionContext) -> JsResult<JsBuffer> {
     let private_signing_key_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(0)?;
     let message_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(1)?;
 
     let signing_key_pair = SigningKeypair::from_bytes(&util::buffer_to_fixed_64_bytes(
-        &mut cx,
+        &cx,
         private_signing_key_buffer,
         "privateSigningKey",
     ))
@@ -69,13 +69,13 @@ fn ed25519_sign(mut cx: FunctionContext) -> JsResult<JsBuffer> {
     util::bytes_to_buffer(&mut cx, signature.bytes())
 }
 
-fn ed25519_verify(mut cx: FunctionContext) -> JsResult<JsBoolean> {
+pub fn api256_ed25519_verify(mut cx: FunctionContext) -> JsResult<JsBoolean> {
     let public_signing_key_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(0)?;
     let message_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(1)?;
     let signature_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(2)?;
 
     let public_signing_key = PublicSigningKey::new(util::buffer_to_fixed_32_bytes(
-        &mut cx,
+        &cx,
         public_signing_key_buffer,
         "publicSigningKey",
     ));
@@ -88,11 +88,11 @@ fn ed25519_verify(mut cx: FunctionContext) -> JsResult<JsBoolean> {
     Ok(cx.boolean(verified))
 }
 
-fn compute_ed25519_public_key(mut cx: FunctionContext) -> JsResult<JsBuffer> {
+pub fn api256_compute_ed25519_public_key(mut cx: FunctionContext) -> JsResult<JsBuffer> {
     let private_signing_key_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(0)?;
 
     let signing_key_pair = SigningKeypair::from_bytes(&util::buffer_to_fixed_64_bytes(
-        &mut cx,
+        &cx,
         private_signing_key_buffer,
         "privateSigningKey",
     ))
@@ -102,7 +102,7 @@ fn compute_ed25519_public_key(mut cx: FunctionContext) -> JsResult<JsBuffer> {
     util::bytes_to_buffer(&mut cx, public_signing_key.bytes())
 }
 
-fn generate_plaintext(mut cx: FunctionContext) -> JsResult<JsBuffer> {
+pub fn api256_generate_plaintext(mut cx: FunctionContext) -> JsResult<JsBuffer> {
     let recrypt_api_256 = cx.argument::<JsBox<RecryptApi256>>(0)?;
 
     let plaintext = recrypt_api_256.api.gen_plaintext();
@@ -110,7 +110,7 @@ fn generate_plaintext(mut cx: FunctionContext) -> JsResult<JsBuffer> {
     util::bytes_to_buffer(&mut cx, plaintext.bytes())
 }
 
-fn generate_transform_key(mut cx: FunctionContext) -> JsResult<JsObject> {
+pub fn api256_generate_transform_key(mut cx: FunctionContext) -> JsResult<JsObject> {
     let recrypt_api_256 = cx.argument::<JsBox<RecryptApi256>>(0)?;
     let from_private_key_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(1)?;
     let to_public_key_obj: Handle<JsObject> = cx.argument::<JsObject>(2)?;
@@ -118,7 +118,7 @@ fn generate_transform_key(mut cx: FunctionContext) -> JsResult<JsObject> {
 
     let to_public_key = util::js_object_to_public_key(&mut cx, to_public_key_obj);
     let signing_key_pair = SigningKeypair::from_bytes(&util::buffer_to_fixed_64_bytes(
-        &mut cx,
+        &cx,
         private_signing_key_buffer,
         "privateSigningKey",
     ))
@@ -136,7 +136,7 @@ fn generate_transform_key(mut cx: FunctionContext) -> JsResult<JsObject> {
     util::transform_key_to_js_object(&mut cx, transform_key)
 }
 
-fn compute_public_key(mut cx: FunctionContext) -> JsResult<JsObject> {
+pub fn api256_compute_public_key(mut cx: FunctionContext) -> JsResult<JsObject> {
     let recrypt_api_256 = cx.argument::<JsBox<RecryptApi256>>(0)?;
     let private_key_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(1)?;
 
@@ -148,7 +148,7 @@ fn compute_public_key(mut cx: FunctionContext) -> JsResult<JsObject> {
     util::public_key_to_js_object(&mut cx, &derived_public_key)
 }
 
-fn derive_symmetric_key(mut cx: FunctionContext) -> JsResult<JsBuffer> {
+pub fn api256_derive_symmetric_key(mut cx: FunctionContext) -> JsResult<JsBuffer> {
     let recrypt_api_256 = cx.argument::<JsBox<RecryptApi256>>(0)?;
     let plaintext_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(1)?;
 
@@ -159,7 +159,7 @@ fn derive_symmetric_key(mut cx: FunctionContext) -> JsResult<JsBuffer> {
     util::bytes_to_buffer(&mut cx, decrypted_symmetric_key.bytes())
 }
 
-fn encrypt(mut cx: FunctionContext) -> JsResult<JsObject> {
+pub fn api256_encrypt(mut cx: FunctionContext) -> JsResult<JsObject> {
     let recrypt_api_256 = cx.argument::<JsBox<RecryptApi256>>(0)?;
     let plaintext_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(1)?;
     let to_public_key_obj: Handle<JsObject> = cx.argument::<JsObject>(2)?;
@@ -167,7 +167,7 @@ fn encrypt(mut cx: FunctionContext) -> JsResult<JsObject> {
 
     let public_key = util::js_object_to_public_key(&mut cx, to_public_key_obj);
     let signing_key_pair = SigningKeypair::from_bytes(&util::buffer_to_fixed_64_bytes(
-        &mut cx,
+        &cx,
         private_signing_key_buffer,
         "privateSigningKey",
     ))
@@ -185,7 +185,7 @@ fn encrypt(mut cx: FunctionContext) -> JsResult<JsObject> {
     util::encrypted_value_to_js_object(&mut cx, encrypted_value)
 }
 
-fn transform(mut cx: FunctionContext) -> JsResult<JsObject> {
+pub fn api256_transform(mut cx: FunctionContext) -> JsResult<JsObject> {
     let recrypt_api_256 = cx.argument::<JsBox<RecryptApi256>>(0)?;
     let encrypted_value_obj: Handle<JsObject> = cx.argument::<JsObject>(1)?;
     let transform_key_obj: Handle<JsObject> = cx.argument::<JsObject>(2)?;
@@ -194,7 +194,7 @@ fn transform(mut cx: FunctionContext) -> JsResult<JsObject> {
     let encrypted_value = util::js_object_to_encrypted_value(&mut cx, encrypted_value_obj);
     let transform_key = util::js_object_to_transform_key(&mut cx, transform_key_obj);
     let signing_key_pair = SigningKeypair::from_bytes(&util::buffer_to_fixed_64_bytes(
-        &mut cx,
+        &cx,
         private_signing_key_buffer,
         "privateSigningKey",
     ))
@@ -208,7 +208,7 @@ fn transform(mut cx: FunctionContext) -> JsResult<JsObject> {
     util::encrypted_value_to_js_object(&mut cx, transformed_encrypted_value)
 }
 
-fn decrypt(mut cx: FunctionContext) -> JsResult<JsBuffer> {
+pub fn api256_decrypt(mut cx: FunctionContext) -> JsResult<JsBuffer> {
     let recrypt_api_256 = cx.argument::<JsBox<RecryptApi256>>(0)?;
     let encrypted_value_obj: Handle<JsObject> = cx.argument::<JsObject>(1)?;
     let private_key_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(2)?;
@@ -226,7 +226,7 @@ fn decrypt(mut cx: FunctionContext) -> JsResult<JsBuffer> {
     util::bytes_to_buffer(&mut cx, decrypted_value.bytes())
 }
 
-fn schnorr_sign(mut cx: FunctionContext) -> JsResult<JsBuffer> {
+pub fn api256_schnorr_sign(mut cx: FunctionContext) -> JsResult<JsBuffer> {
     let recrypt_api_256 = cx.argument::<JsBox<RecryptApi256>>(0)?;
     let private_key_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(1)?;
     let public_key_obj: Handle<JsObject> = cx.argument::<JsObject>(2)?;
@@ -243,7 +243,7 @@ fn schnorr_sign(mut cx: FunctionContext) -> JsResult<JsBuffer> {
     util::bytes_to_buffer(&mut cx, signature.bytes())
 }
 
-fn schnorr_verify(mut cx: FunctionContext) -> JsResult<JsBoolean> {
+pub fn api256_schnorr_verify(mut cx: FunctionContext) -> JsResult<JsBoolean> {
     let recrypt_api_256 = cx.argument::<JsBox<RecryptApi256>>(0)?;
     let public_key_obj: Handle<JsObject> = cx.argument::<JsObject>(1)?;
     //The augmented private key is an optional argument to take in a generic JsValue
@@ -252,20 +252,19 @@ fn schnorr_verify(mut cx: FunctionContext) -> JsResult<JsBoolean> {
     let signature_buffer: Handle<JsBuffer> = cx.argument::<JsBuffer>(4)?;
 
     let public_key = util::js_object_to_public_key(&mut cx, public_key_obj);
-    let signature = util::buffer_to_schnorr_signature(&mut cx, signature_buffer);
+    let signature = util::buffer_to_schnorr_signature(&cx, signature_buffer);
 
     let augmented_private_key = {
         //Ignore both null or undefined as values are passed for augmented private key
-        if augmented_private_key_buffer.is_a::<JsUndefined, _>(&mut cx) {
-            None
-        } else if augmented_private_key_buffer.is_a::<JsNull, _>(&mut cx) {
+        if augmented_private_key_buffer.is_a::<JsUndefined, _>(&mut cx) ||  augmented_private_key_buffer.is_a::<JsNull, _>(&mut cx) {
             None
         } else {
+            let casted_private_key_buffer = augmented_private_key_buffer
+            .downcast::<JsBuffer, _>(&mut cx)
+            .unwrap();
             Some(util::buffer_to_private_key(
                 &cx,
-                augmented_private_key_buffer
-                    .downcast::<JsBuffer, _>(&mut cx)
-                    .unwrap(),
+                casted_private_key_buffer
             ))
         }
     };
