@@ -29,14 +29,14 @@
         "test": "jest"
     },
     "dependencies": {
-        "node-pre-gyp": "^0.15.0"
+        "@mapbox/node-pre-gyp": "^1.0.7"
     },
     "devDependencies": {
-        "@types/node": "^12.12.51",
+        "@types/node": "^16.11.11",
         "benchmark": "^2.1.4",
-        "jest": "^26.1.0",
-        "jest-extended": "^0.11.5",
-        "neon-cli": "^0.4.0",
+        "jest": "^27.4.0",
+        "jest-extended": "^1.2.0",
+        "neon-cli": "^0.9.1",
         "shelljs": "^0.8.4"
     },
     "prettier": {
