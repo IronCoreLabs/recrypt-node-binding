@@ -51,7 +51,7 @@ jobs:
       with:
         fullCoverageDiff: false
         delta: 0.2
-        afterSwitchCommand: yarn
+        afterSwitchCommand: yarn install --ignore-scripts && yarn run compile
   test-docker:
     runs-on: ${{ matrix.os }}
     strategy:

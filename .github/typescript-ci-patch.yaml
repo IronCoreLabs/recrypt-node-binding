@@ -76,3 +76,7 @@
 # No need to check test coverage here, since we do it in the first matrix build.
 - op: remove
   path: /jobs/test-docker/steps/7
+
+- op: replace
+  path: /jobs/test/steps/6/with/afterSwitchCommand
+  value: yarn install --ignore-scripts && yarn run compile
