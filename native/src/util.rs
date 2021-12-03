@@ -72,8 +72,16 @@ pub fn js_object_to_public_key<'a, T: Context<'a>>(
     cx: &mut T,
     object: Handle<JsObject>,
 ) -> PublicKey {
-    let x = object.get(cx, "x").unwrap().downcast::<JsBuffer, _>(cx).unwrap();
-    let y = object.get(cx, "y").unwrap().downcast::<JsBuffer, _>(cx).unwrap();
+    let x = object
+        .get(cx, "x")
+        .unwrap()
+        .downcast::<JsBuffer, _>(cx)
+        .unwrap();
+    let y = object
+        .get(cx, "y")
+        .unwrap()
+        .downcast::<JsBuffer, _>(cx)
+        .unwrap();
 
     PublicKey::new((
         buffer_to_fixed_32_bytes(cx, x, "publicKey.x"),
