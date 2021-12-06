@@ -4,9 +4,9 @@
 .babelrc
 npm-debug.log
 yarn-error.log
-native/target
-native/artifacts.json
-native/index.node
+target
+artifacts.json
+index.node
 dist/*
 bin-package/*
 build/*

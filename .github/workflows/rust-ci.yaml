@@ -49,6 +49,3 @@ jobs:
       with:
         command: clippy
         args: ${{ env.clippy_args }}
-defaults:
-  run:
-    working-directory: native
