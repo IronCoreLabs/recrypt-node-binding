@@ -23,8 +23,8 @@
         "x64"
     ],
     "scripts": {
-        "compile": "neon build -r",
-        "clean": "neon clean",
+        "compile": "cargo-cp-artifact -a cdylib recrypt_node ./bin-package/index.node -- cargo build --release --message-format=json-render-diagnostics",
+        "clean": "cargo clean & rm -rf dist & rm -rf bin-package & rm -rf build",
         "benchmark": "node benchmark/index.js",
         "test": "jest"
     },
@@ -34,9 +34,9 @@
     "devDependencies": {
         "@types/node": "^16.11.11",
         "benchmark": "^2.1.4",
+        "cargo-cp-artifact": "^0.1.6",
         "jest": "^27.4.0",
         "jest-extended": "^1.2.0",
-        "neon-cli": "^0.9.1",
         "shelljs": "^0.8.4"
     },
     "prettier": {

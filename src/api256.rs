@@ -256,16 +256,15 @@ pub fn api256_schnorr_verify(mut cx: FunctionContext) -> JsResult<JsBoolean> {
 
     let augmented_private_key = {
         //Ignore both null or undefined as values are passed for augmented private key
-        if augmented_private_key_buffer.is_a::<JsUndefined, _>(&mut cx) ||  augmented_private_key_buffer.is_a::<JsNull, _>(&mut cx) {
+        if augmented_private_key_buffer.is_a::<JsUndefined, _>(&mut cx)
+            || augmented_private_key_buffer.is_a::<JsNull, _>(&mut cx)
+        {
             None
         } else {
             let casted_private_key_buffer = augmented_private_key_buffer
-            .downcast::<JsBuffer, _>(&mut cx)
-            .unwrap();
-            Some(util::buffer_to_private_key(
-                &cx,
-                casted_private_key_buffer
-            ))
+                .downcast::<JsBuffer, _>(&mut cx)
+                .unwrap();
+            Some(util::buffer_to_private_key(&cx, casted_private_key_buffer))
         }
     };
 

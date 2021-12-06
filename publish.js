@@ -27,20 +27,15 @@ shell.cd(rootDirectory);
 const shouldPublish = process.argv.slice(2).indexOf("--publish") !== -1;
 const isPreRelease = process.argv.slice(2).indexOf("--prerelease") !== -1;
 
-//Cleanup the previous build, if it exists
-shell.rm("-rf", "./dist");
-shell.rm("-rf", "./bin-package");
-shell.rm("-rf", "./build");
-
 // Cleanup any previous Rust builds, update deps, and compile
 shell.exec("yarn install --ignore-scripts");
-shell.exec("yarn run clean");
-shell.exec("yarn run compile");
+shell.exec("yarn clean");
+shell.exec("yarn compile");
 
 shell.exec("yarn test");
 shell.mkdir("./dist");
 
-shell.cp(["README.md", "package.json", "index.d.ts", "LICENSE"], "./dist");
+shell.cp(["README.md", "package.json", "index.d.ts", "index.js", "LICENSE"], "./dist");
 
 //Add a NPM install script to the package.json that we push to NPM so that when consumers pull it down it
 //runs the expected node-pre-gyp step.

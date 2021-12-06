@@ -13,9 +13,6 @@ crate-type = ["cdylib"]
 neon = { version = "0.9", default-features = false, features = ["napi-4"] }
 recrypt = "0.13.1"
 
-[build-dependencies]
-neon-build = "0.9"
-
 [profile.release]
 lto = true
 debug = false
