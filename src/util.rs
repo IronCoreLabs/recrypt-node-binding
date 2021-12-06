@@ -14,7 +14,7 @@ macro_rules! buffer_to_fixed_bytes { ($($fn_name: ident, $n: expr); *) => {
         let guard = cx.lock();
         let slice = buffer.borrow_mut(&guard).as_slice::<u8>();
         if slice.len() != $n {
-            panic!(format!("Provided Buffer for '{}' is not of expected size of {} bytes. Instead got {} bytes.", field_name, $n, slice.len()));
+            panic!("Provided Buffer for '{}' is not of expected size of {} bytes. Instead got {} bytes.", field_name, $n, slice.len());
         }
         let mut result: [u8;$n] = [0;$n];
         result.clone_from_slice(slice);
@@ -52,7 +52,7 @@ pub fn bytes_to_buffer<'a, T: Context<'a>>(
 ) -> NeonResult<Handle<'a, JsBuffer>> {
     let mut buffer: Handle<JsBuffer> = cx.buffer(data.len() as u32)?;
     cx.borrow_mut(&mut buffer, |contents| {
-        contents.as_mut_slice().copy_from_slice(&data)
+        contents.as_mut_slice().copy_from_slice(data)
     });
     Ok(buffer)
 }
@@ -72,8 +72,16 @@ pub fn js_object_to_public_key<'a, T: Context<'a>>(
     cx: &mut T,
     object: Handle<JsObject>,
 ) -> PublicKey {
-    let x = object.get(cx, "x").unwrap().downcast::<JsBuffer>().unwrap();
-    let y = object.get(cx, "y").unwrap().downcast::<JsBuffer>().unwrap();
+    let x = object
+        .get(cx, "x")
+        .unwrap()
+        .downcast::<JsBuffer, _>(cx)
+        .unwrap();
+    let y = object
+        .get(cx, "y")
+        .unwrap()
+        .downcast::<JsBuffer, _>(cx)
+        .unwrap();
 
     PublicKey::new((
         buffer_to_fixed_32_bytes(cx, x, "publicKey.x"),
@@ -105,32 +113,32 @@ pub fn js_object_to_transform_key<'a, T: Context<'a>>(
     let encrypted_temp_key_buffer = object
         .get(cx, "encryptedTempKey")
         .unwrap()
-        .downcast::<JsBuffer>()
+        .downcast::<JsBuffer, _>(cx)
         .unwrap();
     let emphemeral_public_key_obj = object
         .get(cx, "ephemeralPublicKey")
         .unwrap()
-        .downcast::<JsObject>()
+        .downcast::<JsObject, _>(cx)
         .unwrap();
     let hashed_temp_key_buffer = object
         .get(cx, "hashedTempKey")
         .unwrap()
-        .downcast::<JsBuffer>()
+        .downcast::<JsBuffer, _>(cx)
         .unwrap();
     let public_signing_key_buffer = object
         .get(cx, "publicSigningKey")
         .unwrap()
-        .downcast::<JsBuffer>()
+        .downcast::<JsBuffer, _>(cx)
         .unwrap();
     let signature_buffer = object
         .get(cx, "signature")
         .unwrap()
-        .downcast::<JsBuffer>()
+        .downcast::<JsBuffer, _>(cx)
         .unwrap();
     let to_public_key_obj = object
         .get(cx, "toPublicKey")
         .unwrap()
-        .downcast::<JsObject>()
+        .downcast::<JsObject, _>(cx)
         .unwrap();
 
     TransformKey::new(
@@ -191,26 +199,26 @@ pub fn js_object_to_transform_blocks<'a, T: Context<'a>>(
     let blocks: Vec<TransformBlock> = transform_blocks
         .iter()
         .map(|block| {
-            let block_obj = block.downcast::<JsObject>().unwrap();
+            let block_obj = block.downcast::<JsObject, _>(cx).unwrap();
             let public_key = block_obj
                 .get(cx, "publicKey")
                 .unwrap()
-                .downcast::<JsObject>()
+                .downcast::<JsObject, _>(cx)
                 .unwrap();
             let encrypted_temp_key = block_obj
                 .get(cx, "encryptedTempKey")
                 .unwrap()
-                .downcast::<JsBuffer>()
+                .downcast::<JsBuffer, _>(cx)
                 .unwrap();
             let random_transform_public_key = block_obj
                 .get(cx, "randomTransformPublicKey")
                 .unwrap()
-                .downcast::<JsObject>()
+                .downcast::<JsObject, _>(cx)
                 .unwrap();
             let random_transform_encrypted_temp_key = block_obj
                 .get(cx, "randomTransformEncryptedTempKey")
                 .unwrap()
-                .downcast::<JsBuffer>()
+                .downcast::<JsBuffer, _>(cx)
                 .unwrap();
 
             TransformBlock::new(
@@ -241,20 +249,15 @@ pub fn transform_blocks_to_js_object<'a, T: Context<'a>>(
 ) -> NeonResult<Handle<'a, JsArray>> {
     let blocks_array: Handle<JsArray> = JsArray::new(cx, transform_blocks.len() as u32);
 
-    for i in 0..transform_blocks.len() {
+    for (i, block_rs) in transform_blocks.iter().enumerate() {
         let block = cx.empty_object();
 
-        let public_key = public_key_to_js_object(cx, &transform_blocks[i].public_key())?;
-        let encrypted_temp_key =
-            bytes_to_buffer(cx, transform_blocks[i].encrypted_temp_key().bytes())?;
+        let public_key = public_key_to_js_object(cx, block_rs.public_key())?;
+        let encrypted_temp_key = bytes_to_buffer(cx, block_rs.encrypted_temp_key().bytes())?;
         let random_transform_public_key =
-            public_key_to_js_object(cx, &transform_blocks[i].random_transform_public_key())?;
-        let encrypted_random_transform_temp_key = bytes_to_buffer(
-            cx,
-            transform_blocks[i]
-                .encrypted_random_transform_temp_key()
-                .bytes(),
-        )?;
+            public_key_to_js_object(cx, block_rs.random_transform_public_key())?;
+        let encrypted_random_transform_temp_key =
+            bytes_to_buffer(cx, block_rs.encrypted_random_transform_temp_key().bytes())?;
 
         block.set(cx, "publicKey", public_key)?;
         block.set(cx, "encryptedTempKey", encrypted_temp_key)?;
@@ -278,35 +281,36 @@ pub fn js_object_to_encrypted_value<'a, T: Context<'a>>(
     let emphemeral_public_key_obj = object
         .get(cx, "ephemeralPublicKey")
         .unwrap()
-        .downcast::<JsObject>()
+        .downcast::<JsObject, _>(cx)
         .unwrap();
     let encrypted_message_buffer = object
         .get(cx, "encryptedMessage")
         .unwrap()
-        .downcast::<JsBuffer>()
+        .downcast::<JsBuffer, _>(cx)
         .unwrap();
     let auth_hash_buffer = object
         .get(cx, "authHash")
         .unwrap()
-        .downcast::<JsBuffer>()
+        .downcast::<JsBuffer, _>(cx)
         .unwrap();
     let public_signing_key_buffer = object
         .get(cx, "publicSigningKey")
         .unwrap()
-        .downcast::<JsBuffer>()
+        .downcast::<JsBuffer, _>(cx)
         .unwrap();
     let signature_buffer = object
         .get(cx, "signature")
         .unwrap()
-        .downcast::<JsBuffer>()
+        .downcast::<JsBuffer, _>(cx)
         .unwrap();
     let transform_blocks = object
         .get(cx, "transformBlocks")
         .unwrap()
-        .downcast::<JsArray>()
+        .downcast::<JsArray, _>(cx)
         .unwrap();
 
-    let encrypted_value = if transform_blocks.len() > 0 {
+    // create the encrypted value and return it
+    if transform_blocks.len(cx) > 0 {
         EncryptedValue::TransformedValue {
             ephemeral_public_key: js_object_to_public_key(cx, emphemeral_public_key_obj),
             encrypted_message: EncryptedMessage::new(buffer_to_fixed_384_bytes(
@@ -339,8 +343,7 @@ pub fn js_object_to_encrypted_value<'a, T: Context<'a>>(
             )),
             signature: buffer_to_ed25519_signature(cx, signature_buffer),
         }
-    };
-    encrypted_value
+    }
 }
 
 /// Convert a Recrypt EncryptedValue into a JsObbject with expeted properties and bytes converted to Buffers.

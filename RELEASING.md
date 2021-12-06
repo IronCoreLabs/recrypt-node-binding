@@ -1,7 +1,7 @@
 Release Checklist
 =================
 
-* Decide on the new version number and update it within the `package.json` file. This will be used as the NPM version number.
-* Write the CHANGELOG.md entry for the release by looking at the PRs.
-* Commit `package.json` (for version number) and `CHANGELOG.md`.
-* Push a tag for the version that exists in the `package.json` using `git tag {version}` and `git push origin {tag}`. Pushing this tag will cause Travis to build the Node bindings for all currently supported platforms to verify that they build correctly. If they do, it will then perform the NPM publish step within TravisCI via the `publish.js` script.
+* Decide on the new version number and write the CHANGELOG.md entry for the release by looking at the PRs.
+* Commit the `CHANGELOG.md`.
+* Update to the new version number using the [Bump Version](https://github.com/IronCoreLabs/recrypt-node-binding/actions/workflows/bump-version.yaml) workflow. This will be used as the NPM version number.
+* The [Publish](https://github.com/IronCoreLabs/recrypt-node-binding/actions/workflows/publish.yaml) action will automatically publish the release to NPM.

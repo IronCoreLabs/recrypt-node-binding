@@ -3,11 +3,11 @@
   path: /jobs/test/strategy/matrix
   value:
     node_version:
-      - "10"
       - "12"
       - "14"
+      - "16"
     rust_version:
-      - 1.48.0
+      - 1.56.0
       - stable
       - beta
     os:
@@ -44,7 +44,7 @@
 # Only check coverage in one of the matrix job instances.
 - op: add
   path: /jobs/test/steps/6/if
-  value: ${{ contains(matrix.os, 'ubuntu') && matrix.node_version == '10' && matrix.rust_version == 'stable' && github.base_ref != '' }}
+  value: ${{ contains(matrix.os, 'ubuntu') && matrix.node_version == '16' && matrix.rust_version == 'stable' && github.base_ref != '' }}
 
 # Also run on musl. That means we need to run it in a Docker container. To do that, we copy the entire job and modify its
 # strategy/matrix.
@@ -54,7 +54,7 @@
 - op: replace
   path: /jobs/test-docker/strategy/matrix/os
   value:
-    - ubuntu-18.04
+    - ubuntu-20.04
 - op: add
   path: /jobs/test-docker/container
   value:
@@ -76,3 +76,7 @@
 # No need to check test coverage here, since we do it in the first matrix build.
 - op: remove
   path: /jobs/test-docker/steps/7
+
+- op: replace
+  path: /jobs/test/steps/6/with/afterSwitchCommand
+  value: yarn install --ignore-scripts && yarn run compile

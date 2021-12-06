@@ -1,4 +1,8 @@
-const recrypt = require("../native/index.node");
+// add all jest-extended matchers
+const matchers = require("jest-extended");
+expect.extend(matchers);
+
+const recrypt = require("../index.js");
 //Randomly generated legit ED25519 keypair
 const publicSigningKey = Buffer.from("LQPVx4NPqxSFQO/p6JgA4xGydUfxnfsRwTu/VJy6sQ0=", "base64");
 const privateSigningKey = Buffer.from("O7f2FYsabKOFj3enK+HQ+cBmTMbAG6aCesd1nLcFM1wtA9XHg0+rFIVA7+nomADjEbJ1R/Gd+xHBO79UnLqxDQ==", "base64");

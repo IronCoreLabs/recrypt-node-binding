@@ -1,6 +1,6 @@
 {
     "name": "@ironcorelabs/recrypt-node-binding",
-    "version": "0.7.4-pre.22",
+    "version": "0.8.0-pre.1",
     "description": "Bindings to allow the recrypt-rs library to work via NodeJS.",
     "repository": {
         "type": "git",
@@ -9,10 +9,10 @@
     "homepage": "https://ironcorelabs.com",
     "author": "IronCore Labs",
     "license": "AGPL-3.0-only",
-    "main": "bin-package/index.node",
+    "main": "index.js",
     "types": "index.d.ts",
     "engines": {
-        "node": ">=10.0.0"
+        "node": ">=12.0.0"
     },
     "os": [
         "darwin",
@@ -23,20 +23,20 @@
         "x64"
     ],
     "scripts": {
-        "compile": "neon build -r",
-        "clean": "neon clean",
+        "compile": "cargo-cp-artifact -a cdylib recrypt_node ./bin-package/index.node -- cargo build --release --message-format=json-render-diagnostics",
+        "clean": "cargo clean && rm -rf dist && rm -rf bin-package && rm -rf build",
         "benchmark": "node benchmark/index.js",
-        "test": "jest"
+        "test": "jest --maxWorkers=50%"
     },
     "dependencies": {
-        "node-pre-gyp": "^0.15.0"
+        "@mapbox/node-pre-gyp": "^1.0.7"
     },
     "devDependencies": {
-        "@types/node": "^12.12.51",
+        "@types/node": "^16.11.11",
         "benchmark": "^2.1.4",
-        "jest": "^26.1.0",
-        "jest-extended": "^0.11.5",
-        "neon-cli": "^0.4.0",
+        "cargo-cp-artifact": "^0.1.6",
+        "jest": "^27.4.0",
+        "jest-extended": "^1.2.0",
         "shelljs": "^0.8.4"
     },
     "prettier": {
