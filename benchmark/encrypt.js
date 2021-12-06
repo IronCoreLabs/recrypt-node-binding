@@ -1,5 +1,5 @@
 const Benchmark = require("benchmark");
-const recrypt = require("../native/index.node");
+const recrypt = require("../index.node");
 
 const privateSigningKey = Buffer.from("O7f2FYsabKOFj3enK+HQ+cBmTMbAG6aCesd1nLcFM1wtA9XHg0+rFIVA7+nomADjEbJ1R/Gd+xHBO79UnLqxDQ==", "base64");
 

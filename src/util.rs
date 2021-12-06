@@ -52,7 +52,7 @@ pub fn bytes_to_buffer<'a, T: Context<'a>>(
 ) -> NeonResult<Handle<'a, JsBuffer>> {
     let mut buffer: Handle<JsBuffer> = cx.buffer(data.len() as u32)?;
     cx.borrow_mut(&mut buffer, |contents| {
-        contents.as_mut_slice().copy_from_slice(&data)
+        contents.as_mut_slice().copy_from_slice(data)
     });
     Ok(buffer)
 }
@@ -249,20 +249,15 @@ pub fn transform_blocks_to_js_object<'a, T: Context<'a>>(
 ) -> NeonResult<Handle<'a, JsArray>> {
     let blocks_array: Handle<JsArray> = JsArray::new(cx, transform_blocks.len() as u32);
 
-    for i in 0..transform_blocks.len() {
+    for (i, block_rs) in transform_blocks.iter().enumerate() {
         let block = cx.empty_object();
 
-        let public_key = public_key_to_js_object(cx, &transform_blocks[i].public_key())?;
-        let encrypted_temp_key =
-            bytes_to_buffer(cx, transform_blocks[i].encrypted_temp_key().bytes())?;
+        let public_key = public_key_to_js_object(cx, block_rs.public_key())?;
+        let encrypted_temp_key = bytes_to_buffer(cx, block_rs.encrypted_temp_key().bytes())?;
         let random_transform_public_key =
-            public_key_to_js_object(cx, &transform_blocks[i].random_transform_public_key())?;
-        let encrypted_random_transform_temp_key = bytes_to_buffer(
-            cx,
-            transform_blocks[i]
-                .encrypted_random_transform_temp_key()
-                .bytes(),
-        )?;
+            public_key_to_js_object(cx, block_rs.random_transform_public_key())?;
+        let encrypted_random_transform_temp_key =
+            bytes_to_buffer(cx, block_rs.encrypted_random_transform_temp_key().bytes())?;
 
         block.set(cx, "publicKey", public_key)?;
         block.set(cx, "encryptedTempKey", encrypted_temp_key)?;
@@ -314,7 +309,8 @@ pub fn js_object_to_encrypted_value<'a, T: Context<'a>>(
         .downcast::<JsArray, _>(cx)
         .unwrap();
 
-    let encrypted_value = if transform_blocks.len(cx) > 0 {
+    // create the encrypted value and return it
+    if transform_blocks.len(cx) > 0 {
         EncryptedValue::TransformedValue {
             ephemeral_public_key: js_object_to_public_key(cx, emphemeral_public_key_obj),
             encrypted_message: EncryptedMessage::new(buffer_to_fixed_384_bytes(
@@ -347,8 +343,7 @@ pub fn js_object_to_encrypted_value<'a, T: Context<'a>>(
             )),
             signature: buffer_to_ed25519_signature(cx, signature_buffer),
         }
-    };
-    encrypted_value
+    }
 }
 
 /// Convert a Recrypt EncryptedValue into a JsObbject with expeted properties and bytes converted to Buffers.

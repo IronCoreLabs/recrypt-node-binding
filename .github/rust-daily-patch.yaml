@@ -1,6 +1,0 @@
-# Everything needs to run in the native directory.
-- op: add
-  path: /defaults
-  value:
-    run:
-      working-directory: native

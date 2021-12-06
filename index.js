@@ -1,8 +1,17 @@
 "use strict";
 
-// TODO: is this even going to resolve when distributed?
-// TODO: might want to introduce a TS build process and generate the index.d.ts
-const internal = require("./native/index.node");
+/**
+ * WARNING!
+ * 
+ * This file is the bridge between the generated Rust binary and the JavaScript interface users call into.
+ * 
+ * This file is not generated. Any changes made in the Rust code will need to be propogated out here, either by adding
+ * bare functions to the export declaration at the bottom, or by adding new methods to the Api256 class.
+ * 
+ * The `index.d.ts` file is also manually maintained, add any new signatures to it.
+ */ 
+
+const internal = require("./bin-package/index.node");
 
 class Api256 {
     constructor() {

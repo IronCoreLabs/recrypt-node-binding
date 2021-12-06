@@ -11,7 +11,6 @@ fn main(mut cx: ModuleContext) -> NeonResult<()> {
     cx.export_function("transformKeyToBytes256", api256::transform_key_to_bytes_256)?;
     cx.export_function("addPrivateKeys", api256::add_private_keys)?;
     cx.export_function("subtractPrivateKeys", api256::subtract_private_keys)?;
-    // cx.export_class::<api256::Api256>("Api256") TODO: get the class working
     // Api256 member functions
     cx.export_function("createApi256", api256::api256_create_recrypt_api_256)?;
     cx.export_function("generateKeyPair", api256::api256_generate_key_pair)?;

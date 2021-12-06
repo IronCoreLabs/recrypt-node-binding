@@ -8,6 +8,7 @@
 
 -   Added support for Node 16.
 -   Upgraded Recrypt to 0.13
+-   Upgraded to Neon's NAPI interface.
 
 ## 0.7.3
 
