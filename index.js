@@ -1,7 +1,5 @@
 "use strict";
 
-// TODO: is this even going to resolve when distributed?
-// TODO: might want to introduce a TS build process and generate the index.d.ts
 const internal = require("./bin-package/index.node");
 
 class Api256 {
