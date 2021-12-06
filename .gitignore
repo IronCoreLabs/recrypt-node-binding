@@ -6,7 +6,6 @@ npm-debug.log
 yarn-error.log
 target
 artifacts.json
-index.node
 dist/*
 bin-package/*
 build/*

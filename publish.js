@@ -43,8 +43,6 @@ const npmPackageJson = require("./dist/package.json");
 npmPackageJson.scripts.install = "node-pre-gyp install";
 fs.writeFileSync("./dist/package.json", JSON.stringify(npmPackageJson, null, 2));
 
-shell.mkdir("./bin-package");
-shell.cp("./index.node", "./bin-package");
 //Use a fully qualified path to pre-gyp binary for Windows support
 const cwd = shell.pwd().toString();
 shell.exec(`${cwd}/node_modules/node-pre-gyp/bin/node-pre-gyp package`);
