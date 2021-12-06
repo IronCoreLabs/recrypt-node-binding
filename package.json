@@ -26,7 +26,7 @@
         "compile": "cargo-cp-artifact -a cdylib recrypt_node ./bin-package/index.node -- cargo build --release --message-format=json-render-diagnostics",
         "clean": "cargo clean && rm -rf dist && rm -rf bin-package && rm -rf build",
         "benchmark": "node benchmark/index.js",
-        "test": "jest --maxWorkers=3"
+        "test": "jest --maxWorkers=50%"
     },
     "dependencies": {
         "@mapbox/node-pre-gyp": "^1.0.7"
