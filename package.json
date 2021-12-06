@@ -24,7 +24,7 @@
     ],
     "scripts": {
         "compile": "cargo-cp-artifact -a cdylib recrypt_node ./bin-package/index.node -- cargo build --release --message-format=json-render-diagnostics",
-        "clean": "cargo clean & rm -rf dist & rm -rf bin-package & rm -rf build",
+        "clean": "cargo clean && rm -rf dist && rm -rf bin-package && rm -rf build",
         "benchmark": "node benchmark/index.js",
         "test": "jest"
     },
