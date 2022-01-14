@@ -20,7 +20,8 @@
         "win32"
     ],
     "cpu": [
-        "x64"
+        "x64",
+        "arm64"
     ],
     "scripts": {
         "compile": "cargo-cp-artifact -a cdylib recrypt_node ./bin-package/index.node -- cargo build --release --message-format=json-render-diagnostics",

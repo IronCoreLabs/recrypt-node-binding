@@ -20,14 +20,68 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node_version:
-          - '12'
-          - '14'
-          - '16'
-        os:
-          - macos-10.15
-          - ubuntu-20.04
-          - windows-2019
+        include:
+          - os: macos-10.15
+            node_version: 12
+            target: x86_64-apple-darwin
+            pre_gyp_platform: darwin
+            pre_gyp_arch: x64
+          - os: macos-10.15
+            node_version: 14
+            target: x86_64-apple-darwin
+            pre_gyp_platform: darwin
+            pre_gyp_arch: x64
+          - os: macos-10.15
+            node_version: 16
+            target: x86_64-apple-darwin
+            pre_gyp_platform: darwin
+            pre_gyp_arch: x64
+          - os: macos-11
+            node_version: 12
+            target: aarch64-apple-darwin
+            pre_gyp_platform: darwin
+            pre_gyp_arch: arm64
+          - os: macos-11
+            node_version: 14
+            target: aarch64-apple-darwin
+            pre_gyp_platform: darwin
+            pre_gyp_arch: arm64
+          - os: macos-11
+            node_version: 16
+            target: aarch64-apple-darwin
+            pre_gyp_platform: darwin
+            pre_gyp_arch: arm64
+          - os: ubuntu-20.04
+            node_version: 12
+            target: x86_64-unknown-linux-gnu
+            pre_gyp_platform: linux
+            pre_gyp_arch: x64
+          - os: ubuntu-20.04
+            node_version: 14
+            target: x86_64-unknown-linux-gnu
+            pre_gyp_platform: linux
+            pre_gyp_arch: x64
+          - os: ubuntu-20.04
+            node_version: 16
+            target: x86_64-unknown-linux-gnu
+            pre_gyp_platform: linux
+            pre_gyp_arch: x64
+          - os: windows-2019
+            node_version: 12
+            target: x86_64-pc-windows-msvc
+            pre_gyp_platform: win32 
+            pre_gyp_arch: x64
+          - os: windows-2019
+            node_version: 14
+            target: x86_64-pc-windows-msvc
+            pre_gyp_platform: win32
+            pre_gyp_arch: x64
+          - os: windows-2019
+            node_version: 16
+            target: x86_64-pc-windows-msvc
+            pre_gyp_platform: win32 
+            pre_gyp_arch: x64
+
     steps:
       - uses: actions/checkout@v2
         with:
@@ -40,6 +94,8 @@ jobs:
         with:
           profile: minimal
           toolchain: stable
+          target: ${{ matrix.target }}
+          default: true
           override: true
       - name: Install modules
         run: yarn install --ignore-scripts
@@ -47,6 +103,9 @@ jobs:
         id: build
         # Use bash, even on Windows.
         shell: bash
+        env:
+          PRE_GYP_PLATFORM: ${{ matrix.pre_gyp_platform }}
+          PRE_GYP_ARCH: ${{ matrix.pre_gyp_arch }}
         run: |
           node publish.js
           cd bin-package

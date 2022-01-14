@@ -45,7 +45,9 @@ fs.writeFileSync("./dist/package.json", JSON.stringify(npmPackageJson, null, 2))
 
 //Use a fully qualified path to pre-gyp binary for Windows support
 const cwd = shell.pwd().toString();
-shell.exec(`${cwd}/node_modules/@mapbox/node-pre-gyp/bin/node-pre-gyp package`);
+const replacementArch = process.env.PRE_GYP_ARCH ? `--target_arch=${process.env.PRE_GYP_ARCH}` : "";
+const replacementPlatform = process.env.PRE_GYP_PLATFORM ? `--target_platform=${process.env.PRE_GYP_PLATFORM}` : "";
+shell.exec(`${cwd}/node_modules/@mapbox/node-pre-gyp/bin/node-pre-gyp package ${replacementArch} ${replacementPlatform}`);
 var tgz = shell.exec("find ./build -name *.tar.gz");
 shell.cp(tgz, "./bin-package/");
 shell.pushd("./dist");
