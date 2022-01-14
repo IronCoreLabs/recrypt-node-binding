@@ -2,24 +2,29 @@
 - op: replace
   path: /jobs/test/strategy/matrix
   value:
-    node_version:
-      - "12"
-      - "14"
-      - "16"
-    rust_version:
+    rust_version: 
       - 1.56.0
       - stable
       - beta
-    os:
-      - macos-10.15
-      - ubuntu-20.04
-      - windows-2019
+    node_version:
+      - 12
+      - 14
+      - 16
+    system:
+      - os: macos-10.15
+        target: x86_64-apple-darwin
+      - os: macos-11
+        target: aarch64-apple-darwin
+      - os: ubuntu-20.04
+        target: x86_64-unknown-linux-gnu
+      - os: windows-2019
+        target: x86_64-pc-windows-msvc
 - op: add
   path: /jobs/test/strategy/fail-fast
   value: false
 - op: replace
   path: /jobs/test/runs-on
-  value: "${{ matrix.os }}"
+  value: "${{ matrix.system.os }}"
 
 # These steps are lifted from the Rust CI workflow, cargo-test job.
 - op: add
@@ -44,14 +49,16 @@
 # Only check coverage in one of the matrix job instances.
 - op: add
   path: /jobs/test/steps/6/if
-  value: ${{ contains(matrix.os, 'ubuntu') && matrix.node_version == '16' && matrix.rust_version == 'stable' && github.base_ref != '' }}
+  value: ${{ contains(matrix.system.os, 'ubuntu') && matrix.node_version == '16' && matrix.rust_version == 'stable' && github.base_ref != '' }}
 
 # Also run on musl. That means we need to run it in a Docker container. To do that, we copy the entire job and modify its
 # strategy/matrix.
 - op: copy
   from: /jobs/test
   path: /jobs/test-docker
-- op: replace
+- op: remove
+  path: /jobs/test-docker/strategy/matrix/system
+- op: add
   path: /jobs/test-docker/strategy/matrix/os
   value:
     - ubuntu-20.04
