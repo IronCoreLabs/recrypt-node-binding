@@ -63,7 +63,7 @@
   value:
     - ubuntu-20.04
 - op: replace
-  path: /jobs/test/runs-on
+  path: /jobs/test-docker/runs-on
   value: "${{ matrix.os }}"
 - op: add
   path: /jobs/test-docker/container
