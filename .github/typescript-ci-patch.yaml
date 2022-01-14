@@ -62,6 +62,9 @@
   path: /jobs/test-docker/strategy/matrix/os
   value:
     - ubuntu-20.04
+- op: replace
+  path: /jobs/test/runs-on
+  value: "${{ matrix.os }}"
 - op: add
   path: /jobs/test-docker/container
   value:
