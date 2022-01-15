@@ -11,21 +11,26 @@ name: TypeScript CI
   workflow_dispatch: null
 jobs:
   test:
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.system.os }}
     strategy:
       matrix:
-        node_version:
-        - '12'
-        - '14'
-        - '16'
         rust_version:
         - 1.56.0
         - stable
         - beta
-        os:
-        - macos-10.15
-        - ubuntu-20.04
-        - windows-2019
+        node_version:
+        - 12
+        - 14
+        - 16
+        system:
+        - os: macos-10.15
+          target: x86_64-apple-darwin
+        - os: macos-11
+          target: aarch64-apple-darwin
+        - os: ubuntu-20.04
+          target: x86_64-unknown-linux-gnu
+        - os: windows-2019
+          target: x86_64-pc-windows-msvc
       fail-fast: false
     steps:
     - uses: actions/checkout@v2
@@ -45,8 +50,8 @@ jobs:
     - name: Run tests
       run: yarn run test
     - name: Check test coverage
-      if: ${{ contains(matrix.os, 'ubuntu') && matrix.node_version == '16' && matrix.rust_version
-        == 'stable' && github.base_ref != '' }}
+      if: ${{ contains(matrix.system.os, 'ubuntu') && matrix.node_version == '16'
+        && matrix.rust_version == 'stable' && github.base_ref != '' }}
       uses: anuraag016/Jest-Coverage-Diff@V1.3
       with:
         fullCoverageDiff: false
@@ -56,14 +61,14 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node_version:
-        - '12'
-        - '14'
-        - '16'
         rust_version:
         - 1.56.0
         - stable
         - beta
+        node_version:
+        - 12
+        - 14
+        - 16
         os:
         - ubuntu-20.04
       fail-fast: false
