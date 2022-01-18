@@ -49,7 +49,6 @@ jobs:
           profile: minimal
           toolchain: stable
           target: ${{ matrix.system.target }}
-          default: true
           override: true
       - name: Install modules
         run: yarn install --ignore-scripts
@@ -60,6 +59,7 @@ jobs:
         env:
           PRE_GYP_PLATFORM: ${{ matrix.system.pre_gyp_platform }}
           PRE_GYP_ARCH: ${{ matrix.system.pre_gyp_arch }}
+          CARGO_BUILD_TARGET: ${{ matrix.system.target }}
         run: |
           node publish.js
           cd bin-package
