@@ -37,7 +37,10 @@ jobs:
             - ARM64
             target: aarch64-apple-darwin
           node_version: 16
-          rust_version: stable
+          rust_version:
+          - 1.56.0
+          - stable
+          - beta
       fail-fast: false
     steps:
     - uses: actions/checkout@v2
@@ -84,7 +87,10 @@ jobs:
             - ARM64
             target: aarch64-apple-darwin
           node_version: 16
-          rust_version: stable
+          rust_version:
+          - 1.56.0
+          - stable
+          - beta
         os:
         - ubuntu-20.04
       fail-fast: false
