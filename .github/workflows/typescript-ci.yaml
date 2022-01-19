@@ -12,6 +12,8 @@ name: TypeScript CI
 jobs:
   test:
     runs-on: ${{ matrix.system.os }}
+    env:
+      CARGO_BUILD_TARGET: ${{ matrix.system.target }}
     strategy:
       matrix:
         rust_version:
