@@ -32,7 +32,18 @@ shell.exec("yarn install --ignore-scripts");
 shell.exec("yarn clean");
 shell.exec("yarn compile");
 
-shell.exec("yarn test");
+// As long as rustc's output is consistent, this should be fine
+const host = shell
+    .exec("rustc -vV")
+    .toString()
+    .split("\n")
+    .find((line) => line.startsWith("host:"))
+    .split(" ")[1];
+const cargoTarget = process.env.CARGO_BUILD_TARGET;
+// Skip running tests with a cross compiled binary, we know they'll fail to run
+if (host === cargoTarget || cargoTarget === "" || cargoTarget === undefined) {
+    shell.exec("yarn test");
+}
 shell.mkdir("./dist");
 
 shell.cp(["README.md", "package.json", "index.d.ts", "index.js", "LICENSE"], "./dist");
