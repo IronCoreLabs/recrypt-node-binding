@@ -73,6 +73,8 @@
   path: /jobs/test-docker
 - op: remove
   path: /jobs/test-docker/strategy/matrix/system
+- op: remove
+  path: /jobs/test-docker/strategy/matrix/include
 - op: add
   path: /jobs/test-docker/strategy/matrix/os
   value:
