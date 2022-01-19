@@ -29,15 +29,24 @@ jobs:
           target: x86_64-unknown-linux-gnu
         - os: windows-2019
           target: x86_64-pc-windows-msvc
-        include:
+        - os:
+          - self-hosted
+          - macOS
+          - ARM64
+          target: aarch64-apple-darwin
+        exclude:
         - system:
             os:
             - self-hosted
             - macOS
             - ARM64
-            target: aarch64-apple-darwin
-          node_version: 16
-          rust_version: ${{ matrix.rust_version}}
+          node_version: 12
+        - system:
+            os:
+            - self-hosted
+            - macOS
+            - ARM64
+          node_version: 14
       fail-fast: false
     steps:
     - uses: actions/checkout@v2
@@ -76,15 +85,19 @@ jobs:
         - 12
         - 14
         - 16
-        include:
+        exclude:
         - system:
             os:
             - self-hosted
             - macOS
             - ARM64
-            target: aarch64-apple-darwin
-          node_version: 16
-          rust_version: ${{ matrix.rust_version}}
+          node_version: 12
+        - system:
+            os:
+            - self-hosted
+            - macOS
+            - ARM64
+          node_version: 14
         os:
         - ubuntu-20.04
       fail-fast: false
