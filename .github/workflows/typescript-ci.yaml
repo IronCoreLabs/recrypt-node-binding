@@ -40,12 +40,14 @@ jobs:
             - self-hosted
             - macOS
             - ARM64
+            target: aarch64-apple-darwin
           node_version: 12
         - system:
             os:
             - self-hosted
             - macOS
             - ARM64
+            target: aarch64-apple-darwin
           node_version: 14
       fail-fast: false
     steps:
@@ -91,12 +93,14 @@ jobs:
             - self-hosted
             - macOS
             - ARM64
+            target: aarch64-apple-darwin
           node_version: 12
         - system:
             os:
             - self-hosted
             - macOS
             - ARM64
+            target: aarch64-apple-darwin
           node_version: 14
         os:
         - ubuntu-20.04

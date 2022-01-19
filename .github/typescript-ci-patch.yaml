@@ -23,9 +23,11 @@
       # only node 15+ supports arm64 natively, so we only need to build 16 for now
       - system:
           os: [self-hosted, macOS, ARM64]
+          target: aarch64-apple-darwin
         node_version: 12
       - system:
           os: [self-hosted, macOS, ARM64]
+          target: aarch64-apple-darwin
         node_version: 14
 - op: add
   path: /jobs/test/strategy/fail-fast
