@@ -32,7 +32,11 @@ shell.exec("yarn install --ignore-scripts");
 shell.exec("yarn clean");
 shell.exec("yarn compile");
 
-shell.exec("yarn test");
+const host = shell.exec("rustc -vV | sed -n 's|host: ||p'").toString();
+const cargoTarget = process.env.CARGO_BUILD_TARGET;
+if (host === cargoTarget || cargoTarget === "" || cargoTarget === undefined) {
+    shell.exec("yarn test");
+}
 shell.mkdir("./dist");
 
 shell.cp(["README.md", "package.json", "index.d.ts", "index.js", "LICENSE"], "./dist");
