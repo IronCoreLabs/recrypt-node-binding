@@ -32,7 +32,13 @@ shell.exec("yarn install --ignore-scripts");
 shell.exec("yarn clean");
 shell.exec("yarn compile");
 
-const host = shell.exec("rustc -vV | sed -n 's|host: ||p'").toString();
+// As long as rustc's output is consistent, this should be fine
+const host = shell
+    .exec("rustc -vV")
+    .toString()
+    .split("\n")
+    .find((line) => line.startsWith("host:"))
+    .split(" ")[1];
 const cargoTarget = process.env.CARGO_BUILD_TARGET;
 if (host === cargoTarget || cargoTarget === "" || cargoTarget === undefined) {
     shell.exec("yarn test");
