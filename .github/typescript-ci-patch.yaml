@@ -23,10 +23,17 @@
           os: [self-hosted, macOS, ARM64]
           target: aarch64-apple-darwin
         node_version: 16
-        rust_version: 
-          - 1.56.0
-          - stable
-          - beta
+        rust_version: 1.56.0
+      - system:
+          os: [self-hosted, macOS, ARM64]
+          target: aarch64-apple-darwin
+        node_version: 16
+        rust_version: stable
+      - system:
+          os: [self-hosted, macOS, ARM64]
+          target: aarch64-apple-darwin
+        node_version: 16
+        rust_version: beta
 - op: add
   path: /jobs/test/strategy/fail-fast
   value: false
