@@ -40,6 +40,7 @@ const host = shell
     .find((line) => line.startsWith("host:"))
     .split(" ")[1];
 const cargoTarget = process.env.CARGO_BUILD_TARGET;
+// Skip running tests with a cross compiled binary, we know they'll fail to run
 if (host === cargoTarget || cargoTarget === "" || cargoTarget === undefined) {
     shell.exec("yarn test");
 }
