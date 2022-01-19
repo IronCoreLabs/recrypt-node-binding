@@ -36,7 +36,7 @@ jobs:
           - system:
               os: [self-hosted, macOS, ARM64]
               target: aarch64-apple-darwin
-            node: 16
+            node_version: 16
     steps:
       - uses: actions/checkout@v2
         with:

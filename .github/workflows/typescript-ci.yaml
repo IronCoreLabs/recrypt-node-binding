@@ -36,7 +36,8 @@ jobs:
             - macOS
             - ARM64
             target: aarch64-apple-darwin
-          node: 16
+          node_version: 16
+          rust_version: ${{ matrix.rust_version}}
       fail-fast: false
     steps:
     - uses: actions/checkout@v2
@@ -82,7 +83,8 @@ jobs:
             - macOS
             - ARM64
             target: aarch64-apple-darwin
-          node: 16
+          node_version: 16
+          rust_version: ${{ matrix.rust_version}}
         os:
         - ubuntu-20.04
       fail-fast: false
