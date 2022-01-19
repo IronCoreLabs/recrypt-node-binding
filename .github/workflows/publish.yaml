@@ -27,15 +27,16 @@ jobs:
         system:
           - os: macos-10.15
             target: x86_64-apple-darwin
-          - os: macos-11
-            target: aarch64-apple-darwin
-            # only needed in this case, where we're cross compiling until runners with m1 chips exist
-            pre_gyp_platform: darwin
-            pre_gyp_arch: arm64
           - os: ubuntu-20.04
             target: x86_64-unknown-linux-gnu
           - os: windows-2019
             target: x86_64-pc-windows-msvc
+        include:
+          # only node 15+ supports arm64 natively, so we only need to build 16 for now
+          - system:
+              os: [self-hosted, macOS, ARM64]
+              target: aarch64-apple-darwin
+            node_version: 16
     steps:
       - uses: actions/checkout@v2
         with:
