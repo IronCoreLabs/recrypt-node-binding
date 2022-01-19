@@ -34,21 +34,15 @@ jobs:
           - macOS
           - ARM64
           target: aarch64-apple-darwin
-        exclude:
+        include:
         - system:
             os:
             - self-hosted
             - macOS
             - ARM64
             target: aarch64-apple-darwin
-          node_version: 12
-        - system:
-            os:
-            - self-hosted
-            - macOS
-            - ARM64
-            target: aarch64-apple-darwin
-          node_version: 14
+          node_version: 16
+          rust_version: stable
       fail-fast: false
     steps:
     - uses: actions/checkout@v2
@@ -87,21 +81,15 @@ jobs:
         - 12
         - 14
         - 16
-        exclude:
+        include:
         - system:
             os:
             - self-hosted
             - macOS
             - ARM64
             target: aarch64-apple-darwin
-          node_version: 12
-        - system:
-            os:
-            - self-hosted
-            - macOS
-            - ARM64
-            target: aarch64-apple-darwin
-          node_version: 14
+          node_version: 16
+          rust_version: stable
         os:
         - ubuntu-20.04
       fail-fast: false
