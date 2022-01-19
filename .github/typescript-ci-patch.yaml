@@ -19,6 +19,12 @@
         target: x86_64-unknown-linux-gnu
       - os: windows-2019
         target: x86_64-pc-windows-msvc
+    include:
+      # only node 15+ supports arm64 natively, so we only need to build 16 for now
+      - system:
+          os: [self-hosted, macOS, ARM64]
+          target: aarch64-apple-darwin
+        node: 16
 - op: add
   path: /jobs/test/strategy/fail-fast
   value: false
