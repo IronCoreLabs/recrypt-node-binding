@@ -142,7 +142,7 @@ jobs:
         run: |
           set -x
           # If it's not a simple 1.2.3 version, then it's a prerelease of some kind.
-          if ! [[ ${{ github.event.release.tag_name }} =~ ^[0-9.]*$ ]] ; then
+          if [[ ${{ github.event.release.tag_name }} =~ .*-.* ]] ; then
             PRE="--prerelease"
           fi
           node publish.js --publish "${PRE}"
@@ -150,7 +150,7 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           token: ${{ secrets.WORKFLOW_PAT }}
-          prerelease: false
+          prerelease: ${{ contains(github.event.release.name, '-') }}
           allowUpdates: true
           tag: ${{ github.event.release.tag_name }}
           name: ${{ github.event.release.name }}
