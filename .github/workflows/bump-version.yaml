@@ -11,9 +11,9 @@ name: Bump Version
     inputs:
       version:
         description: New semver release version.
-        required: true
 env:
   COMMIT_PREFIX: 'bump-version: '
+  MODE: prerelease
 jobs:
   vars:
     runs-on: ubuntu-20.04
@@ -38,25 +38,15 @@ jobs:
         git config --global user.name "Leeroy Travis"
 
         '
-    - name: Compute version
+    - name: Get version
+      id: current
+      run: echo "::set-output name=version::$(.github/bump-version.get.sh)"
+    - name: Compute versions
       id: versions
-      run: "set -x\n# Read the current prerelease version.\nVERSION=$(.github/bump-version.sh)\n\
-        echo \"::set-output name=old::${VERSION}\"\nBUILDNUM=$(echo \"${VERSION}\"\
-        \ | sed 's/[^0-9][^0-9]*/ /g' | awk '{print $NF}')\nif [ \"${BUILDNUM}\" =\
-        \ \"\" ] ; then\n  BUILDNUM=0\nfi\n\n# Set the release version. If this is\
-        \ a workflow_dispatch, use the specified version. Otherwise increment the\
-        \ \"-pre.N\" part.\nif [ -n \"${{ github.event.inputs.version }}\" ] ; then\n\
-        \  VERSION=\"${{ github.event.inputs.version }}\"\nelse\n  BUILDNUM=$(expr\
-        \ \"${BUILDNUM}\" + 1)\n  VERSION=\"$(echo \"${VERSION}\" | sed 's/-.*//')\"\
-        \n  VERSION=\"${VERSION}-pre.${BUILDNUM}\"\nfi\necho \"::set-output name=release::${VERSION}\"\
-        \n\n# Is it a release version? If so, it won't have a '-' character in it.\
-        \ \"1.2.3-pre.4\" is not a release version.\nif [[ ${VERSION} =~ .*-.* ]]\
-        \ ; then\n  echo \"::set-output name=is_release::false\"\nelse\n  echo \"\
-        ::set-output name=is_release::true\"\n  VERSION=\"$(echo \"${VERSION}\" |\
-        \ awk -F. -v OFS=. '{$NF += 1 ; print}')-pre.1\"\n  echo \"::set-output name=bumped::${VERSION}\"\
-        \nfi\n"
+      run: .github/bump-version.bump.sh "${{ env.MODE }}" "${{ steps.current.outputs.version
+        }}" ${{ github.event.inputs.version }}
     - name: Set release version
-      run: '.github/bump-version.sh "${{ steps.versions.outputs.release }}"
+      run: '.github/bump-version.set.sh "${{ steps.versions.outputs.release }}"
 
         git diff --cached
 
@@ -82,18 +72,16 @@ jobs:
         token: ${{ secrets.WORKFLOW_PAT }}
         prerelease: true
         tag: ${{ steps.versions.outputs.release }}
-    - name: Bump version and set pre-release
-      run: '.github/bump-version.sh "${{ steps.versions.outputs.bumped }}"
+    - name: Set development version
+      run: '.github/bump-version.set.sh "${{ steps.versions.outputs.bumped }}"
 
         git diff --cached
 
         '
-      if: ${{ steps.versions.outputs.bumped != '' }}
-    - name: Commit and push pre-release version
-      run: 'git commit -m "${COMMIT_PREFIX}Bump to next pre-release version ${{ steps.versions.outputs.bumped
+    - name: Commit and push development version
+      run: 'git commit -m "${COMMIT_PREFIX}Bump to next development version ${{ steps.versions.outputs.bumped
         }}"
 
         git push origin main
 
         '
-      if: ${{ steps.versions.outputs.bumped != '' }}
