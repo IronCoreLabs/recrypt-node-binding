@@ -82,8 +82,7 @@ jobs:
           - '14'
           - '16'
     steps:
-      - run: apk add build-base git python3 wget py3-pip
-      - run: pip install gh
+      - run: apk add build-base git python3 wget github-cli
       - uses: actions/checkout@v2
         with:
           ref: ${{ github.event.release.tag_name }}
