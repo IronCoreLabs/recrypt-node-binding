@@ -67,6 +67,8 @@ jobs:
           echo "::set-output name=asset::$(echo *.tar.gz)"
       - name: Upload release asset
         run: gh release upload ${{ github.event.release.tag_name }} bin-package/${{ steps.build.outputs.asset }} --clobber
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   publish-github-docker:
     runs-on: ubuntu-20.04
@@ -100,6 +102,8 @@ jobs:
           echo "::set-output name=asset::$(echo *.tar.gz)"
       - name: Upload release asset
         run: gh release upload ${{ github.event.release.tag_name }} bin-package/${{ steps.build.outputs.asset }} --clobber
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   publish-npm:
     needs:
