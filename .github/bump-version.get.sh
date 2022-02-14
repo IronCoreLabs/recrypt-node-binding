@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# This script is copied from the depot repo; edit it there, not in the destination repo.
+
 # Get the semver from various files in the repo.
 
 # Always performs sanity checking:

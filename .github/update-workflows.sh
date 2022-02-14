@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# This script is copied from the depot repo; edit it there, not in the destination repo.
+
 # Copy the requested templates from the templates repo to this one, applying patches as we go.
 # You must be in the target repo when you run this, and depot must be checked out as a sibling to this repo.
 
