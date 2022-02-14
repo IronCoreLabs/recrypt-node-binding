@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# This script is copied from the depot repo; edit it there, not in the destination repo.
+
 # Decide what the next versions are going to be. Inputs are the mode, current version, and optional release version override.
 # Outputs are the new release version and the new development version.
 
