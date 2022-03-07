@@ -56,8 +56,8 @@ jobs:
           rust_version: beta
       fail-fast: false
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v2
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node_version }}
         cache: yarn
@@ -75,7 +75,7 @@ jobs:
     - name: Check test coverage
       if: ${{ contains(matrix.system.os, 'ubuntu') && matrix.node_version == '16'
         && matrix.rust_version == 'stable' && github.base_ref != '' }}
-      uses: anuraag016/Jest-Coverage-Diff@V1.3
+      uses: anuraag016/Jest-Coverage-Diff@V1.4
       with:
         fullCoverageDiff: false
         delta: 0.2
@@ -98,7 +98,7 @@ jobs:
     steps:
     - run: apk add build-base git python3 wget
     - run: echo RUSTFLAGS="-C target-feature=-crt-static" >> "${GITHUB_ENV}"
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - uses: actions-rs/toolchain@v1
       with:
         profile: minimal

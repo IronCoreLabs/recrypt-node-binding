@@ -16,7 +16,7 @@ jobs:
   update:
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/setup-python@v2
+    - uses: actions/setup-python@v3
     - name: Install JSON tools
       run: pip3 install jsonpatch pyyaml
     - name: Build yaml2json, json2yaml
@@ -56,12 +56,12 @@ jobs:
 
         '
     - name: Check out this repo
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         path: thisrepo
         token: ${{ secrets.WORKFLOW_PAT }}
     - name: Check out template repo
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         path: depot
         repository: IronCoreLabs/depot
