@@ -66,6 +66,12 @@ jobs:
         path: depot
         repository: IronCoreLabs/depot
         token: ${{ secrets.WORKFLOW_PAT }}
+    - name: Randomize
+      run: "# Only create the patch file if it doesn't already exist. We don't want\
+        \ to change the time every time we run this.\nif ! [ -f thisrepo/.github/update-workflows-patch.yaml\
+        \ ] ; then\n  (\n    echo \"- op: replace\"\n    echo \"  path: /on/schedule/0/cron\"\
+        \n    echo \"  value: \\\"$(( $RANDOM % 60 )) 7 * * 1\\\"\"\n  ) > thisrepo/.github/update-workflows-patch.yaml\n\
+        \  # \"git add\" and commit will be taken care of below.\nfi\n"
     - name: Update workflows
       id: update
       working-directory: thisrepo
