@@ -10,7 +10,7 @@ name: Update Workflows
     branches:
     - '!main'
   schedule:
-  - cron: 34 7 * * 1
+  - cron: 47 7 * * 1
   workflow_dispatch: null
 jobs:
   update:
