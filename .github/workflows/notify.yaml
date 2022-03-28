@@ -7,6 +7,7 @@ name: Notify
   workflow_run:
     workflows:
     - Bump Version
+    - Check Docker Version
     - Deploy
     - Docker
     - Rebuild all container images
@@ -15,7 +16,9 @@ name: Notify
     - Scala CI
     - Scala CVE
     - Scala Daily
+    - Shell CI
     - TypeScript CI
+    - Update Changelog
     - Update Workflows
     types:
     - completed
