@@ -10,6 +10,7 @@ name: Notify
     - Check Docker Version
     - Deploy
     - Docker
+    - Periodic Rebuild
     - Rebuild all container images
     - Rust CI
     - Rust Daily
@@ -18,7 +19,6 @@ name: Notify
     - Scala Daily
     - Shell CI
     - TypeScript CI
-    - Update Changelog
     - Update Workflows
     types:
     - completed

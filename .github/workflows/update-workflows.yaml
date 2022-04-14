@@ -71,7 +71,11 @@ jobs:
         \ to change the time every time we run this.\nif ! [ -f thisrepo/.github/update-workflows-patch.yaml\
         \ ] ; then\n  (\n    echo \"- op: replace\"\n    echo \"  path: /on/schedule/0/cron\"\
         \n    echo \"  value: \\\"$(( $RANDOM % 60 )) 7 * * 1\\\"\"\n  ) > thisrepo/.github/update-workflows-patch.yaml\n\
-        \  # \"git add\" and commit will be taken care of below.\nfi\n"
+        \  # \"git add\" and commit will be taken care of below.\nfi\nif [ -f thisrepo/.github/workflows/rebuild.yaml\
+        \ ] && ! [ -f thisrepo/.github/workflows/rebuild-patch.yaml ] ; then\n  (\n\
+        \    echo \"- op: replace\"\n    echo \"  path: /on/schedule/0/cron\"\n  \
+        \  echo \"  value: \\\"$(( $RANDOM % 60 )) 16 * * 2\\\"\"\n  ) > thisrepo/.github/rebuild-patch.yaml\n\
+        fi\n"
     - name: Update workflows
       id: update
       working-directory: thisrepo
