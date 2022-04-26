@@ -98,8 +98,8 @@ if [ "${CURRENTVERS/-*/}" = "0.0.0" ] ; then
     echo "Illegal zero version '${CURRENTVERS}'" 1>&2
     exit 1
 fi
-# Sanity check: Must be valid semver.
-if ! [[ ${CURRENTVERS} =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-((0|[1-9][0-9]*|[0-9]*[a-zA-Z-][0-9a-zA-Z-]*)(\.(0|[1-9][0-9]*|[0-9]*[a-zA-Z-][0-9a-zA-Z-]*))*))?(\+([0-9a-zA-Z-]+(\.[0-9a-zA-Z-]+)*))?$ ]] ; then
+# Sanity check: Must start with a valid semver.
+if ! [[ ${CURRENTVERS} =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-((0|[1-9][0-9]*|[0-9]*[a-zA-Z-][0-9a-zA-Z-]*)(\.(0|[1-9][0-9]*|[0-9]*[a-zA-Z-][0-9a-zA-Z-]*))*))?(\+([0-9a-zA-Z-]+(\.[0-9a-zA-Z-]+)*))? ]] ; then
     echo "Invalid version '${CURRENTVERS}'" 1>&2
     exit 1
 fi
