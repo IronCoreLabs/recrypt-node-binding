@@ -34,8 +34,8 @@ for V in ${CURRENTVERS} ${RELEASEVERS} ; do
         echo "Illegal zero version '${V}'" 1>&2
         exit 1
     fi
-    # Sanity check: Must be valid semver.
-    if ! [[ ${V} =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-((0|[1-9][0-9]*|[0-9]*[a-zA-Z-][0-9a-zA-Z-]*)(\.(0|[1-9][0-9]*|[0-9]*[a-zA-Z-][0-9a-zA-Z-]*))*))?(\+([0-9a-zA-Z-]+(\.[0-9a-zA-Z-]+)*))?$ ]] ; then
+    # Sanity check: Must start with a valid semver.
+    if ! [[ ${V} =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-((0|[1-9][0-9]*|[0-9]*[a-zA-Z-][0-9a-zA-Z-]*)(\.(0|[1-9][0-9]*|[0-9]*[a-zA-Z-][0-9a-zA-Z-]*))*))?(\+([0-9a-zA-Z-]+(\.[0-9a-zA-Z-]+)*))? ]] ; then
         echo "Invalid version '${V}'" 1>&2
         exit 1
     fi
@@ -48,27 +48,24 @@ if [ -z "${RELEASEVERS}" ] ; then
         RELEASEVERS="${CURRENTVERS/-*}"
         ;;
     "prerelease")
-        # Split "1.2.3-pre.4" into "1.2.3" and "pre.4".
-        read -r PRE POST < <(echo "${CURRENTVERS/-/ }")
-        # Remove non-numeric parts of "pre.4" like "pre".
-        POST="$(echo "${POST}" | sed -e 's/[^0-9.]//g' -e 's/\.*$//')"
-        # Remove leading, trailing, or repeated "." characters.
-        POST="$(echo "${POST}" | sed -e 's/^\.*//' -e 's/\.*$//' -e 's/\.\.*/./g')"
-        if [ "${POST}" = "" ] ; then
-            POST="0"
+        # Replace [-.]pre[-.$] with [-.]rc[-.$].
+        RELEASEVERS="$(echo "${CURRENTVERS}" | sed -E 's/([-.])pre([-.]|$)/\1rc\2/')"
+        # If no [-.]rc[-.$], append -rc.0.
+        if ! [[ ${RELEASEVERS} =~ [-.]rc([-.]|$) ]] ; then
+            RELEASEVERS="${RELEASEVERS}-rc.0"
         fi
-        # Set "1.2.3-rc.4".
-        RELEASEVERS="${PRE}-rc.${POST}"
         ;;
     esac
 fi
 echo "::set-output name=release::${RELEASEVERS}"
 
 # Derive a new bumped version from the release version.
-# Change "1.2.3-rc.4" to "1.2.3.4".
-VERSION="$(echo "${RELEASEVERS}" | sed -e 's/-/./g' -e 's/rc//' -e 's/\.\.*/./g')"
-# Increment "1.2.3.4" to "1.2.3.5".
-VERSION="$(echo "${VERSION}" | awk -F. -v OFS=. '{$NF += 1 ; print}')"
-# Convert back to valid semver syntax "1.2.3-pre.5".
-VERSION="$(echo "${VERSION}" | sed -e 's/\([^.]*\)\.\([^.]*\)\.\([^.]*\)\(\.\(.*\)\)\{0,1\}/\1.\2.\3-pre.\5/' -e 's/\.$//')"
+# Increment the last number in the string.
+VERSION="$(echo "${RELEASEVERS}" | gawk '{ start=match($0, /(.*)([0-9]+)([^0-9]*)$/, a) ; a[2] += 1 ; printf("%s%s%s", a[1], a[2], a[3]) }')"
+# Replace [-.]rc[-.$] with pre.
+VERSION="$(echo "${VERSION}" | sed -E 's/([-.])rc([-.]|$)/\1pre\2/')"
+# If no [-.]pre[-.$], then append -pre.
+if ! [[ ${VERSION} =~ [-.]pre([-.]|$) ]] ; then
+    VERSION="${VERSION}-pre"
+fi
 echo "::set-output name=bumped::${VERSION}"

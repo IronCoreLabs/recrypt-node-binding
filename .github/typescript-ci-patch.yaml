@@ -42,6 +42,9 @@
   value: "${{ matrix.system.os }}"
 
 # These steps are lifted from the Rust CI workflow, cargo-test job.
+- op: test
+  path: /jobs/test/steps/2/name
+  value: Install modules
 - op: add
   path: /jobs/test/steps/2
   value:
@@ -62,6 +65,9 @@
     run: yarn run compile
 
 # Only check coverage in one of the matrix job instances.
+- op: test
+  path: /jobs/test/steps/6/name
+  value: Check test coverage
 - op: add
   path: /jobs/test/steps/6/if
   value: ${{ contains(matrix.system.os, 'ubuntu') && matrix.node_version == '16' && matrix.rust_version == 'stable' && github.base_ref != '' }}
@@ -98,12 +104,21 @@
   value:
     run: echo RUSTFLAGS="-C target-feature=-crt-static" >> "${GITHUB_ENV}"
 # We don't need to run setup-node inside of a node docker image.
+- op: test
+  path: /jobs/test-docker/steps/3/uses
+  value: actions/setup-node@v3
 - op: remove
   path: /jobs/test-docker/steps/3
 # No need to check test coverage here, since we do it in the first matrix build.
+- op: test
+  path: /jobs/test-docker/steps/7/name
+  value: Check test coverage
 - op: remove
   path: /jobs/test-docker/steps/7
 
+- op: test
+  path: /jobs/test/steps/6/name
+  value: Check test coverage
 - op: replace
   path: /jobs/test/steps/6/with/afterSwitchCommand
   value: yarn install --ignore-scripts && yarn run compile
