@@ -85,19 +85,20 @@ jobs:
         \ \"::set-output name=failed::false\"\nfi\n\necho \"Git status:\"\ngit status\n\
         \ngit add -A\n\nif [ -z \"$(git status --porcelain)\" ] ; then\n  echo \"\
         No updated workflows; done.\"\n  echo \"::set-output name=skip::true\"\nfi\n"
-    - name: Commit and PR
+    - name: Commit and push or PR
       working-directory: thisrepo
       if: steps.update.outputs.skip != 'true'
       run: "set -x\nset -o pipefail\ngit config --global user.email ops@ironcorelabs.com\n\
-        git config --global user.name \"Leeroy Travis\"\n\n# If we're on a PR branch,\
-        \ push to it instead of making a new PR branch.\nif ! [ \"${{ github.ref }}\"\
-        \ = \"refs/heads/main\" ] ; then\n  git commit -m \"Update workflows from\
-        \ templates.\"\n  git push\n  exit 0\nfi\n\nNEW_BRANCH=\"workflow-update-$(date\
-        \ -u '+%Y-%m-%d')\"\ngit checkout -b \"${NEW_BRANCH}\"\ngit commit -m \"Update\
-        \ workflows from templates.\"\ngit push -u origin \"${NEW_BRANCH}\"\n\n# Create\
-        \ a PR.\nPRBODY=\"Updating from templates.\"\nif [ \"${{ steps.update.outputs.failed\
-        \ }}\" == \"true\" ] ; then\n  PRBODY=$(printf \"%s\\n\\n%s\" \"${PRBODY}\"\
-        \ \"@IronCoreLabs/ops patch didn't apply cleanly.\")\nfi\n# https://github.com/IronCoreLabs/depot/issues/333\n\
+        git config --global user.name \"Leeroy Travis\"\n\ngit commit -m \"Update\
+        \ workflows from templates.\"\n\n# If the update applied cleanly, try pushing\
+        \ straight to the branch we're on.\nif [ \"${{ steps.update.outputs.failed\
+        \ }}\" = \"false\" ] && git push ; then\n  exit 0\nfi\n\n# Simple push failed.\
+        \ We don't care why it failed; we just need to make a PR out of this commit.\n\
+        NEW_BRANCH=\"workflow-update-$(date -u '+%Y-%m-%d')\"\ngit branch \"${NEW_BRANCH}\"\
+        \ngit push -u origin \"${NEW_BRANCH}\"\n\n# Create a PR.\nPRBODY=\"Updating\
+        \ from templates.\"\nif [ \"${{ steps.update.outputs.failed }}\" == \"true\"\
+        \ ] ; then\n  PRBODY=$(printf \"%s\\n\\n%s\" \"${PRBODY}\" \"@IronCoreLabs/ops\
+        \ patch didn't apply cleanly.\")\nfi\n# https://github.com/IronCoreLabs/depot/issues/333\n\
         echo \"${PRBODY}\" > body.txt\necho -n \"${NEW_BRANCH}\" > head.txt\necho\
         \ ${{ steps.update.outputs.failed }} | \\\njq --rawfile body body.txt --rawfile\
         \ head head.txt \\\n  '{\"title\": \"Update workflows from templates\",\n\
