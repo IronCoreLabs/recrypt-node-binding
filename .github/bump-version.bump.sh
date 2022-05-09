@@ -61,7 +61,7 @@ echo "::set-output name=release::${RELEASEVERS}"
 
 # Derive a new bumped version from the release version.
 # Increment the last number in the string.
-VERSION="$(echo "${RELEASEVERS}" | gawk '{ start=match($0, /(.*)([0-9]+)([^0-9]*)$/, a) ; a[2] += 1 ; printf("%s%s%s", a[1], a[2], a[3]) }')"
+VERSION="$(echo "${RELEASEVERS}" | gawk '{ start=match($0, /(.*[^0-9])([0-9]+)([^0-9]*)$/, a) ; a[2] += 1 ; printf("%s%s%s", a[1], a[2], a[3]) }')"
 # Replace [-.]rc[-.$] with pre.
 VERSION="$(echo "${VERSION}" | sed -E 's/([-.])rc([-.]|$)/\1pre\2/')"
 # If no [-.]pre[-.$], then append -pre.

@@ -17,6 +17,7 @@ name: Notify
     - Scala CI
     - Scala CVE
     - Scala Daily
+    - Security Audit
     - Shell CI
     - TypeScript CI
     - Update Workflows
@@ -29,8 +30,6 @@ jobs:
     runs-on: ubuntu-20.04
     if: ${{ github.event.workflow_run.conclusion != 'success' }}
     steps:
-    - name: Debug
-      run: cat ${{ github.event_path }}
     - name: Post to Slack on failure
       run: "set -x\necho 'Failed a run of <${{ github.event.workflow_run.html_url\
         \ }}|${{ github.event.workflow_run.name }}> in ${{ github.event.repository.name\

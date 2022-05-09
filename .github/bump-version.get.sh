@@ -38,17 +38,17 @@ for FILE in ${VERSFILES} ; do
         VERS=$(cat "${FILE}")
         ;;
     Cargo.toml)
-        VERS=$(cargo metadata --manifest-path "${FILE}" --no-deps --offline --format-version 1 | jq -r '.packages[0].version')
+        VERS=$(cargo metadata --manifest-path "${FILE}" --no-deps --offline --format-version 1 | jq -re '.packages[0].version')
         ;;
     package.json)
         if [ "$(dirname "${FILE}")" = "." ] ; then
             # This is the root package.json, so we want .version.
-            VERS=$(jq -r '.version' < "${FILE}")
+            VERS=$(jq -re '.version' < "${FILE}")
         else
             # This isn't the root package.json, so we assume it depends on the package declared in the root package.json. We need to
             # get the root package's name.
-            ROOTJSNAME=$(jq -r '.name' < package.json)
-            VERS=$(jq -r ".dependencies[\"${ROOTJSNAME}\"]" < "${FILE}")
+            ROOTJSNAME=$(jq -re '.name' < package.json)
+            VERS=$(jq -re ".dependencies[\"${ROOTJSNAME}\"]" < "${FILE}")
             # Strip off any leading "^".
             VERS=${VERS/^/}
         fi
