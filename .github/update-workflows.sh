@@ -9,7 +9,7 @@ set -e
 set -o pipefail
 
 THISREPO=$(git rev-parse --show-toplevel)
-TEMPLATES="${THISREPO}/../depot/github-actions"
+TEMPLATES="${THISREPO}/../depot/github-actions/.github"
 
 if [ $# -ge 1 ] ; then
     WORKFLOWS=$*
@@ -17,7 +17,7 @@ else
     # Scan to see which templates are installed, and update them.
     for WF in "${THISREPO}"/.github/workflows/*.yaml ; do
         BASE=$(basename "${WF}")
-        if [ -f "${TEMPLATES}/${BASE}" ] ; then
+        if [ -f "${TEMPLATES}/workflows/${BASE}" ] ; then
             WORKFLOWS="${WORKFLOWS} ${BASE}"
         fi
     done
@@ -53,9 +53,9 @@ for WF in ${WORKFLOWS} ; do
         echo ""
         if [ -f "${THISREPO}/${YAMLPATCH}" ] ; then
             yaml2json < "${THISREPO}/${YAMLPATCH}" > "${JSONPATCH}"
-            yaml2json < "${TEMPLATES}/${WF}" | jsonpatch - "${JSONPATCH}" | json2yaml
+            yaml2json < "${TEMPLATES}/workflows/${WF}" | jsonpatch - "${JSONPATCH}" | json2yaml
         else
-            yaml2json < "${TEMPLATES}/${WF}" | json2yaml
+            yaml2json < "${TEMPLATES}/workflows/${WF}" | json2yaml
         fi
     ) > "${THISREPO}/.github/workflows/${WF}"
 
@@ -69,7 +69,7 @@ for WF in ${WORKFLOWS} ; do
 
     # If there's an example patch file in depot, but none in this repo, copy it over.
     # If you add an example patch file that's really optional, you'll need to change this logic.
-    SRCPATCH="${TEMPLATES}/examples/${BASE}-patch.yaml"
+    SRCPATCH="${TEMPLATES}/${BASE}-patch.yaml"
     DSTPATCH="${THISREPO}/.github/${BASE}-patch.yaml"
     if [ -f "${SRCPATCH}" ] && ! [ -f "${DSTPATCH}" ] ; then
         echo ""
