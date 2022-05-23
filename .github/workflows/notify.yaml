@@ -23,20 +23,22 @@ name: Notify
     - Update Workflows
     types:
     - completed
-    branches:
-    - main
 jobs:
   on-failure:
     runs-on: ubuntu-20.04
-    if: ${{ github.event.workflow_run.conclusion != 'success' }}
+    if: ${{ github.event.workflow_run.conclusion != 'success'  && (github.event.workflow_run.head_branch
+      == 'main' || github.event.workflow_run.event == 'release')}}
     steps:
     - name: Post to Slack on failure
-      run: "set -x\necho 'Failed a run of <${{ github.event.workflow_run.html_url\
-        \ }}|${{ github.event.workflow_run.name }}> in ${{ github.event.repository.name\
-        \ }}.' > text.txt\necho \"GitHub Workflow Bot\" > username.txt\necho \":bomb:\"\
-        \ > icon_emoji.txt\n# echo \"https://i.chzbgr.com/full/8209966592/h2FE3826C/how-awesome-are-you\"\
-        \ > icon_url.txt\necho \"#build-failures\" > channel.txt\necho '{}' | \\\n\
-        jq --rawfile text text.txt \\\n  --rawfile username username.txt \\\n  --rawfile\
+      run: "set -x\n\ncat - << EOF > emoji.txt\nbomb\ncat-on-keyboard\nfire\ngrim_reaper\n\
+        grumpycat\nmushroomcloud\noops\npoop\nsad-mac\nsadpanda\nskull_and_crossbones\n\
+        this_is_fine\ntombstone\nEOF\nEMOJI=\"$(shuf -n 1 emoji.txt)\"\n\necho 'Failed\
+        \ a run of <${{ github.event.workflow_run.html_url }}|${{ github.event.workflow_run.name\
+        \ }}> in ${{ github.event.repository.name }}.' > text.txt\necho -n \"GitHub\
+        \ Workflow Bot\" > username.txt\necho -n \":${EMOJI}:\" > icon_emoji.txt\n\
+        # echo -n \"https://i.chzbgr.com/full/8209966592/h2FE3826C/how-awesome-are-you\"\
+        \ > icon_url.txt\necho -n \"#build-failures\" > channel.txt\necho '{}' | \\\
+        \njq --rawfile text text.txt \\\n  --rawfile username username.txt \\\n  --rawfile\
         \ icon_emoji icon_emoji.txt \\\n  --rawfile channel channel.txt \\\n  '. +\
         \ {\"text\": $text, \"username\": $username, \"icon_emoji\": $icon_emoji,\
         \ \"channel\": $channel}' | \\\ncurl -Ssf -d @- -H \"Content-type: application/json\"\

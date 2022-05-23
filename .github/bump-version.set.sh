@@ -35,7 +35,7 @@ fi
 
 # Find the version files in this directory or its descendants, but don't recurse too deep.
 # This line must be kept in sync with "bump-version.get.sh".
-VERSFILES=$(find . -maxdepth 3 ! -path ./.git/\* | grep -v /node_modules/ | grep -E '.*/(version|Cargo.toml|package.json|pom.xml|version.sbt)$')
+VERSFILES=$(find . -maxdepth 3 ! -path ./.git/\* | grep -v /node_modules/ | grep -E '.*/(version|Cargo.toml|version.go|package.json|pom.xml|version.sbt)$')
 
 # Edit the version files.
 for FILE in ${VERSFILES} ; do
@@ -55,12 +55,18 @@ for FILE in ${VERSFILES} ; do
         fi
         ;;
 
+    version.go)
+        sed 's/const Version = ".*"/const Version = "'"${NEWVERS}"'"/' "${FILE}" > "${FILE}.tmp"
+        mv "${FILE}.tmp" "${FILE}"
+        ;;
+
     package.json)
-        if [ "$(dirname "${FILE}")" = "." ] ; then
+        if [ "${DIR}" = "." ] ; then
             # This is the root package.json, so we want .version.
             jq --indent 4 ".version=\"${NEWVERS}\"" "${FILE}" > "${FILE}.new"
         else
-            # We already know the root package name from above, so reuse that here.
+            # Get the root package's name.
+            ROOTJSNAME="$(jq -re '.name' < package.json)"
             jq --indent 4 ".dependencies[\"${ROOTJSNAME}\"]=\"^${NEWVERS}\"" "${FILE}" > "${FILE}.new"
         fi
         mv "${FILE}.new" "${FILE}"
@@ -70,7 +76,7 @@ for FILE in ${VERSFILES} ; do
         # Replace -foo with -SNAPSHOT to be compatible with Java conventions.
         JAVAVERS="${NEWVERS/-*/-SNAPSHOT}"
 
-        if [ "$(dirname "${FILE}")" = "." ] ; then
+        if [ "${DIR}" = "." ] ; then
             # This is the root pom.xml, so we want /m:project/m:version.
             xmlstarlet ed -L -P -N m="http://maven.apache.org/POM/4.0.0" -u "/m:project/m:version" -v "${JAVAVERS}" "${FILE}"
         else
