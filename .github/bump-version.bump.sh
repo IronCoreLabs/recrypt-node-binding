@@ -54,6 +54,10 @@ if [ -z "${RELEASEVERS}" ] ; then
         if ! [[ ${RELEASEVERS} =~ [-.]rc([-.]|$) ]] ; then
             RELEASEVERS="${RELEASEVERS}-rc.0"
         fi
+        # If there's no number after the "rc", append ".0".
+        if ! [[ ${RELEASEVERS} =~ [-.]rc[-.][0-9]+ ]] ; then
+            RELEASEVERS="${RELEASEVERS}.0"
+        fi
         ;;
     esac
 fi
