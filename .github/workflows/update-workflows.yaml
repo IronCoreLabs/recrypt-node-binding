@@ -81,10 +81,10 @@ jobs:
       working-directory: thisrepo
       run: "set -x\nset -o pipefail\n\n# If it fails, we still want to create a PR;\
         \ it helps signal a human to come fix it.\nif ! bash -x .github/update-workflows.sh\
-        \ ; then\n  echo \"::set-output name=failed::true\"\n  exit\nelse\n  echo\
-        \ \"::set-output name=failed::false\"\nfi\n\necho \"Git status:\"\ngit status\n\
-        \ngit add -A\n\nif [ -z \"$(git status --porcelain)\" ] ; then\n  echo \"\
-        No updated workflows; done.\"\n  echo \"::set-output name=skip::true\"\nfi\n"
+        \ ; then\n  echo \"::set-output name=failed::true\"\nelse\n  echo \"::set-output\
+        \ name=failed::false\"\nfi\n\necho \"Git status:\"\ngit status\n\ngit add\
+        \ -A\n\nif [ -z \"$(git status --porcelain)\" ] ; then\n  echo \"No updated\
+        \ workflows; done.\"\n  echo \"::set-output name=skip::true\"\nfi\n"
     - name: Commit and push or PR
       working-directory: thisrepo
       if: steps.update.outputs.skip != 'true'
