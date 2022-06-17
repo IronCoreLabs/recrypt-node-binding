@@ -66,6 +66,7 @@ jobs:
       with:
         node-version: ${{ matrix.node_version }}
         architecture: ${{ matrix.arch }}
+        cache: yarn
     - uses: actions-rs/toolchain@v1
       with:
         profile: minimal
