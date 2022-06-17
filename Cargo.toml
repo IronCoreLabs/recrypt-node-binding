@@ -10,7 +10,7 @@ name = "recrypt_node"
 crate-type = ["cdylib"]
 
 [dependencies]
-neon = { version = "0.9", default-features = false, features = ["napi-4"] }
+neon = { version = "0.10", default-features = false, features = ["napi-4"] }
 recrypt = "0.13.1"
 
 [profile.release]
