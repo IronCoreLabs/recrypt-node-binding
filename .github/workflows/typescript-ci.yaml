@@ -29,6 +29,8 @@ jobs:
           target: x86_64-unknown-linux-gnu
         - os: windows-2019
           target: x86_64-pc-windows-msvc
+        arch: 
+        - x64
         include:
         - system:
             os:
@@ -38,6 +40,7 @@ jobs:
             target: aarch64-apple-darwin
           node_version: 16
           rust_version: 1.56.0
+          arch: arm64
         - system:
             os:
             - self-hosted
@@ -46,6 +49,7 @@ jobs:
             target: aarch64-apple-darwin
           node_version: 16
           rust_version: stable
+          arch: arm64
         - system:
             os:
             - self-hosted
@@ -54,12 +58,14 @@ jobs:
             target: aarch64-apple-darwin
           node_version: 16
           rust_version: beta
+          arch: arm64
       fail-fast: false
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node_version }}
+        architecture: ${{ matrix.arch }}
         cache: yarn
     - uses: actions-rs/toolchain@v1
       with:

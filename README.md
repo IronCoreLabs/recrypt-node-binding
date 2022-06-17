@@ -96,7 +96,7 @@ assert.equal(decryptedValue, plaintext);
 
 ## Local Development
 
-In order to build the binary Node file for Recrypt, you'll need the dependencies specified on the [Neon Bindings site](https://guides.neon-bindings.com/getting-started/). Follow their getting started directions and install Rust and the Node Build Tools. The Neon CLI is already installed as a dependecy of this project so you don't have to install that as a global dependency.
+In order to build the binary Node file for Recrypt, you'll need the dependencies specified on the [Neon Bindings site](https://guides.neon-bindings.com/getting-started/). Follow their getting started directions and install Rust and the Node Build Tools. The Neon CLI is already installed as a dependency of this project so you don't have to install that as a global dependency.
 
 Once all of those dependencies are installed, the following can be run.
 
