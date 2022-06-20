@@ -16,7 +16,9 @@ jobs:
   update:
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/setup-python@v3
+    - uses: actions/setup-python@v4
+      with:
+        python-version: 3.x
     - name: Install JSON tools
       run: pip3 install jsonpatch pyyaml
     - name: Build yaml2json, json2yaml
