@@ -17,6 +17,8 @@
         target: x86_64-unknown-linux-gnu
       - os: windows-2019
         target: x86_64-pc-windows-msvc
+    arch: 
+      - x64
     include:
       # only node 15+ supports arm64 natively, so we only need to build 16 for now
       - system:
@@ -24,22 +26,28 @@
           target: aarch64-apple-darwin
         node_version: 16
         rust_version: 1.56.0
+        arch: arm64
       - system:
           os: [self-hosted, macOS, ARM64]
           target: aarch64-apple-darwin
         node_version: 16
         rust_version: stable
+        arch: arm64
       - system:
           os: [self-hosted, macOS, ARM64]
           target: aarch64-apple-darwin
         node_version: 16
         rust_version: beta
+        arch: arm64
 - op: add
   path: /jobs/test/strategy/fail-fast
   value: false
 - op: replace
   path: /jobs/test/runs-on
   value: "${{ matrix.system.os }}"
+- op: add
+  path: /jobs/test/steps/1/with/architecture
+  value: "${{ matrix.arch }}"
 
 # These steps are lifted from the Rust CI workflow, cargo-test job.
 - op: test
