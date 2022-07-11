@@ -26,8 +26,9 @@ name: Notify
 jobs:
   on-failure:
     runs-on: ubuntu-20.04
-    if: ${{ github.event.workflow_run.conclusion != 'success'  && (github.event.workflow_run.head_branch
-      == 'main' || github.event.workflow_run.event == 'release')}}
+    if: ${{ github.event.workflow_run.status != 'in_progress' && github.event.workflow_run.conclusion
+      != 'success'  && (github.event.workflow_run.head_branch == 'main' || github.event.workflow_run.event
+      == 'release')}}
     steps:
     - name: Read triggering event
       run: cat ${{ github.event_path }}
