@@ -14,7 +14,7 @@ name: Update Workflows
   workflow_dispatch: null
 jobs:
   update:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/setup-python@v4
       with:

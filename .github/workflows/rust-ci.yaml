@@ -15,7 +15,7 @@ env:
   MIN_COVERAGE: '24'
 jobs:
   format:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v3
     - uses: actions-rs/toolchain@v1
@@ -35,7 +35,7 @@ jobs:
       uses: andymckay/cancel-action@0.2
   clippy:
     name: Clippy
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v3
     - uses: actions-rs/toolchain@v1

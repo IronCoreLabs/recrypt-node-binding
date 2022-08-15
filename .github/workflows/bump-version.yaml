@@ -16,7 +16,7 @@ env:
   MODE: prerelease
 jobs:
   vars:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     outputs:
       commit-prefix: ${{ steps.echo.outputs.commit-prefix }}
     steps:
@@ -25,7 +25,7 @@ jobs:
   bump:
     needs:
     - vars
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: '!contains(join(github.event.commits.*.message), needs.vars.outputs.commit-prefix)'
     steps:
     - name: Checkout

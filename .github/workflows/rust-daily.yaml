@@ -9,7 +9,7 @@ name: Rust Daily
   workflow_dispatch: null
 jobs:
   cargo-check:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         toolchain:
@@ -31,7 +31,7 @@ jobs:
         crate: sccache
         accesskey: AKIAU2WBY6VDTC563V7G
         secretkey: ${{ secrets.TOOL_CACHE_SECRET_KEY }}
-        os: ubuntu-20.04
+        os: ubuntu-22.04
         version: latest
     - name: Setup sccache env variables
       if: steps.rust-cache.outputs.cache-hit != 'true'
