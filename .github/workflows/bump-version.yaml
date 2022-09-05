@@ -66,12 +66,26 @@ jobs:
         git push origin "${{ steps.versions.outputs.release }}"
 
         '
+    - name: Generate release text
+      id: release-body
+      run: "set -x\n# Get the most recent commit. Hopefully it was a PR merge.\nCOMMIT=$(jq\
+        \ -r '.after' ${{ github.event_path }})\nif [ \"${COMMIT}\" = \"null\" ] ||\
+        \ [ -z \"${COMMIT}\" ] ; then\n  exit 0\nfi\n# Get the most recent PRs; hopefully\
+        \ ours is one of them.\ncurl -fSs -H \"Accept: application/vnd.github+json\"\
+        \ \\\n  -H \"Authorization: Bearer ${{ secrets.WORKFLOW_PAT }}\" \\\n  https://api.github.com/repos/${{\
+        \ github.repository }}/pulls?state=all\\&base=${{ github.ref }}\\&sort=updated\\\
+        &direction=desc > /tmp/prs.json\n# Find a PR that resulted in our commit.\n\
+        PR=$(jq -r \".[] | select(.merge_commit_sha == \\\"${COMMIT}\\\") | .number\"\
+        \ /tmp/prs.json)\nif [ \"${PR}\" = \"null\" ] || [ -z \"${PR}\" ] ; then\n\
+        \  exit 0\nfi\n# Build the string we'll use as the description of the release.\n\
+        echo \"::set-output name=body::latest_pr:${PR}\"\n"
     - name: Create prerelease
       uses: ncipollo/release-action@v1
       with:
         token: ${{ secrets.WORKFLOW_PAT }}
         prerelease: true
         tag: ${{ steps.versions.outputs.release }}
+        body: ${{ steps.release-body.outputs.body }}
     - name: Set development version
       run: '.github/bump-version.set.sh "${{ steps.versions.outputs.bumped }}"
 
