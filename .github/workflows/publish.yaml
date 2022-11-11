@@ -21,7 +21,6 @@ jobs:
       fail-fast: false
       matrix:
         node_version:
-          - 12
           - 14
           - 16
           - 18
@@ -83,9 +82,9 @@ jobs:
       fail-fast: false
       matrix:
         node_version:
-          - '12'
           - '14'
           - '16'
+          - '18'
     steps:
       - run: apk add build-base git python3 wget github-cli
       - uses: actions/checkout@v2
