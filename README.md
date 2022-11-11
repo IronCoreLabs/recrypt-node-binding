@@ -110,7 +110,7 @@ or
 yarn compile
 ```
 
-This will produce an `index.node` file within the `native` directory. This file can then be included within a NodeJS file by simply requiring the file, e.g.
+This will produce an `index.node` file within the `bin-package` directory. This file can then be included within a NodeJS file by simply requiring the file, e.g.
 
 ```
 const recrypt = require('index.node');
@@ -119,13 +119,13 @@ const recrypt = require('index.node');
 ### Benchmarks
 
 -   From this repos root, run `npm i` or `yarn`.
--   Run `npm/yarn run compile` to compile the Rust source into a `native/index.node` module.
+-   Run `npm/yarn run compile` to compile the Rust source into a `bin-package/index.node` module.
 -   Run `npm/yarn run benchmark`.
 
 ### Unit Tests
 
 -   From this repos root, run `npm i` or `yarn`.
--   Run `npm/yarn run compile` to compile the Rust source into a `native/index.node` module.
+-   Run `npm/yarn run compile` to compile the Rust source into a `bin-package/index.node` module.
 -   Run `npm/yarn run test`.
 
 Copyright (c) 2021 IronCore Labs, Inc.
