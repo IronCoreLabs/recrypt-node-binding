@@ -17,6 +17,7 @@
             buildInputs = with pkgs.nodePackages; [
               pkgs.nodejs-18_x
               pkgs.protobuf
+              pkgs.jsonpatch
               (pkgs.yarn.override { nodejs = nodejs-18_x; })
             ];
             nativeBuildInputs = [ ]
