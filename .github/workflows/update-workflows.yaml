@@ -54,7 +54,7 @@ jobs:
 
         chmod +x ~/bin/json2yaml ~/bin/yaml2json
 
-        echo "${HOME}/bin" >> ${GITHUB_PATH}
+        cp ${GITHUB_PATH} /tmp/path && echo "${HOME}/bin" > ${GITHUB_PATH} && cat /tmp/path >> ${GITHUB_PATH}
 
         '
     - name: Check out this repo
