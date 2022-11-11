@@ -2,7 +2,7 @@
 - op: replace
   path: /jobs/test/strategy/matrix
   value:
-    rust_version: 
+    rust_version:
       - 1.56.0
       - stable
       - beta
@@ -10,6 +10,7 @@
       - 12
       - 14
       - 16
+      - 18
     system:
       - os: macos-12
         target: x86_64-apple-darwin
@@ -17,7 +18,7 @@
         target: x86_64-unknown-linux-gnu
       - os: windows-2019
         target: x86_64-pc-windows-msvc
-    arch: 
+    arch:
       - x64
     include:
       # only node 15+ supports arm64 natively, so we only need to build 16 for now
