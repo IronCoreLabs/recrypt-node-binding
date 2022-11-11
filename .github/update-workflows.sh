@@ -52,10 +52,10 @@ for WF in ${WORKFLOWS} ; do
         echo "# For docs, see github-actions in the IronCoreLabs/depot repo."
         echo ""
         if [ -f "${THISREPO}/${YAMLPATCH}" ] ; then
-            "${HOME}/bin/yaml2json" < "${THISREPO}/${YAMLPATCH}" > "${JSONPATCH}"
-            "${HOME}/bin/yaml2json" < "${TEMPLATES}/workflows/${WF}" | jsonpatch - "${JSONPATCH}" | "${HOME}/bin/json2yaml"
+            yaml2json < "${THISREPO}/${YAMLPATCH}" > "${JSONPATCH}"
+            yaml2json < "${TEMPLATES}/workflows/${WF}" | jsonpatch - "${JSONPATCH}" | json2yaml
         else
-            "${HOME}/bin/yaml2json" < "${TEMPLATES}/workflows/${WF}" | "${HOME}/bin/json2yaml"
+            yaml2json < "${TEMPLATES}/workflows/${WF}" | json2yaml
         fi
     ) > "${THISREPO}/.github/workflows/${WF}"
 
