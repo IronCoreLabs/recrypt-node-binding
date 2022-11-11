@@ -9,7 +9,7 @@ This library uses the [Neon Bindings](https://www.neon-bindings.com) toolchain t
 
 ## Supported Platforms
 
-|                       | Node 12 | Node 14 | Node 16 |
+|                       | Node 14 | Node 16 | Node 18 |
 | --------------------- | ------- | ------- | ------- |
 | Linux x64 - glibc     | ✓       | ✓       | ✓       |
 | Linux x64 - musl-libc | ✓       | ✓       | ✓       |

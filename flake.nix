@@ -1,5 +1,5 @@
 {
-  description = "CMK Config Broker";
+  description = "Recrypt Node Binding";
   inputs.flake-utils.url = "github:numtide/flake-utils";
 
   outputs = { self, nixpkgs, flake-utils }:
