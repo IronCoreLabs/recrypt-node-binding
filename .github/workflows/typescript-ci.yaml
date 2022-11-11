@@ -2,26 +2,103 @@
 # Instead, edit the jsonpatch file (actually YAML) in .github/typescript-ci-patch.yaml
 # For docs, see github-actions in the IronCoreLabs/depot repo.
 
-name: TypeScript CI
-'on':
-  push:
-    branches:
-    - main
-  pull_request: null
-  workflow_dispatch: null
 jobs:
   test:
     runs-on: ${{ matrix.system.os }}
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        cache: yarn
+        node-version: ${{ matrix.node_version }}
+        architecture: ${{ matrix.arch }}
+    - uses: actions-rs/toolchain@v1
+      with:
+        override: true
+        profile: minimal
+        toolchain: ${{ matrix.rust_version }}
+    - name: Install modules
+      run: yarn install --ignore-scripts
+    - name: Compile
+      run: yarn run compile
+    - name: Run tests
+      run: yarn run test
+    - if: ${{ contains(matrix.system.os, 'ubuntu') && matrix.node_version == '16'
+        && matrix.rust_version == 'stable' && github.base_ref != '' }}
+      name: Check test coverage
+      uses: anuraag016/Jest-Coverage-Diff@V1.4
+      with:
+        afterSwitchCommand: yarn install --ignore-scripts && yarn run compile
+        delta: 0.2
+        fullCoverageDiff: false
     strategy:
       matrix:
-        rust_version:
-        - 1.56.0
-        - stable
-        - beta
+        arch:
+        - x64
+        include:
+        - arch: arm64
+          node_version: 16
+          rust_version: 1.56.0
+          system:
+            os:
+            - self-hosted
+            - macOS
+            - ARM64
+            target: aarch64-apple-darwin
+        - arch: arm64
+          node_version: 16
+          rust_version: stable
+          system:
+            os:
+            - self-hosted
+            - macOS
+            - ARM64
+            target: aarch64-apple-darwin
+        - arch: arm64
+          node_version: 16
+          rust_version: beta
+          system:
+            os:
+            - self-hosted
+            - macOS
+            - ARM64
+            target: aarch64-apple-darwin
+        - arch: arm64
+          node_version: 18
+          rust_version: 1.56.0
+          system:
+            os:
+            - self-hosted
+            - macOS
+            - ARM64
+            target: aarch64-apple-darwin
+        - arch: arm64
+          node_version: 18
+          rust_version: stable
+          system:
+            os:
+            - self-hosted
+            - macOS
+            - ARM64
+            target: aarch64-apple-darwin
+        - arch: arm64
+          node_version: 18
+          rust_version: beta
+          system:
+            os:
+            - self-hosted
+            - macOS
+            - ARM64
+            target: aarch64-apple-darwin
         node_version:
         - 12
         - 14
         - 16
+        - 18
+        rust_version:
+        - 1.56.0
+        - stable
+        - beta
         system:
         - os: macos-12
           target: x86_64-apple-darwin
@@ -29,94 +106,46 @@ jobs:
           target: x86_64-unknown-linux-gnu
         - os: windows-2019
           target: x86_64-pc-windows-msvc
-        arch:
-        - x64
-        include:
-        - system:
-            os:
-            - self-hosted
-            - macOS
-            - ARM64
-            target: aarch64-apple-darwin
-          node_version: 16
-          rust_version: 1.56.0
-          arch: arm64
-        - system:
-            os:
-            - self-hosted
-            - macOS
-            - ARM64
-            target: aarch64-apple-darwin
-          node_version: 16
-          rust_version: stable
-          arch: arm64
-        - system:
-            os:
-            - self-hosted
-            - macOS
-            - ARM64
-            target: aarch64-apple-darwin
-          node_version: 16
-          rust_version: beta
-          arch: arm64
       fail-fast: false
-    steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node_version }}
-        cache: yarn
-        architecture: ${{ matrix.arch }}
-    - uses: actions-rs/toolchain@v1
-      with:
-        profile: minimal
-        toolchain: ${{ matrix.rust_version }}
-        override: true
-    - name: Install modules
-      run: yarn install --ignore-scripts
-    - name: Compile
-      run: yarn run compile
-    - name: Run tests
-      run: yarn run test
-    - name: Check test coverage
-      if: ${{ contains(matrix.system.os, 'ubuntu') && matrix.node_version == '16'
-        && matrix.rust_version == 'stable' && github.base_ref != '' }}
-      uses: anuraag016/Jest-Coverage-Diff@V1.4
-      with:
-        fullCoverageDiff: false
-        delta: 0.2
-        afterSwitchCommand: yarn install --ignore-scripts && yarn run compile
   test-docker:
     runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        rust_version:
-        - 1.56.0
-        - stable
-        - beta
-        node_version:
-        - 12
-        - 14
-        - 16
-        arch:
-        - x64
-        os:
-        - ubuntu-22.04
-      fail-fast: false
     steps:
     - run: apk add build-base git python3 wget
     - run: echo RUSTFLAGS="-C target-feature=-crt-static" >> "${GITHUB_ENV}"
     - uses: actions/checkout@v3
     - uses: actions-rs/toolchain@v1
       with:
+        override: true
         profile: minimal
         toolchain: ${{ matrix.rust_version }}
-        override: true
     - name: Install modules
       run: yarn install --ignore-scripts
     - name: Compile
       run: yarn run compile
     - name: Run tests
       run: yarn run test
+    strategy:
+      matrix:
+        arch:
+        - x64
+        node_version:
+        - 12
+        - 14
+        - 16
+        - 18
+        rust_version:
+        - 1.56.0
+        - stable
+        - beta
+        os:
+        - ubuntu-22.04
+      fail-fast: false
     container:
       image: node:${{ matrix.node_version }}-alpine
+name: TypeScript CI
+'on':
+  pull_request: null
+  push:
+    branches:
+    - main
+  workflow_dispatch: null
