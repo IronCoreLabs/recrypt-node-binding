@@ -15,11 +15,9 @@ jobs:
     strategy:
       matrix:
         rust_version:
-        - 1.56.0
         - stable
         - beta
         node_version:
-        - 12
         - 14
         - 16
         - 18
@@ -40,15 +38,6 @@ jobs:
             - ARM64
             target: aarch64-apple-darwin
           node_version: 16
-          rust_version: 1.56.0
-          arch: arm64
-        - system:
-            os:
-            - self-hosted
-            - macOS
-            - ARM64
-            target: aarch64-apple-darwin
-          node_version: 16
           rust_version: stable
           arch: arm64
         - system:
@@ -59,15 +48,6 @@ jobs:
             target: aarch64-apple-darwin
           node_version: 16
           rust_version: beta
-          arch: arm64
-        - system:
-            os:
-            - self-hosted
-            - macOS
-            - ARM64
-            target: aarch64-apple-darwin
-          node_version: 18
-          rust_version: 1.56.0
           arch: arm64
         - system:
             os:
@@ -119,11 +99,9 @@ jobs:
     strategy:
       matrix:
         rust_version:
-        - 1.56.0
         - stable
         - beta
         node_version:
-        - 12
         - 14
         - 16
         - 18
