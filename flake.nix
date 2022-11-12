@@ -19,7 +19,7 @@
             (pkgs.yarn.override { nodejs = pkgs.nodejs-18_x; })
             pkgs.libiconv
           ];
-          nativeBuildInputs = [ pkgs.rust-bin.fromRustupToolchain.stable ]
+          nativeBuildInputs = [ pkgs.rust-bin.stable.latest.default ]
               ++ pkgs.lib.optionals (pkgs.stdenv.isDarwin) [ pkgs.darwin.cctools ];
         };
       });

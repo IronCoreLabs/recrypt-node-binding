@@ -110,10 +110,10 @@ or
 yarn compile
 ```
 
-This will produce an `index.node` file within the `bin-package` directory. This file can then be included within a NodeJS file by simply requiring the file, e.g.
+This will produce an `index.node` file within the `bin-package` directory. This file can be used directly, or via index.js:
 
 ```
-const recrypt = require('index.node');
+const recrypt = require('index.js');
 ```
 
 ### Benchmarks
