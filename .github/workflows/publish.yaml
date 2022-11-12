@@ -21,9 +21,9 @@ jobs:
       fail-fast: false
       matrix:
         node_version:
-          - 12
           - 14
           - 16
+          - 18
         system:
           - os: macos-12
             target: x86_64-apple-darwin
@@ -37,6 +37,10 @@ jobs:
               os: [self-hosted, macOS, ARM64]
               target: aarch64-apple-darwin
             node_version: 16
+          - system:
+              os: [self-hosted, macOS, ARM64]
+              target: aarch64-apple-darwin
+            node_version: 18
     steps:
       - uses: actions/checkout@v2
         with:
@@ -78,9 +82,9 @@ jobs:
       fail-fast: false
       matrix:
         node_version:
-          - '12'
           - '14'
           - '16'
+          - '18'
     steps:
       - run: apk add build-base git python3 wget github-cli
       - uses: actions/checkout@v2

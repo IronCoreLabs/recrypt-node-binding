@@ -10,3 +10,4 @@ dist/*
 bin-package/*
 build/*
 .idea/*
+.direnv

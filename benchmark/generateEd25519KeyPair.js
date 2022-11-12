@@ -1,5 +1,5 @@
 const Benchmark = require("benchmark");
-const recrypt = require("../index.node");
+const recrypt = require("../index.js");
 
 const api = new recrypt.Api256();
 

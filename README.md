@@ -9,7 +9,7 @@ This library uses the [Neon Bindings](https://www.neon-bindings.com) toolchain t
 
 ## Supported Platforms
 
-|                       | Node 12 | Node 14 | Node 16 |
+|                       | Node 14 | Node 16 | Node 18 |
 | --------------------- | ------- | ------- | ------- |
 | Linux x64 - glibc     | ✓       | ✓       | ✓       |
 | Linux x64 - musl-libc | ✓       | ✓       | ✓       |
@@ -96,7 +96,7 @@ assert.equal(decryptedValue, plaintext);
 
 ## Local Development
 
-In order to build the binary Node file for Recrypt, you'll need the dependencies specified on the [Neon Bindings site](https://guides.neon-bindings.com/getting-started/). Follow their getting started directions and install Rust and the Node Build Tools. The Neon CLI is already installed as a dependency of this project so you don't have to install that as a global dependency.
+In order to build the binary Node file for Recrypt, you'll need the dependencies specified on the [Neon Bindings site](https://neon-bindings.com/docs/quick-start/). Follow their getting started directions and install Rust and the Node Build Tools. The Neon CLI is already installed as a dependency of this project so you don't have to install that as a global dependency.
 
 Once all of those dependencies are installed, the following can be run.
 
@@ -110,22 +110,22 @@ or
 yarn compile
 ```
 
-This will produce an `index.node` file within the `native` directory. This file can then be included within a NodeJS file by simply requiring the file, e.g.
+This will produce an `index.node` file within the `bin-package` directory. This file can be used directly, or via index.js:
 
 ```
-const recrypt = require('index.node');
+const recrypt = require('index.js');
 ```
 
 ### Benchmarks
 
 -   From this repos root, run `npm i` or `yarn`.
--   Run `npm/yarn run compile` to compile the Rust source into a `native/index.node` module.
+-   Run `npm/yarn run compile` to compile the Rust source into a `bin-package/index.node` module.
 -   Run `npm/yarn run benchmark`.
 
 ### Unit Tests
 
 -   From this repos root, run `npm i` or `yarn`.
--   Run `npm/yarn run compile` to compile the Rust source into a `native/index.node` module.
+-   Run `npm/yarn run compile` to compile the Rust source into a `bin-package/index.node` module.
 -   Run `npm/yarn run test`.
 
 Copyright (c) 2021 IronCore Labs, Inc.
