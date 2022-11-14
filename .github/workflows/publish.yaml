@@ -31,16 +31,20 @@ jobs:
             target: x86_64-unknown-linux-gnu
           - os: windows-2019
             target: x86_64-pc-windows-msvc
+        arch:
+          - x64
         include:
           # only node 15+ supports arm64 natively, so we only need to build 16 for now
           - system:
               os: [self-hosted, macOS, ARM64]
               target: aarch64-apple-darwin
             node_version: 16
+            arch: arm64
           - system:
               os: [self-hosted, macOS, ARM64]
               target: aarch64-apple-darwin
             node_version: 18
+            arch: arm64
     steps:
       - uses: actions/checkout@v2
         with:
@@ -49,6 +53,7 @@ jobs:
       - uses: actions/setup-node@v2.1.5
         with:
           node-version: ${{ matrix.node_version }}
+          architecture: ${{ matrix.arch }}
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
