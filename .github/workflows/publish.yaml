@@ -39,12 +39,20 @@ jobs:
               os: [self-hosted, macOS, ARM64]
               target: aarch64-apple-darwin
             node_version: 16
+<<<<<<< HEAD
             arch: arm64
           - system:
               os: [self-hosted, macOS, ARM64]
               target: aarch64-apple-darwin
             node_version: 18
             arch: arm64
+||||||| 3847c76
+=======
+          - system:
+              os: [self-hosted, macOS, ARM64]
+              target: aarch64-apple-darwin
+            node_version: 18
+>>>>>>> main
     steps:
       - uses: actions/checkout@v2
         with:
