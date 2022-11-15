@@ -94,6 +94,7 @@ jobs:
         fullCoverageDiff: false
         delta: 0.2
         afterSwitchCommand: yarn install --ignore-scripts && yarn run compile
+        accessToken: ${{ secrets.WORKFLOW_PAT }}
   test-docker:
     runs-on: ${{ matrix.os }}
     strategy:
