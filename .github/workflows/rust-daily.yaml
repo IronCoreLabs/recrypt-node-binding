@@ -22,7 +22,7 @@ jobs:
         profile: minimal
         toolchain: ${{ matrix.toolchain }}
         override: true
-    - uses: Swatinem/rust-cache@v1
+    - uses: Swatinem/rust-cache@v2
       id: rust-cache
     - name: Install sccache
       if: steps.rust-cache.outputs.cache-hit != 'true'
