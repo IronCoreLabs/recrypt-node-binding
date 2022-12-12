@@ -22,10 +22,7 @@ jobs:
         profile: minimal
         toolchain: ${{ matrix.toolchain }}
         override: true
-    - uses: Swatinem/rust-cache@v2
-      id: rust-cache
     - name: Install sccache
-      if: steps.rust-cache.outputs.cache-hit != 'true'
       uses: IronCoreLabs/rust-install@v0.1.0
       with:
         crate: sccache
@@ -34,7 +31,6 @@ jobs:
         os: ubuntu-22.04
         version: latest
     - name: Setup sccache env variables
-      if: steps.rust-cache.outputs.cache-hit != 'true'
       run: 'echo "CC=$(which cc)" >> $GITHUB_ENV
 
         echo "RUSTC_WRAPPER=$HOME/.cargo/bin/sccache" >> $GITHUB_ENV
@@ -48,7 +44,7 @@ jobs:
         echo "SCCACHE_S3_USE_SSL=true" >> $GITHUB_ENV
 
         '
+    - uses: Swatinem/rust-cache@v2
     - run: cargo check --all-features
     - name: Print sccache stats
-      if: steps.rust-cache.outputs.cache-hit != 'true'
       run: sccache -s
