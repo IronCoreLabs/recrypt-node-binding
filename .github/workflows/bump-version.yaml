@@ -21,7 +21,7 @@ jobs:
       commit-prefix: ${{ steps.echo.outputs.commit-prefix }}
     steps:
     - id: echo
-      run: echo "::set-output name=commit-prefix::${{ env.COMMIT_PREFIX }}"
+      run: echo "commit-prefix=${{ env.COMMIT_PREFIX }}" >> "$GITHUB_OUTPUT"
   bump:
     needs:
     - vars
@@ -40,7 +40,7 @@ jobs:
         '
     - name: Get version
       id: current
-      run: echo "::set-output name=version::$(.github/bump-version.get.sh)"
+      run: echo "version=$(.github/bump-version.get.sh)" >> "$GITHUB_OUTPUT"
     - name: Compute versions
       id: versions
       run: .github/bump-version.bump.sh "${{ env.MODE }}" "${{ steps.current.outputs.version
@@ -78,7 +78,7 @@ jobs:
         PR=$(jq -r \".[] | select(.merge_commit_sha == \\\"${COMMIT}\\\") | .number\"\
         \ /tmp/prs.json)\nif [ \"${PR}\" = \"null\" ] || [ -z \"${PR}\" ] ; then\n\
         \  exit 0\nfi\n# Build the string we'll use as the description of the release.\n\
-        echo \"::set-output name=body::latest_pr:${PR}\"\n"
+        echo \"body=latest_pr:${PR}\" >> \"$GITHUB_OUTPUT\"\n"
     - name: Create prerelease
       uses: ncipollo/release-action@v1
       with:

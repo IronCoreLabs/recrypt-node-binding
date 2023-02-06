@@ -61,7 +61,7 @@ if [ -z "${RELEASEVERS}" ] ; then
         ;;
     esac
 fi
-echo "::set-output name=release::${RELEASEVERS}"
+echo "release=${RELEASEVERS}" >> "$GITHUB_OUTPUT"
 
 # Derive a new bumped version from the release version.
 # Increment the last number in the string.
@@ -72,4 +72,4 @@ VERSION="$(echo "${VERSION}" | sed -E 's/([-.])rc([-.]|$)/\1pre\2/')"
 if ! [[ ${VERSION} =~ [-.]pre([-.]|$) ]] ; then
     VERSION="${VERSION}-pre"
 fi
-echo "::set-output name=bumped::${VERSION}"
+echo "bumped=${VERSION}" >> "$GITHUB_OUTPUT"
