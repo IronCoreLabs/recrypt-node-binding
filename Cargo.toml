@@ -1,6 +1,6 @@
 [package]
 name = "recrypt-node-binding"
-version = "0.9.2-rc.7"
+version = "0.9.2-pre.8"
 authors = ["IronCore Labs <code@ironcorelabs.com>"]
 edition = "2021"
 rust-version = "1.56.0"
