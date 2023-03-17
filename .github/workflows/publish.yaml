@@ -73,7 +73,7 @@ jobs:
         run: |
           node publish.js
           cd bin-package
-          echo "::set-output name=asset::$(echo *.tar.gz)"
+          echo "asset=$(echo *.tar.gz)" >> "$GITHUB_OUTPUT"
       - name: Upload release asset
         run: gh release upload ${{ github.event.release.tag_name }} bin-package/${{ steps.build.outputs.asset }} --clobber
         env:
@@ -108,7 +108,7 @@ jobs:
         run: |
           node publish.js
           cd bin-package
-          echo "::set-output name=asset::$(echo *.tar.gz)"
+          echo "asset=$(echo *.tar.gz)" >> "$GITHUB_OUTPUT"
       - name: Upload release asset
         run: |
           git config --global --add safe.directory $(pwd)
