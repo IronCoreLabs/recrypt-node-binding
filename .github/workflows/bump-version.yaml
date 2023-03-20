@@ -12,21 +12,25 @@ name: Bump Version
       version:
         description: New semver release version.
 env:
-  COMMIT_PREFIX: 'bump-version: '
   MODE: prerelease
 jobs:
-  vars:
+  skip:
     runs-on: ubuntu-22.04
     outputs:
-      commit-prefix: ${{ steps.echo.outputs.commit-prefix }}
+      skip: ${{ steps.skip.outputs.skip }}
     steps:
-    - id: echo
-      run: echo "commit-prefix=${{ env.COMMIT_PREFIX }}" >> "$GITHUB_OUTPUT"
+    - name: Maybe skip
+      id: skip
+      run: "# If it's a push to main, and any of the commits are from Dependabot,\
+        \ we should skip.\nif [ ${{ github.event_name }} = push ] ; then\n  if [ $(jq\
+        \ -r < ${{ github.event_path }} '.commits | map(.author.name == \"dependabot[bot]\"\
+        ) | any') = true ] ; then\n    echo \"skip=true\" >> \"$GITHUB_OUTPUT\"\n\
+        \  fi\nfi\n"
   bump:
     needs:
-    - vars
+    - skip
     runs-on: ubuntu-22.04
-    if: '!contains(join(github.event.commits.*.message), needs.vars.outputs.commit-prefix)'
+    if: ${{ needs.skip.outputs.skip != 'true' }}
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -48,20 +52,20 @@ jobs:
         \  # Set the in-tree version to the release version.\n  .github/bump-version.set.sh\
         \ \"${release}\"\n  git diff --cached\n  # GHA intermixes the stdout from\
         \ git diff with stderr from \"set -x\", so we pause to let it settle.\n  sleep\
-        \ 1\n  git commit -m \"${COMMIT_PREFIX}Set release version ${release}\"\n\
-        \  git tag \"${release}\"\n\n  # Bump to the next development version.\n \
-        \ .github/bump-version.set.sh \"${bumped}\"\n  git diff --cached\n  sleep\
-        \ 1\n  git commit -m \"${COMMIT_PREFIX}Bump to next development version ${bumped}\"\
-        \n\n  # If we push the release commit and its tag in one step, we hit strange\
-        \ race conditions where one client succeeds\n  # pushing the tag, and another\
-        \ client succeeds pushing the commit. Instead, we push the commit first and\
-        \ then the tag.\n  # That seems to cause the loser of the race to fail early.\n\
-        \  if git push origin \"${{ github.ref }}\" && git push origin \"${release}\"\
-        \ ; then\n    break\n  fi\n\n  # If the \"git push\" failed, then let's forget\
-        \ our last two commits, re-pull the latest changes, and try again.\n  git\
-        \ reset --hard HEAD~2\n  git tag -d \"${release}\"\n  git pull origin \"${{\
-        \ github.ref }}\"\n  # Wait a little bit to let competing workflows finish\
-        \ their business.\n  sleep 10\ndone\n"
+        \ 1\n  git commit -m \"Set release version ${release} [skip ci]\"\n  git tag\
+        \ \"${release}\"\n\n  # Bump to the next development version.\n  .github/bump-version.set.sh\
+        \ \"${bumped}\"\n  git diff --cached\n  sleep 1\n  git commit -m \"Bump to\
+        \ next development version ${bumped} [skip ci]\"\n\n  # If we push the release\
+        \ commit and its tag in one step, we hit strange race conditions where one\
+        \ client succeeds\n  # pushing the tag, and another client succeeds pushing\
+        \ the commit. Instead, we push the commit first and then the tag.\n  # That\
+        \ seems to cause the loser of the race to fail early.\n  if git push origin\
+        \ \"${{ github.ref }}\" && git push origin \"${release}\" ; then\n    break\n\
+        \  fi\n\n  # If the \"git push\" failed, then let's forget our last two commits,\
+        \ re-pull the latest changes, and try again.\n  git reset --hard HEAD~2\n\
+        \  git tag -d \"${release}\"\n  git pull origin \"${{ github.ref }}\"\n  #\
+        \ Wait a little bit to let competing workflows finish their business.\n  sleep\
+        \ 10\ndone\n"
     - name: Generate release text
       id: release-body
       run: "set -x\n# Get the most recent commit. Hopefully it was a PR merge.\nCOMMIT=$(jq\
