@@ -11,6 +11,9 @@ name: Bump Version
     inputs:
       version:
         description: New semver release version.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 env:
   MODE: prerelease
 jobs:

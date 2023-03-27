@@ -3,6 +3,9 @@
 # For docs, see github-actions in the IronCoreLabs/depot repo.
 
 name: Update Workflows
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 'on':
   push:
     paths:

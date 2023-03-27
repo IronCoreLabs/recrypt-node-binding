@@ -3,6 +3,9 @@
 # For docs, see github-actions in the IronCoreLabs/depot repo.
 
 name: Rust CI
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 'on':
   push:
     branches:

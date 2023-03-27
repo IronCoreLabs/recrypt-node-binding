@@ -3,6 +3,9 @@
 # For docs, see github-actions in the IronCoreLabs/depot repo.
 
 name: Rust Daily
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 'on':
   schedule:
   - cron: 0 14 * * 2-5
