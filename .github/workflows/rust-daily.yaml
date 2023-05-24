@@ -46,6 +46,8 @@ jobs:
 
         echo "SCCACHE_S3_USE_SSL=true" >> $GITHUB_ENV
 
+        echo "SCCACHE_REGION=us-west-2" >> $GITHUB_ENV
+
         '
     - uses: Swatinem/rust-cache@v2
     - run: cargo check --all-features
