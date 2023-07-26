@@ -22,7 +22,7 @@ jobs:
         system:
         - os: macos-12
           target: x86_64-apple-darwin
-          arch: 64
+          arch: x64
         - os: buildjet-2vcpu-ubuntu-2204
           target: x86_64-unknown-linux-gnu
           arch: x64
