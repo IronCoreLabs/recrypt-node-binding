@@ -87,8 +87,8 @@ jobs:
       fail-fast: false
       matrix:
         node_version:
-          - '16'
-          - '18'
+          - 16
+          - 18
         os:
           - buildjet-2vcpu-ubuntu-2204
           - buildjet-4vcpu-ubuntu-2204-arm

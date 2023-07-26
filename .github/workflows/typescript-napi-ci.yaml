@@ -31,7 +31,7 @@ jobs:
           arch: arm64
         - os: windows-2019
           target: x86_64-pc-windows-msvc
-          arch: x86
+          arch: x64
         - os: [self-hosted, macOS, ARM64]
           target: aarch64-apple-darwin
           arch: arm64
