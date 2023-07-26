@@ -8,6 +8,12 @@ name: Publish
   release:
     types:
       - created
+  # workflow_dispatch is just for testing, and it won't fully work.
+  workflow_dispatch:
+    inputs:
+      name:
+        description: fake version name
+        required: true
 
 env:
   # hack to get dynlibs working with musl
@@ -42,7 +48,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: ${{ github.event.release.tag_name }}
+          ref: ${{ github.event.release.tag_name }}${{ github.ref }}
       - uses: c-hive/gha-yarn-cache@v1
       - uses: actions/setup-node@v2.1.5
         with:
@@ -69,7 +75,7 @@ jobs:
           cd bin-package
           echo "asset=$(echo *.tar.gz)" >> "$GITHUB_OUTPUT"
       - name: Upload release asset
-        run: gh release upload ${{ github.event.release.tag_name }} bin-package/${{ steps.build.outputs.asset }} --clobber
+        run: gh release upload ${{ github.event.release.tag_name }}${{ github.event.inputs.name }} bin-package/${{ steps.build.outputs.asset }} --clobber
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -90,7 +96,7 @@ jobs:
       - run: apk add build-base git python3 wget github-cli
       - uses: actions/checkout@v2
         with:
-          ref: ${{ github.event.release.tag_name }}
+          ref: ${{ github.event.release.tag_name }}${{ github.ref }}
       - uses: c-hive/gha-yarn-cache@v1
       - uses: actions-rs/toolchain@v1
         with:
@@ -108,11 +114,12 @@ jobs:
       - name: Upload release asset
         run: |
           git config --global --add safe.directory $(pwd)
-          gh release upload ${{ github.event.release.tag_name }} bin-package/${{ steps.build.outputs.asset }} --clobber
+          gh release upload ${{ github.event.release.tag_name }}${{ github.event.inputs.name }} bin-package/${{ steps.build.outputs.asset }} --clobber
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   publish-npm:
+    if: '${{ github.event.release.tag_name }}'
     needs:
       - publish-github
       - publish-github-docker
