@@ -17,54 +17,23 @@ jobs:
         - stable
         - beta
         node_version:
-        - 14
         - 16
         - 18
         system:
         - os: macos-12
           target: x86_64-apple-darwin
-        - os: ubuntu-22.04
+          arch: x86
+        - os: buildjet-2vcpu-ubuntu-2204
           target: x86_64-unknown-linux-gnu
+          arch: x86
+        - os: buildjet-4vcpu-ubuntu-2204-arm
+          target: arm64-unknown-linux-gnu
+          arch: arm64
         - os: windows-2019
           target: x86_64-pc-windows-msvc
-        arch:
-        - x64
-        include:
-        - system:
-            os:
-            - self-hosted
-            - macOS
-            - ARM64
-            target: aarch64-apple-darwin
-          node_version: 16
-          rust_version: stable
-          arch: arm64
-        - system:
-            os:
-            - self-hosted
-            - macOS
-            - ARM64
-            target: aarch64-apple-darwin
-          node_version: 16
-          rust_version: beta
-          arch: arm64
-        - system:
-            os:
-            - self-hosted
-            - macOS
-            - ARM64
-            target: aarch64-apple-darwin
-          node_version: 18
-          rust_version: stable
-          arch: arm64
-        - system:
-            os:
-            - self-hosted
-            - macOS
-            - ARM64
-            target: aarch64-apple-darwin
-          node_version: 18
-          rust_version: beta
+          arch: x86
+        - os: [self-hosted, macOS, ARM64]
+          target: aarch64-apple-darwin
           arch: arm64
       fail-fast: false
     steps:
@@ -73,7 +42,7 @@ jobs:
       with:
         node-version: ${{ matrix.node_version }}
         cache: yarn
-        architecture: ${{ matrix.arch }}
+        architecture: ${{ matrix.system.arch }}
     - uses: actions-rs/toolchain@v1
       with:
         profile: minimal
@@ -94,21 +63,20 @@ jobs:
         delta: 0.2
         afterSwitchCommand: yarn install --ignore-scripts && yarn run compile
         accessToken: ${{ secrets.WORKFLOW_PAT }}
+
   test-docker:
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.system.os }}
     strategy:
       matrix:
         rust_version:
         - stable
         - beta
         node_version:
-        - 14
         - 16
         - 18
-        arch:
-        - x64
         os:
-        - ubuntu-22.04
+        - buildjet-2vcpu-ubuntu-2204
+        - buildjet-4vcpu-ubuntu-2204-arm
       fail-fast: false
     steps:
     - run: apk add build-base git python3 wget
