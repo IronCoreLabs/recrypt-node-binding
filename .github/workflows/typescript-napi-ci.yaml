@@ -66,7 +66,7 @@ jobs:
         accessToken: ${{ secrets.WORKFLOW_PAT }}
 
   test-docker:
-    runs-on: ${{ matrix.system.os }}
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         rust_version:
