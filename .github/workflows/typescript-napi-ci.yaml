@@ -19,6 +19,7 @@ jobs:
         node_version:
         - 16
         - 18
+        - 20
         system:
         - os: macos-12
           target: x86_64-apple-darwin
@@ -74,6 +75,7 @@ jobs:
         node_version:
         - 16
         - 18
+        - 20
         os:
         - buildjet-2vcpu-ubuntu-2204
         - buildjet-4vcpu-ubuntu-2204-arm
