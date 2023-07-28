@@ -96,7 +96,11 @@ jobs:
           - buildjet-4vcpu-ubuntu-2204-arm
     steps:
       - run: apk add build-base git python3 wget github-cli
-      - uses: actions/checkout@v2
+      # https://github.com/actions/runner/issues/801#issuecomment-1374967227
+      - run: |
+          apk add gcompat
+          sed -i "s:ID=alpine:ID=NotpineForGHA:" /etc/os-release
+      - uses: actions/checkout@v3
         with:
           ref: ${{ github.event.release.tag_name }}${{ github.ref }}
       - uses: c-hive/gha-yarn-cache@v1

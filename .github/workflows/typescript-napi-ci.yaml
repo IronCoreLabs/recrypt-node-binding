@@ -67,6 +67,8 @@ jobs:
 
   test-docker:
     runs-on: ${{ matrix.os }}
+    container:
+      image: node:${{ matrix.node_version }}-alpine
     strategy:
       matrix:
         rust_version:
@@ -82,6 +84,10 @@ jobs:
       fail-fast: false
     steps:
     - run: apk add build-base git python3 wget
+    # https://github.com/actions/runner/issues/801#issuecomment-1374967227
+    - run: |
+        apk add gcompat
+        sed -i "s:ID=alpine:ID=NotpineForGHA:" /etc/os-release
     - run: echo RUSTFLAGS="-C target-feature=-crt-static" >> "${GITHUB_ENV}"
     - uses: actions/checkout@v3
     - uses: actions-rs/toolchain@v1
@@ -95,5 +101,3 @@ jobs:
       run: yarn run compile
     - name: Run tests
       run: yarn run test
-    container:
-      image: node:${{ matrix.node_version }}-alpine
