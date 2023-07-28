@@ -1,3 +1,55 @@
+## 0.9.2
+
+### Breaking Changes
+
+- Removed support for Node 14.
+
+### Changed
+
+- Added support for Node 20.
+- Added support for aarch64-linux-glibc and aarch64-linux-musl.
+
+## 0.9.1
+
+### Breaking Changes
+
+None
+
+### Changed
+
+- Automation fixes.
+
+## 0.9.0
+
+### Breaking Changes
+
+None
+
+### Changed
+
+- Added Node 18.
+- Build aarch64-apple-darwin natively.
+
+## 0.8.2
+
+### Breaking Changes
+
+None
+
+### Changed
+
+- Initial support for aarch64-apple-darwin via cross-compile.
+
+## 0.8.1
+
+### Breaking Changes
+
+None
+
+### Changed
+
+- Initial (non-working) support for aarch64-apple-darwin.
+
 ## 0.8.0
 
 ### Breaking Changes
