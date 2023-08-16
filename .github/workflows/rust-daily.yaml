@@ -3,9 +3,8 @@ on:
   schedule:
     - cron: 0 14 * * 1-5
   workflow_dispatch:
-  pull_request: # Remove before merge
 
 jobs:
   rust-daily:
-    uses: IronCoreLabs/workflows/.github/workflows/rust-daily.yaml@rust-daily-workflow
+    uses: IronCoreLabs/workflows/.github/workflows/rust-daily.yaml@rust-daily-v0
     secrets: inherit
