@@ -8,6 +8,12 @@ name: Publish
   release:
     types:
       - created
+  # workflow_dispatch is just for testing, and it won't fully work.
+  workflow_dispatch:
+    inputs:
+      name:
+        description: fake version name
+        required: true
 
 env:
   # hack to get dynlibs working with musl
@@ -21,39 +27,34 @@ jobs:
       fail-fast: false
       matrix:
         node_version:
-          - 14
           - 16
           - 18
+          - 20
         system:
           - os: macos-12
             target: x86_64-apple-darwin
-          - os: ubuntu-22.04
+            arch: x64
+          - os: buildjet-2vcpu-ubuntu-2204
             target: x86_64-unknown-linux-gnu
+            arch: x64
+          - os: buildjet-4vcpu-ubuntu-2204-arm
+            target: aarch64-unknown-linux-gnu
+            arch: arm64
           - os: windows-2019
             target: x86_64-pc-windows-msvc
-        arch:
-          - x64
-        include:
-          # only node 15+ supports arm64 natively, so we only need to build 16 for now
-          - system:
-              os: [self-hosted, macOS, ARM64]
-              target: aarch64-apple-darwin
-            node_version: 16
-            arch: arm64
-          - system:
-              os: [self-hosted, macOS, ARM64]
-              target: aarch64-apple-darwin
-            node_version: 18
+            arch: x64
+          - os: [self-hosted, macOS, ARM64]
+            target: aarch64-apple-darwin
             arch: arm64
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: ${{ github.event.release.tag_name }}
+          ref: ${{ github.event.release.tag_name }}${{ github.event.inputs.name }}
       - uses: c-hive/gha-yarn-cache@v1
       - uses: actions/setup-node@v2.1.5
         with:
           node-version: ${{ matrix.node_version }}
-          architecture: ${{ matrix.arch }}
+          architecture: ${{ matrix.system.arch }}
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
@@ -75,26 +76,33 @@ jobs:
           cd bin-package
           echo "asset=$(echo *.tar.gz)" >> "$GITHUB_OUTPUT"
       - name: Upload release asset
-        run: gh release upload ${{ github.event.release.tag_name }} bin-package/${{ steps.build.outputs.asset }} --clobber
+        run: gh release upload ${{ github.event.release.tag_name }}${{ github.event.inputs.name }} bin-package/${{ steps.build.outputs.asset }} --clobber
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   publish-github-docker:
-    runs-on: ubuntu-22.04
+    runs-on: ${{ matrix.os }}
     container:
       image: node:${{ matrix.node_version }}-alpine
     strategy:
       fail-fast: false
       matrix:
         node_version:
-          - '14'
-          - '16'
-          - '18'
+          - 16
+          - 18
+          - 20
+        os:
+          - buildjet-2vcpu-ubuntu-2204
+          - buildjet-4vcpu-ubuntu-2204-arm
     steps:
       - run: apk add build-base git python3 wget github-cli
-      - uses: actions/checkout@v2
+      # https://github.com/actions/runner/issues/801#issuecomment-1374967227
+      - run: |
+          apk add gcompat
+          sed -i "s:ID=alpine:ID=NotpineForGHA:" /etc/os-release
+      - uses: actions/checkout@v3
         with:
-          ref: ${{ github.event.release.tag_name }}
+          ref: ${{ github.event.release.tag_name }}${{ github.event.inputs.name }}
       - uses: c-hive/gha-yarn-cache@v1
       - uses: actions-rs/toolchain@v1
         with:
@@ -112,11 +120,12 @@ jobs:
       - name: Upload release asset
         run: |
           git config --global --add safe.directory $(pwd)
-          gh release upload ${{ github.event.release.tag_name }} bin-package/${{ steps.build.outputs.asset }} --clobber
+          gh release upload ${{ github.event.release.tag_name }}${{ github.event.inputs.name }} bin-package/${{ steps.build.outputs.asset }} --clobber
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   publish-npm:
+    if: '${{ github.event.release.tag_name }}'
     needs:
       - publish-github
       - publish-github-docker
@@ -125,10 +134,10 @@ jobs:
       - uses: actions/checkout@v2
         with:
           ref: ${{ github.event.release.tag_name }}
-      - uses: c-hive/gha-yarn-cache@v1
       - uses: actions/setup-node@v2.1.5
         with:
-          node-version: 14
+          node-version: 16
+          cache: yarn
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
