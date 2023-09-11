@@ -63,12 +63,13 @@ jobs:
         \ client succeeds\n  # pushing the tag, and another client succeeds pushing\
         \ the commit. Instead, we push the commit first and then the tag.\n  # That\
         \ seems to cause the loser of the race to fail early.\n  if git push origin\
-        \ \"${{ github.ref }}\" && git push origin \"${release}\" ; then\n    break\n\
-        \  fi\n\n  # If the \"git push\" failed, then let's forget our last two commits,\
-        \ re-pull the latest changes, and try again.\n  git reset --hard HEAD~2\n\
-        \  git tag -d \"${release}\"\n  git pull origin \"${{ github.ref }}\"\n  #\
-        \ Wait a little bit to let competing workflows finish their business.\n  sleep\
-        \ 10\ndone\n"
+        \ \"${{ github.ref }}\" && git push origin \"${release}\" ; then\n    # Just\
+        \ exit.\n    exit 0\n  fi\n\n  # If the \"git push\" failed, then let's forget\
+        \ our last two commits, re-pull the latest changes, and try again.\n  git\
+        \ reset --hard HEAD~2\n  git tag -d \"${release}\"\n  git pull origin \"${{\
+        \ github.ref }}\"\n  # Wait a little bit to let competing workflows finish\
+        \ their business.\n  sleep 10\ndone\n# Fallthrough for repeated failure case.\n\
+        echo \"Failed to push bumped versions; tried $TRY times.\"\nexit 1\n"
     - name: Generate release text
       id: release-body
       run: "set -x\n# Get the most recent commit. Hopefully it was a PR merge.\nCOMMIT=$(jq\
