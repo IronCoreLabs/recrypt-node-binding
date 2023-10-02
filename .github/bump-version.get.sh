@@ -20,7 +20,7 @@ fi
 
 # Find the version files in this directory or its descendants, but don't recurse too deep.
 # This line must be kept in sync with "bump-version.set.sh".
-VERSFILES=$(find . -maxdepth 3 ! -path ./.git/\* | grep -v /node_modules/ | grep -E '.*/(version|Cargo.toml|version.go|package.json|pom.xml|version.sbt)$')
+VERSFILES=$(find . -maxdepth 3 ! -path ./.git/\* | grep -v /node_modules/ | grep -E '.*/(version|Cargo.toml|version.go|package.json|pom.xml|version.sbt|build.gradle.kts)$')
 
 # Do we have at least one?
 if [ -z "${VERSFILES}" ] ; then
@@ -71,6 +71,9 @@ for FILE in ${VERSFILES} ; do
         ;;
     version.sbt)
         VERS=$(sed -e 's/^[^"]*"//' -e 's/"$//' < "${FILE}")
+        ;;
+    build.gradle.kts)
+        VERS=$(grep "^version.*=" < "${FILE}" | sed -e 's/^[^"]*"//' -e 's/"$//')
         ;;
     *)
         echo "Can't parse '${FILE}' for version" 1>&2

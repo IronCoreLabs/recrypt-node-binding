@@ -35,7 +35,7 @@ fi
 
 # Find the version files in this directory or its descendants, but don't recurse too deep.
 # This line must be kept in sync with "bump-version.get.sh".
-VERSFILES=$(find . -maxdepth 3 ! -path ./.git/\* | grep -v /node_modules/ | grep -E '.*/(version|Cargo.toml|version.go|package.json|pom.xml|version.sbt)$')
+VERSFILES=$(find . -maxdepth 3 ! -path ./.git/\* | grep -v /node_modules/ | grep -E '.*/(version|Cargo.toml|version.go|package.json|pom.xml|version.sbt|build.gradle.kts)$')
 
 # Edit the version files.
 for FILE in ${VERSFILES} ; do
@@ -98,6 +98,13 @@ for FILE in ${VERSFILES} ; do
         sed 's,^ThisBuild / version := ".*"$,ThisBuild / version := "'"${JAVAVERS}"'",' "${FILE}" > "${FILE}.tmp"
         sed 's,^version in ThisBuild := ".*"$,ThisBuild / version := "'"${JAVAVERS}"'",' "${FILE}.tmp" > "${FILE}"
         rm "${FILE}.tmp"
+        ;;
+
+    build.gradle.kts)
+        # Replace -foo with -SNAPSHOT to be compatible with Java conventions.
+        JAVAVERS="${NEWVERS/-*/-SNAPSHOT}"
+        sed 's/^version = ".*"$/version = "'"${JAVAVERS}"'"/' "${FILE}" > "${FILE}.tmp"
+        mv "${FILE}.tmp" "${FILE}"
         ;;
 
     *)
