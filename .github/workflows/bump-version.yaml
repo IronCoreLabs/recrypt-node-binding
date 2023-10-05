@@ -6,7 +6,8 @@ concurrency:
 
 on:
   push:
-    branches: ["main"]
+    branches:
+      - main
   workflow_dispatch:
     inputs:
       version:
@@ -14,9 +15,8 @@ on:
 
 jobs:
   bump:
-    uses: IronCoreLabs/workflows/.github/workflows/bump-version.yaml@bump-version-v0
+    uses: IronCoreLabs/workflows/.github/workflows/bump-version.yaml@bump-version-v1
     with:
-      release_mode: prerelease
       version: ${{ inputs.version }}
-      workflows_ref: bump-version-workflow
+      release_mode: prerelease
     secrets: inherit
