@@ -1,4 +1,0 @@
-# Normal releases are internal prereleases.
-- op: replace
-  path: /env/MODE
-  value: prerelease

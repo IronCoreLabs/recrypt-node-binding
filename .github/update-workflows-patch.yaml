@@ -1,3 +1,0 @@
-- op: replace
-  path: /on/schedule/0/cron
-  value: "47 7 * * 1"
