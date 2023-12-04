@@ -17,9 +17,11 @@ jobs:
         - stable
         - beta
         node_version:
-        - 16
+        - 16 # remove when 22 LTS is out
         - 18
         - 20
+        # explicitly asked for, we normally don't support non-LTS versions. Remove when Node support is dropped.
+        - 21 
         system:
         - os: macos-12
           target: x86_64-apple-darwin
@@ -78,6 +80,7 @@ jobs:
         - 16
         - 18
         - 20
+        - 21
         os:
         - buildjet-2vcpu-ubuntu-2204
         - buildjet-4vcpu-ubuntu-2204-arm

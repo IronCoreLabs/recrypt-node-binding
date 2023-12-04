@@ -1,3 +1,9 @@
+## 0.10.1
+
+### Changed
+
+- Added support for Node 21 by request. We don't normally support non-LTS Node versions, and this will be dropped when Node drops maintenance support for it.
+
 ## 0.10.0
 
 ### Breaking Changes
