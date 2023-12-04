@@ -5,7 +5,7 @@
     rust-overlay.url = "github:oxalica/rust-overlay";
   };
 
-  outputs = { self, nixpkgs, rust-overlay, flake-utils}:
+  outputs = { self, nixpkgs, rust-overlay, flake-utils }:
     flake-utils.lib.eachDefaultSystem (system:
       let
         lib = import <nixpkgs/lib>;
@@ -15,12 +15,12 @@
       rec {
         devShell = pkgs.mkShell {
           buildInputs = with pkgs.nodePackages; [
-            pkgs.nodejs-18_x
-            (pkgs.yarn.override { nodejs = pkgs.nodejs-18_x; })
+            pkgs.nodejs_20
+            (pkgs.yarn.override { nodejs = pkgs.nodejs_20; })
             pkgs.libiconv
           ];
           nativeBuildInputs = [ pkgs.rust-bin.stable.latest.default ]
-              ++ pkgs.lib.optionals (pkgs.stdenv.isDarwin) [ pkgs.darwin.cctools ];
+            ++ pkgs.lib.optionals (pkgs.stdenv.isDarwin) [ pkgs.darwin.cctools ];
         };
       });
 }
