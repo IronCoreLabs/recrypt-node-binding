@@ -35,13 +35,13 @@ jobs:
         - os: windows-2019
           target: x86_64-pc-windows-msvc
           arch: x64
-        - os: [self-hosted, macOS, ARM64]
+        - os: macos-14
           target: aarch64-apple-darwin
           arch: arm64
       fail-fast: false
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-node@v3
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node_version }}
         cache: yarn
@@ -92,7 +92,7 @@ jobs:
         apk add gcompat
         sed -i "s:ID=alpine:ID=NotpineForGHA:" /etc/os-release
     - run: echo RUSTFLAGS="-C target-feature=-crt-static" >> "${GITHUB_ENV}"
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - uses: actions-rs/toolchain@v1
       with:
         profile: minimal
