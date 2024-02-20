@@ -44,15 +44,15 @@ jobs:
           - os: windows-2019
             target: x86_64-pc-windows-msvc
             arch: x64
-          - os: [self-hosted, macOS, ARM64]
+          - os: macos-14
             target: aarch64-apple-darwin
             arch: arm64
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.release.tag_name }}${{ github.event.inputs.name }}
-      - uses: c-hive/gha-yarn-cache@v1
-      - uses: actions/setup-node@v2.1.5
+      - uses: c-hive/gha-yarn-cache@v2
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node_version }}
           architecture: ${{ matrix.system.arch }}
@@ -102,10 +102,10 @@ jobs:
       - run: |
           apk add gcompat
           sed -i "s:ID=alpine:ID=NotpineForGHA:" /etc/os-release
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.release.tag_name }}${{ github.event.inputs.name }}
-      - uses: c-hive/gha-yarn-cache@v1
+      - uses: c-hive/gha-yarn-cache@v2
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
@@ -136,7 +136,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           ref: ${{ github.event.release.tag_name }}
-      - uses: actions/setup-node@v2.1.5
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: yarn
