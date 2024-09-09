@@ -92,7 +92,7 @@ jobs:
         apk add gcompat
         sed -i "s:ID=alpine:ID=NotpineForGHA:" /etc/os-release
     - run: echo RUSTFLAGS="-C target-feature=-crt-static" >> "${GITHUB_ENV}"
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - uses: actions-rs/toolchain@v1
       with:
         profile: minimal
