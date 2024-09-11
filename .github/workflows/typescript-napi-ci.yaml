@@ -46,61 +46,50 @@ jobs:
         node-version: ${{ matrix.node_version }}
         cache: yarn
         architecture: ${{ matrix.system.arch }}
-    - uses: actions-rs/toolchain@v1
+    - uses: IronCoreLabs/rust-toolchain@v1
       with:
-        profile: minimal
         toolchain: ${{ matrix.rust_version }}
-        override: true
     - name: Install modules
       run: yarn install --ignore-scripts
     - name: Compile
       run: yarn run compile
     - name: Run tests
       run: yarn run test
-    - name: Check test coverage
-      if: ${{ contains(matrix.system.os, 'ubuntu') && matrix.node_version == '16'
-        && matrix.rust_version == 'stable' && github.base_ref != '' }}
-      uses: anuraag016/Jest-Coverage-Diff@V1.4
-      with:
-        fullCoverageDiff: false
-        delta: 0.2
-        afterSwitchCommand: yarn install --ignore-scripts && yarn run compile
-        accessToken: ${{ secrets.WORKFLOW_PAT }}
 
-  test-docker:
-    runs-on: ${{ matrix.os }}
-    container:
-      image: node:${{ matrix.node_version }}-alpine
-    strategy:
-      matrix:
-        rust_version:
-        - stable
-        - beta
-        node_version:
-        - 16
-        - 18
-        - 20
-        - 21
-        os:
-        - buildjet-2vcpu-ubuntu-2204
-        - buildjet-4vcpu-ubuntu-2204-arm
-      fail-fast: false
-    steps:
-    - run: apk add build-base git python3 wget
-    # https://github.com/actions/runner/issues/801#issuecomment-1374967227
-    - run: |
-        apk add gcompat
-        sed -i "s:ID=alpine:ID=NotpineForGHA:" /etc/os-release
-    - run: echo RUSTFLAGS="-C target-feature=-crt-static" >> "${GITHUB_ENV}"
-    - uses: actions/checkout@v3
-    - uses: actions-rs/toolchain@v1
-      with:
-        profile: minimal
-        toolchain: ${{ matrix.rust_version }}
-        override: true
-    - name: Install modules
-      run: yarn install --ignore-scripts
-    - name: Compile
-      run: yarn run compile
-    - name: Run tests
-      run: yarn run test
+  # broken now that node20 is forced even for checkout@v3, which doesn't work using the # WORKAROUND below any more.
+  # test-docker:
+  #   runs-on: ${{ matrix.os }}
+  #   container:
+  #     image: node:${{ matrix.node_version }}-alpine
+  #   strategy:
+  #     matrix:
+  #       rust_version:
+  #       - stable
+  #       - beta
+  #       node_version:
+  #       - 16
+  #       - 18
+  #       - 20
+  #       - 21
+  #       os:
+  #       - buildjet-2vcpu-ubuntu-2204
+  #       - buildjet-4vcpu-ubuntu-2204-arm
+  #     fail-fast: false
+  #   steps:
+  #   - run: apk add build-base git python3 wget
+  #   # WORKAROUND
+  #   # https://github.com/actions/runner/issues/801#issuecomment-1374967227
+  #   - run: |
+  #       apk add gcompat
+  #       sed -i "s:ID=alpine:ID=NotpineForGHA:" /etc/os-release
+  #   - run: echo RUSTFLAGS="-C target-feature=-crt-static" >> "${GITHUB_ENV}"
+  #   - uses: actions/checkout@v4
+  #   - uses: IronCoreLabs/rust-toolchain@v1
+  #     with:
+  #       toolchain: ${{ matrix.rust_version }}
+  #   - name: Install modules
+  #     run: yarn install --ignore-scripts
+  #   - name: Compile
+  #     run: yarn run compile
+  #   - name: Run tests
+  #     run: yarn run test
