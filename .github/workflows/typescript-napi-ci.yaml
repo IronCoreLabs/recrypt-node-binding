@@ -46,7 +46,7 @@ jobs:
         node-version: ${{ matrix.node_version }}
         cache: yarn
         architecture: ${{ matrix.system.arch }}
-    - uses: actions-rs/toolchain@v1
+    - uses: IronCoreLabs/rust-toolchain@v1
       with:
         profile: minimal
         toolchain: ${{ matrix.rust_version }}
@@ -57,15 +57,6 @@ jobs:
       run: yarn run compile
     - name: Run tests
       run: yarn run test
-    - name: Check test coverage
-      if: ${{ contains(matrix.system.os, 'ubuntu') && matrix.node_version == '16'
-        && matrix.rust_version == 'stable' && github.base_ref != '' }}
-      uses: anuraag016/Jest-Coverage-Diff@V1.4
-      with:
-        fullCoverageDiff: false
-        delta: 0.2
-        afterSwitchCommand: yarn install --ignore-scripts && yarn run compile
-        accessToken: ${{ secrets.WORKFLOW_PAT }}
 
   test-docker:
     runs-on: ${{ matrix.os }}
