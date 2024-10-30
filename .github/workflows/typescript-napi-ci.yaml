@@ -23,7 +23,7 @@ jobs:
         # explicitly asked for, we normally don't support non-LTS versions. Remove when Node support is dropped.
         - 21 
         system:
-        - os: macos-12
+        - os: macos-13
           target: x86_64-apple-darwin
           arch: x64
         - os: buildjet-2vcpu-ubuntu-2204
