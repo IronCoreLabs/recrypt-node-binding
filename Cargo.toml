@@ -1,9 +1,9 @@
 [package]
 name = "recrypt-node-binding"
-version = "0.10.2-pre.5"
+version = "0.11.0-pre.0"
 authors = ["IronCore Labs <code@ironcorelabs.com>"]
-edition = "2021"
-rust-version = "1.56.0"
+edition = "2024"
+rust-version = "1.85.0"
 
 [lib]
 name = "recrypt_node"
@@ -11,7 +11,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 neon = { version = "0.10", default-features = false, features = ["napi-4"] }
-recrypt = "0.13.1"
+recrypt = "0.14.1"
 
 [profile.release]
 lto = true
