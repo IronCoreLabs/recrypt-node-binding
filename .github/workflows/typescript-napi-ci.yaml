@@ -2,12 +2,12 @@ name: TypeScript CI
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-'on':
+on:
   push:
     branches:
     - main
-  pull_request: null
-  workflow_dispatch: null
+  pull_request:
+  workflow_dispatch:
 jobs:
   test:
     runs-on: ${{ matrix.system.os }}
@@ -17,11 +17,9 @@ jobs:
         - stable
         - beta
         node_version:
-        - 16 # remove when 22 LTS is out
-        - 18
         - 20
-        # explicitly asked for, we normally don't support non-LTS versions. Remove when Node support is dropped.
-        - 21 
+        - 22
+        - 24
         system:
         - os: macos-13
           target: x86_64-apple-darwin
@@ -32,7 +30,7 @@ jobs:
         - os: buildjet-4vcpu-ubuntu-2204-arm
           target: arm64-unknown-linux-gnu
           arch: arm64
-        - os: windows-2019
+        - os: windows-2025
           target: x86_64-pc-windows-msvc
           arch: x64
         - os: macos-14

@@ -1,3 +1,13 @@
+## 0.11.0 (Unreleased)
+
+### Changes
+
+- Added support for Node 22 and 24.
+
+### Breaking Changes
+
+- Removed support for Node 18 and 21.
+
 ## 0.10.1
 
 ### Changed

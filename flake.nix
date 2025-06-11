@@ -15,8 +15,8 @@
       rec {
         devShell = pkgs.mkShell {
           buildInputs = with pkgs.nodePackages; [
-            pkgs.nodejs_20
-            (pkgs.yarn.override { nodejs = pkgs.nodejs_20; })
+            pkgs.nodejs_24
+            (pkgs.yarn.override { nodejs = pkgs.nodejs_24; })
             pkgs.libiconv
           ];
           nativeBuildInputs = [ pkgs.rust-bin.stable.latest.default ]
