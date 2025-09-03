@@ -15,7 +15,8 @@ jobs:
       matrix:
         rust_version:
           - stable
-          - beta
+        # Uncomment after Rust 1.90.0 comes out: https://github.com/rust-lang/rust/issues/145699
+        #   - beta
         node_version:
           - 20
           - 22
