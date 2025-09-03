@@ -34,10 +34,10 @@ jobs:
           - os: macos-13
             target: x86_64-apple-darwin
             arch: x64
-          - os: buildjet-2vcpu-ubuntu-2204
+          - os: ubuntu-24.04
             target: x86_64-unknown-linux-gnu
             arch: x64
-          - os: buildjet-4vcpu-ubuntu-2204-arm
+          - os: ubuntu-24.04-arm
             target: aarch64-unknown-linux-gnu
             arch: arm64
           - os: windows-2025
@@ -47,7 +47,7 @@ jobs:
             target: aarch64-apple-darwin
             arch: arm64
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           ref: ${{ github.event.release.tag_name }}${{ github.event.inputs.name }}
       - uses: actions/setup-node@v4
@@ -89,13 +89,12 @@ jobs:
   #     fail-fast: false
   #     matrix:
   #       node_version:
-  #         - 16
-  #         - 18
   #         - 20
-  #         - 21
+  #         - 22
+  #         - 24
   #       os:
-  #         - buildjet-2vcpu-ubuntu-2204
-  #         - buildjet-4vcpu-ubuntu-2204-arm
+  #         - ubuntu-24.04
+  #         - ubuntu-24.04-arm
   #   steps:
   #     - run: apk add build-base git python3 wget github-cli
   #     # WORKAROUND
@@ -128,13 +127,13 @@ jobs:
   #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   publish-npm:
-    if: '${{ github.event.release.tag_name }}'
+    if: "${{ github.event.release.tag_name }}"
     needs:
       - publish-github
       # - publish-github-docker
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           ref: ${{ github.event.release.tag_name }}
       - uses: actions/setup-node@v4
