@@ -1,3 +1,9 @@
+## 0.11.1
+
+### Changes
+
+- Fix build process issues preventing musl releases.
+
 ## 0.11.0
 
 ### Changes

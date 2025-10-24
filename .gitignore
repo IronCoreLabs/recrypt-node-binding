@@ -8,6 +8,7 @@ target
 artifacts.json
 dist/*
 bin-package/*
+host-artifacts/*
 build/*
 .idea/*
 .direnv

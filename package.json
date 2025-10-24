@@ -27,10 +27,11 @@
         "compile": "cargo-cp-artifact -a cdylib recrypt_node ./bin-package/index.node -- cargo build --release --message-format=json-render-diagnostics",
         "clean": "cargo clean && rm -rf dist && rm -rf bin-package && rm -rf build",
         "benchmark": "node benchmark/index.js",
-        "test": "jest --maxWorkers=50%"
+        "test": "jest --maxWorkers=50%",
+        "prepublishOnly": "[ ! -f Cargo.toml ] || (echo \"Cargo.toml mistakenly found. Ensure you're publishing from ./dist.\" && exit 1)"
     },
     "dependencies": {
-        "@mapbox/node-pre-gyp": "^1.0.7"
+        "@mapbox/node-pre-gyp": "^2.0.0"
     },
     "devDependencies": {
         "@types/node": "^16.11.11",
