@@ -12,7 +12,7 @@ RUN apk add --no-cache \
 COPY . /app
 WORKDIR /app
 RUN yarn install
-RUN node publish.js
+RUN node build.js
 
 FROM scratch AS artifacts
 WORKDIR /out

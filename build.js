@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * recrypt-node-binding NPM publish script
+ * recrypt-node-binding NPM build script
  * ==================================
  *
  * This script is responsible for compiling and building the NPM release bundle for this repo. The following steps are taken:
@@ -12,7 +12,6 @@
  * + Run unit tests to ensure the library is in good shape for publishing.
  * + Move all expected content into a `dist` directory.
  * + Generate a binary distribution in `bin-package`.
- * + Do a dry run of npm publishing via irish-pub or perform an actual publish step if `--publish` option is provided.
  */
 
 const fs = require("fs");
@@ -24,7 +23,6 @@ shell.set("-e");
 //Ensure that our directory is set to the root of the repo
 const rootDirectory = path.dirname(process.argv[1]);
 shell.cd(rootDirectory);
-const shouldPublish = process.argv.slice(2).indexOf("--publish") !== -1;
 const isPreRelease = process.argv.slice(2).indexOf("--prerelease") !== -1;
 
 // Cleanup any previous Rust builds, update deps, and compile
@@ -61,17 +59,4 @@ const replacementPlatform = process.env.PRE_GYP_PLATFORM ? `--target_platform=${
 shell.exec(`${cwd}/node_modules/@mapbox/node-pre-gyp/bin/node-pre-gyp package ${replacementArch} ${replacementPlatform}`);
 var tgz = shell.exec("find ./build -name *.tar.gz");
 shell.cp(tgz, "./bin-package/");
-shell.pushd("./dist");
-
-var publishCmd = "echo 'Skipping publishing to npm...'";
-if (shouldPublish) {
-    publishCmd = "npm publish --access public";
-    // If we're publishing a branch build or prerelease like "1.2.3-pre.4", use "--tag next".
-    if (isPreRelease) {
-        publishCmd += " --tag next";
-    }
-}
-shell.exec(publishCmd);
-shell.popd();
-
-shell.echo("publish.js COMPLETE");
+shell.echo("build.js COMPLETE");
