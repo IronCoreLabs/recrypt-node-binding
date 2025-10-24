@@ -11,7 +11,7 @@
  * + Compile rust code into index.node file.
  * + Run unit tests to ensure the library is in good shape for publishing.
  * + Move all expected content into a `dist` directory.
- * + Generate a binary distrubtion in `bin-package`.
+ * + Generate a binary distribution in `bin-package`.
  * + Do a dry run of npm publishing via irish-pub or perform an actual publish step if `--publish` option is provided.
  */
 
@@ -63,7 +63,7 @@ var tgz = shell.exec("find ./build -name *.tar.gz");
 shell.cp(tgz, "./bin-package/");
 shell.pushd("./dist");
 
-var publishCmd = "echo 'Skipping publishing to npm...'"
+var publishCmd = "echo 'Skipping publishing to npm...'";
 if (shouldPublish) {
     publishCmd = "npm publish --access public";
     // If we're publishing a branch build or prerelease like "1.2.3-pre.4", use "--tag next".

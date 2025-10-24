@@ -15,8 +15,8 @@ jobs:
       matrix:
         rust_version:
           - stable
-        # Uncomment after Rust 1.90.0 comes out: https://github.com/rust-lang/rust/issues/145699
-        #   - beta
+          - beta
+        # These should match those in the `docker-test` job
         node_version:
           - 20
           - 22
@@ -55,33 +55,15 @@ jobs:
       - name: Run tests
         run: yarn run test
 
-  test-docker:
-    runs-on: ${{ matrix.os }}
-    container:
-      image: node:${{ matrix.node_version }}-alpine
+  # Used to create musl binaries
+  docker-test:
+    runs-on: ${{ matrix.system.os }}
     strategy:
       matrix:
-        rust_version:
-          - stable
-          - beta
-        node_version:
-          - 20
-          - 22
-          - 24
-        os:
-          - ubuntu-24.04
-          - ubuntu-24.04-arm
+        system:
+          - os: [ubuntu-24.04, ubuntu-24.04-arm]
       fail-fast: false
     steps:
-      - run: apk add build-base git python3 wget
-      - run: echo RUSTFLAGS="-C target-feature=-crt-static" >> "${GITHUB_ENV}"
       - uses: actions/checkout@v5
-      - uses: IronCoreLabs/rust-toolchain@v1
-        with:
-          toolchain: ${{ matrix.rust_version }}
-      - name: Install modules
-        run: yarn install --ignore-scripts
-      - name: Compile
-        run: yarn run compile
-      - name: Run tests
-        run: yarn run test
+      # These Node versions should match those above in the `test` job.
+      - run: for NODE_VERSION in 20 22 24; do docker build --build-arg NODE_VERSION=$NODE_VERSION .; done
