@@ -57,11 +57,10 @@ jobs:
 
   # Used to create musl binaries
   docker-test:
-    runs-on: ${{ matrix.system.os }}
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        system:
-          - os: [ubuntu-24.04, ubuntu-24.04-arm]
+        os: [ubuntu-24.04, ubuntu-24.04-arm]
       fail-fast: false
     steps:
       - uses: actions/checkout@v5
