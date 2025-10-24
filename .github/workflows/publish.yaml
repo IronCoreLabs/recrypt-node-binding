@@ -84,16 +84,16 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Build
-        id: build
         run: docker build --build-arg NODE_VERSION=${{matrix.node_version}} --output type=local,dest=./host-artifacts .
       - name: Output
+        id: asset
         run: |
           cd host-artifacts/out
           echo "asset=$(echo *.tar.gz)" >> "$GITHUB_OUTPUT"
       - name: Upload release asset
         run: |
           git config --global --add safe.directory $(pwd)
-          gh release upload ${{ github.event.release.tag_name }}${{ github.event.inputs.name }} host-artifacts/out/${{ steps.build.outputs.asset }} --clobber
+          gh release upload ${{ github.event.release.tag_name }}${{ github.event.inputs.name }} host-artifacts/out/${{ steps.asset.outputs.asset }} --clobber
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
