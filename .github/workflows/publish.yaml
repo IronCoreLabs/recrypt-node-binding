@@ -101,7 +101,7 @@ jobs:
     needs:
       - publish-github
       - publish-github-docker
-    uses: IronCoreLabs/workflows/.github/workflows/typescript-release.yaml@typescript-release-v1
+    uses: IronCoreLabs/workflows/.github/workflows/typescript-release.yaml@typescript-release-v1.0.0
     with:
       pre_publish_steps: "./build.js"
       publish_working_directory: "dist"

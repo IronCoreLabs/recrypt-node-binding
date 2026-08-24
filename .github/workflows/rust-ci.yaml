@@ -9,7 +9,7 @@ on:
     - cron: 0 14 * * 1
 jobs:
   rust-ci:
-    uses: IronCoreLabs/workflows/.github/workflows/rust-ci.yaml@rust-ci-v2
+    uses: IronCoreLabs/workflows/.github/workflows/rust-ci.yaml@rust-ci-v2.0.0
     with:
       # only run build, only on the toolchain version
       # typescript runs the real tests
